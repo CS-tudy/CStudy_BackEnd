@@ -2,8 +2,7 @@
 
 <p align="center">
   
-![image](https://github.com/CStudyTeam/CStudy-backend/assets/103854287/794e4e83-26ae-4504-bc0f-a36f15d7566c)</p>
-
+<img src="image/cstudy.png" style="height: 400px">
 <br>
 
 ## ✨ 프로젝트 소개
