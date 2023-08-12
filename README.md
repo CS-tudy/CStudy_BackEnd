@@ -1,8 +1,11 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
 <p align="center">
-  
-![image](https://github.com/CStudyTeam/CStudy-backend/assets/103854287/794e4e83-26ae-4504-bc0f-a36f15d7566c)</p>
+
+  ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/19741898-4fab-4a9a-aa85-aebaf24662b4)
+
+
+</p>
 
 <br>
 
