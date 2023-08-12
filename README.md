@@ -2,7 +2,8 @@
 
 <p align="center">
 
-  ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/19741898-4fab-4a9a-aa85-aebaf24662b4)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/8388ec52-c87a-4710-9bd7-5ce5e28df2bc)
+
 
 
 </p>
