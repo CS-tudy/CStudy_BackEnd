@@ -5,6 +5,7 @@ import com.cstudy.modulecommon.domain.competition.CompetitionScore;
 import com.cstudy.modulecommon.domain.competition.MemberCompetition;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.question.Question;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

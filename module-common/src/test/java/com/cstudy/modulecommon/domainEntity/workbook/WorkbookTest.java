@@ -1,10 +1,12 @@
-package com.cstudy.moduleapi.domainEntity.workbook;
+package com.cstudy.modulecommon.domainEntity.workbook;
 
 import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
 import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 

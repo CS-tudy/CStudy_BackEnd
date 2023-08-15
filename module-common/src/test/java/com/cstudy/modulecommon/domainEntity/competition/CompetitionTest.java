@@ -1,7 +1,8 @@
-package com.cstudy.moduleapi.domainEntity.competition;
+package com.cstudy.modulecommon.domainEntity.competition;
 
 import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

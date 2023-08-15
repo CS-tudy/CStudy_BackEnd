@@ -1,9 +1,11 @@
-package com.cstudy.moduleapi.domainEntity.workbook;
+package com.cstudy.modulecommon.domainEntity.workbook;
 
 import com.cstudy.modulecommon.domain.question.Question;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
 import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;

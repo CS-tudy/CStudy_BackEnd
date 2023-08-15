@@ -1,6 +1,7 @@
-package com.cstudy.moduleapi.domainEntity.reviewQuestion;
+package com.cstudy.modulecommon.domainEntity.reviewQuestion;
 
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,7 @@
-package com.cstudy.moduleapi.domainEntity.role;
+package com.cstudy.modulecommon.domainEntity.role;
 
 import com.cstudy.modulecommon.domain.role.Role;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
