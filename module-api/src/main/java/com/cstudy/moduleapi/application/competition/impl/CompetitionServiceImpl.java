@@ -100,18 +100,19 @@ public class CompetitionServiceImpl implements CompetitionService {
     /**
      * 대회 리스트.
      *
-     * @param finish 끝난 대회이면 true, 진행 전 대회이면 false
+     * @param finish   끝난 대회이면 true, 진행 전 대회이면 false
      * @param pageable pageable
+     * @param now 현재 시간
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<CompetitionListResponseDto> getCompetitionList(boolean finish, Pageable pageable) {
+    public Page<CompetitionListResponseDto> getCompetitionList(boolean finish, Pageable pageable, LocalDateTime now) {
 
         Page<Competition> competitions = null;
         if(finish) {
-            competitions = competitionRepository.findByCompetitionEndBefore(LocalDateTime.now(), pageable);
+            competitions = competitionRepository.findByCompetitionEndBefore(now, pageable);
         } else {
-            competitions = competitionRepository.findByCompetitionEndAfter(LocalDateTime.now(), pageable);
+            competitions = competitionRepository.findByCompetitionEndAfter(now, pageable);
         }
 
         return competitions.map(CompetitionListResponseDto::of);
