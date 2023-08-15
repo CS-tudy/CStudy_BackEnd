@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  CStudy-redis:
+    container_name: study-redis
+    build:
+      dockerfile: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/redis/Dockerfile
+      context: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/redis
+    image: immunogen/study-redis
+    ports:
+      - "6379:6379"
+  CStudy-database:
+    container_name: study-database
+    build:
+      dockerfile: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/database/Dockerfile
+      context: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/database
+    image: immunogen/study-database
+    environment:
+      - MYSQL_DATABASE=CStudy
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
