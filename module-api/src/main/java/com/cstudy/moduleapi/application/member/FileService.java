@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface FileService {
-    List<String> uploadFiles(MultipartFile[] multipartFileList, LoginUserDto loginUserDto) throws Exception;
+   void uploadFiles(MultipartFile multipartFileList, LoginUserDto loginUserDto);
 
     byte[] getImageBytes(LoginUserDto loginUserDto);
 }

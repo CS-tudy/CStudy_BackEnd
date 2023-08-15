@@ -43,7 +43,7 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
     public void scoring(CompetitionScoreRequestDto requestDto, LoginUserDto userDto) {
         MemberCompetition memberCompetition = memberCompetitionRepository
                 .findByMemberIdAndCompetitionId(userDto.getMemberId(), requestDto.getCompetitionId())
-                .orElseThrow(() -> new NotFoundMemberCompetition());
+                .orElseThrow(NotFoundMemberCompetition::new);
 
         int score = 0;
         memberCompetition.setEndTime(requestDto.getEndTime());

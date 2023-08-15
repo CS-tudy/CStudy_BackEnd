@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.domain.competition.application;
+package com.cstudy.moduleapi.domain.competition.application.impl;
 
 import com.cstudy.moduleapi.application.competition.CompetitionService;
 import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
@@ -11,12 +11,14 @@ import com.cstudy.modulecommon.repository.competition.CompetitionRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +28,7 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 class OptimisticFacadeTest {
 
     @Autowired
@@ -59,7 +61,7 @@ class OptimisticFacadeTest {
                 .password(PASSWORD)
                 .name(NAME)
                 .build();
-        memberService.signUp(memberSignupRequest);
+        memberService.signUpForTest(memberSignupRequest);
 
         CreateCompetitionRequestDto requestDto = CreateCompetitionRequestDto.builder()
                 .competitionTitle("CS 대회")
@@ -68,6 +70,16 @@ class OptimisticFacadeTest {
                 .build();
 
         competitionService.createCompetition(requestDto);
+
+
+
+        CreateCompetitionRequestDto requestDto2 = CreateCompetitionRequestDto.builder()
+                .competitionTitle("CS 대회")
+                .participants(100)
+                .competitionEnd(LocalDateTime.now().plusHours(1))
+                .build();
+
+        competitionService.createCompetition(requestDto2);
     }
 
     @Test
@@ -78,10 +90,10 @@ class OptimisticFacadeTest {
                 .memberId(1L)
                 .build();
         //when
-        facade.joinCompetition(userDto, 1L);
+        facade.joinCompetition(userDto, 2L);
 
         //Then
-        Competition competition = competitionRepository.findById(1L)
+        Competition competition = competitionRepository.findById(2L)
                 .orElseThrow(RuntimeException::new);
 
         Assertions.assertThat(competition.getParticipants()).isEqualTo(99);

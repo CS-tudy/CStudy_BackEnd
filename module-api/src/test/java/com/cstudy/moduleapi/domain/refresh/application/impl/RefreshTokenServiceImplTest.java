@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 public class RefreshTokenServiceImplTest {
 
 

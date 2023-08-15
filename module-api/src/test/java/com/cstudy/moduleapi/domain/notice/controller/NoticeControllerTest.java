@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 class NoticeControllerTest {
     @Autowired
     private MockMvc mockMvc;

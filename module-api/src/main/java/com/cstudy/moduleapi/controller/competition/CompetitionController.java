@@ -26,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Competition(경기 API)", description = "경기 생성 및 Get")
@@ -119,7 +120,8 @@ public class CompetitionController {
             @Parameter(description = "page: 페이지 번호, size: 한 페이지 문제 수.")
             @PageableDefault(sort = {"competitionStart"}, direction = Direction.ASC) Pageable pageable
     ) {
-        return competitionService.getCompetitionList(false, pageable);
+        LocalDateTime now = LocalDateTime.now();
+        return competitionService.getCompetitionList(false, pageable, now);
     }
 
     @Operation(summary = "종료된 대회 리스트", description = "종료된 대회 리스트")
@@ -133,7 +135,8 @@ public class CompetitionController {
             @Parameter(description = "page: 페이지 번호, size: 한 페이지 문제 수.")
             @PageableDefault(sort = {"competitionStart"}, direction = Direction.DESC) Pageable pageable
     ) {
-        return competitionService.getCompetitionList(true, pageable);
+        LocalDateTime now = LocalDateTime.now();
+        return competitionService.getCompetitionList(true, pageable, now);
     }
 
     @Operation(summary = "대회 문제 추가", description = "대회 문제 추가")

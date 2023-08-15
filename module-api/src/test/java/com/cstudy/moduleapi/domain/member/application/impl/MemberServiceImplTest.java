@@ -21,14 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@Transactional
+@ActiveProfiles("local")
 class MemberServiceImplTest {
 
     @Autowired
@@ -110,7 +113,7 @@ class MemberServiceImplTest {
             //when Then
             assertThatThrownBy(() -> memberService.signUp(memberSignupRequest))
                     .isInstanceOf(EmailDuplication.class)
-                    .hasMessage("User email is already existed:test1234@email.com");
+                    .hasMessage("User email is already existed:중복 이메일");
         }
 
         @Test
@@ -125,7 +128,15 @@ class MemberServiceImplTest {
 
             //when
             memberService.signUp(memberSignupRequest);
-            Member member = memberRepository.findByEmailWithRoles(VALID_EMAIL).orElseThrow();
+
+            Member member = memberRepository.findByEmail(VALID_EMAIL)
+                    .orElseThrow(() -> new NotFoundMemberEmail(VALID_EMAIL));
+
+            Set<Role> roles = member.getRoles();
+
+            for (Role role : roles) {
+                System.out.println("role = " + role);
+            }
 
             //Then
             assertThat(member.getRoles()).isNotNull();
@@ -155,7 +166,7 @@ class MemberServiceImplTest {
                     .orElseThrow(() -> new NotFoundMemberId(1L));
             //Then
             assertThat(member.getName()).isEqualTo("관리자");
-            assertThat(member.getEmail()).isEqualTo("admin");
+            assertThat(member.getEmail()).isEqualTo("admin@admin.com");
             assertThat(member.getPassword()).isNotEqualTo("1234");
 
         }
@@ -182,15 +193,15 @@ class MemberServiceImplTest {
         public void validLoginWithParameter() throws Exception{
             //given
             MemberLoginRequest request = MemberLoginRequest.builder()
-                    .email(VALID_EMAIL)
-                    .password(VALID_PASSWORD)
+                    .email("admin@admin.com")
+                    .password("admin1234!")
                     .build();
             //when
             MemberLoginResponse login = memberService.login(request);
             //Then
-            assertThat(login.getName()).isEqualTo("김무건");
+            assertThat(login.getName()).isEqualTo("관리자");
             assertThat(login.getAccessToken()).isNotNull();
-            assertThat(login.getEmail()).isEqualTo(VALID_EMAIL);
+            assertThat(login.getEmail()).isEqualTo("admin@admin.com");
             assertThat(login.getRefreshToken()).isNotNull();
         }
 

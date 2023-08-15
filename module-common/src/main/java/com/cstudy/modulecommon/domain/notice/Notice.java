@@ -38,7 +38,7 @@ public class Notice extends BaseEntity {
         this.member = member;
     }
 
-    protected Notice() {
+    public Notice() {
 
     }
 
