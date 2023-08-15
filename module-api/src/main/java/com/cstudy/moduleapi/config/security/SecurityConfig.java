@@ -6,6 +6,7 @@ import com.cstudy.moduleapi.config.jwt.exception.CustomAuthenticationEntryPoint;
 import com.cstudy.moduleapi.config.oauth.CustomOAuth2UserService;
 import com.cstudy.moduleapi.config.oauth.OAuth2FailureHandler;
 import com.cstudy.moduleapi.config.oauth.OAuth2SuccessHandler;
+import com.cstudy.modulecommon.domain.role.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,7 +50,7 @@ public class SecurityConfig {
                 .antMatchers("/api/upload","/api/request/mylist","/api/request/create","/api/questions/myquestion",
                         "/api/question/**", "/api/mypage", "/api/mypage/password","/api/competition/submit","/api/competition/join/**",
                         "/api/competition/result/**", "/api/competition/question/**")
-                        .hasAnyAuthority("ROLE_CUSTOM", "ROLE_ADMIN")
+                .hasAnyAuthority(RoleEnum.CUSTOM.getRoleName(), RoleEnum.ADMIN.getRoleName())
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .mvcMatchers("/api/signup","/api/login","/api/logout","/email","/name","/api/email").permitAll()
                 .and()

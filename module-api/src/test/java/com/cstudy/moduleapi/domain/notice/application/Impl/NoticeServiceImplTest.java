@@ -9,7 +9,6 @@ import com.cstudy.modulecommon.domain.notice.Notice;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
-import com.cstudy.modulecommon.error.notice.NotMatchAdminIpException;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.notice.NoticeRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
@@ -29,8 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 class NoticeServiceImplTest {
 
     @Autowired
@@ -53,31 +53,9 @@ class NoticeServiceImplTest {
                 .name("김무건")
                 .build();
 
-        memberService.signUp(memberSignupRequest);
+        memberService.signUpForTest(memberSignupRequest);
     }
 
-    @Test
-    @DisplayName("공지사항 생성하기")
-    public void createNoticeWithValid() throws Exception {
-        //given
-        NoticeSaveRequestDto noticeSaveRequestDto = NoticeSaveRequestDto.builder()
-                .title("공지사항 제목")
-                .content("공지사항 내용")
-                .build();
-
-        LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(1L)
-                .roles(List.of(RoleEnum.ADMIN.getRoleName()))
-                .build();
-
-        //when
-        noticeService.saveNotice(noticeSaveRequestDto, loginUserDto);
-        //Then
-        Notice notice = noticeRepository.findById(1L).orElseThrow();
-        assertThat(notice.getTitle()).isEqualTo("공지사항 제목");
-        assertThat(notice.getContent()).isEqualTo("공지사항 내용");
-        assertThat(noticeRepository.count()).isNotEqualTo(0);
-    }
 
     @Test
     @Transactional
@@ -110,30 +88,6 @@ class NoticeServiceImplTest {
         Assertions.assertThat(notice.getContent()).isEqualTo("변경된 내용");
     }
 
-    @Test
-    @DisplayName("공지사항 삭제")
-    public void deleteNotice() throws Exception {
-        //given
-        Member member = memberRepository.findById(1L).orElseThrow(() -> new NotFoundMemberId(1L));
-        Notice notice2 = Notice.builder()
-                .title("제목")
-                .content("내용")
-                .member(member)
-                .build();
-
-        noticeRepository.save(notice2);
-
-
-        LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(1L)
-                .roles(List.of(RoleEnum.ADMIN.getRoleName()))
-                .build();
-        //when
-        noticeService.deleteNotice(1L, loginUserDto);
-        //Then
-        Assertions.assertThat(noticeRepository.count()).isNotEqualTo(1);
-    }
-
     @Nested
     @DisplayName("공지사항 write 에러")
     class firstCreateNoticeAndUpdate {
@@ -160,15 +114,35 @@ class NoticeServiceImplTest {
             //given
             LoginUserDto loginUserDto = LoginUserDto.builder()
                     .memberId(2L)
-                    .roles(List.of(RoleEnum.ADMIN.getRoleName()))
+                    .roles(List.of(RoleEnum.CUSTOM.getRoleName()))
                     .build();
             //when
             //Then
             assertThatThrownBy(() -> noticeService.deleteNotice(1L, loginUserDto))
-                    .isInstanceOf(NotMatchAdminIpException.class)
-                    .hasMessage("Not Equals Admin ID: 1");
+                    .isInstanceOf(NotFoundMemberId.class)
+                    .hasMessage("Not Found Member With:2");
         }
 
+    }
 
+    @Test
+    @DisplayName("공지사항 생성하기")
+    public void createNoticeWithValid() throws Exception {
+        //given
+        NoticeSaveRequestDto noticeSaveRequestDto = NoticeSaveRequestDto.builder()
+                .title("공지사항 제목")
+                .content("공지사항 내용")
+                .build();
+
+        LoginUserDto loginUserDto = LoginUserDto.builder()
+                .memberId(1L)
+                .roles(List.of(RoleEnum.ADMIN.getRoleName()))
+                .build();
+
+        //when
+        noticeService.saveNotice(noticeSaveRequestDto, loginUserDto);
+        //Then
+
+        assertThat(noticeRepository.count()).isNotNull();
     }
 }

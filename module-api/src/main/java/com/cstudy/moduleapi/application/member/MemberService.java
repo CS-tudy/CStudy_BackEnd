@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 public interface MemberService {
     MemberSignupResponse signUp(MemberSignupRequest request);
 
+
     MemberLoginResponse login(MemberLoginRequest request);
 
     Member oauthSignUp(String email, String name);
@@ -19,6 +20,8 @@ public interface MemberService {
     MyPageResponseDto getMyPage(Long id);
 
     void changePassword(MemberPasswordChangeRequest request, Long id);
+
+    MemberSignupResponse signUpForTest(MemberSignupRequest request);
 
     String sendEmail(String recipientEmail) throws MailException, MessagingException;
 }

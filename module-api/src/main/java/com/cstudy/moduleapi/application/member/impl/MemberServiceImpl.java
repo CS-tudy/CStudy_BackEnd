@@ -45,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
     private final ReviewService reviewNoteService;
 
     @Value("${spring.mail.username}")
-    private  String EMAIL;
+    private String EMAIL;
 
     public MemberServiceImpl(
             MemberRepository memberRepository,
@@ -97,6 +97,28 @@ public class MemberServiceImpl implements MemberService {
                 .roles(new HashSet<>())
                 .build()));
     }
+
+
+    @Override
+    public MemberSignupResponse signUpForTest(MemberSignupRequest request) {
+
+        signupWithRole(Member.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .roles(new HashSet<>())
+                .build());
+
+        reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
+
+        return MemberSignupResponse.of(memberRepository.save(Member.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .roles(new HashSet<>())
+                .build()));
+    }
+
 
     private void checkEmailAndNameDuplication(MemberSignupRequest request) {
         divisionDuplicationAboutNickEmail(request);
