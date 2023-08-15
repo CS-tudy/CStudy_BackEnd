@@ -1,5 +1,6 @@
 package com.cstudy.modulecommon.domain.request;
 
+import com.cstudy.modulecommon.domain.BaseEntity;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Request {
+public class Request extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

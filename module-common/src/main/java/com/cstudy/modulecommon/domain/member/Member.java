@@ -1,5 +1,6 @@
 package com.cstudy.modulecommon.domain.member;
 
+import com.cstudy.modulecommon.domain.BaseEntity;
 import com.cstudy.modulecommon.domain.competition.MemberCompetition;
 import com.cstudy.modulecommon.domain.file.File;
 import com.cstudy.modulecommon.domain.notice.Notice;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")

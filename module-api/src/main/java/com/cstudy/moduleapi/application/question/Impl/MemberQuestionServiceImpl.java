@@ -118,7 +118,8 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     public void findByQuestionAboutMemberIdAndQuestionIdSuccess(Long memberId, Long questionId) {
         long count = memberQuestionRepository.countByMemberIdAndQuestionIdAndSuccessZero(memberId, questionId);
         if (count != 0) {
-            Optional<MemberQuestion> questionOptional = memberQuestionRepository.findByQuestionAboutMemberIdAndQuestionId(memberId, questionId);
+            Optional<MemberQuestion> questionOptional = memberQuestionRepository
+                    .findByQuestionAboutMemberIdAndQuestionId(memberId, questionId);
             questionOptional.ifPresent(question -> memberQuestionRepository.deleteById(question.getId()));
             questionOptional.orElseThrow(() -> new RuntimeException("MemberQuestion not found"));
         }

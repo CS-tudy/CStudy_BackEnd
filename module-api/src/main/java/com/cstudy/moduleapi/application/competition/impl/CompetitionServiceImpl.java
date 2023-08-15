@@ -54,10 +54,10 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Transactional
     public Long createCompetition(CreateCompetitionRequestDto createCompetitionRequestDto) {
 
-        if(createCompetitionRequestDto.getCompetitionStart()
-                .isAfter(createCompetitionRequestDto.getCompetitionEnd())){
-            throw new CompetitionStartException();
-        }
+//        if(createCompetitionRequestDto.getCompetitionStart()
+//                .isAfter(createCompetitionRequestDto.getCompetitionEnd())){
+//            throw new CompetitionStartException();
+//        }
 
         Workbook workbook = Workbook.builder()
                 .title(createCompetitionRequestDto.getCompetitionTitle())

@@ -9,6 +9,7 @@ import com.cstudy.moduleapi.dto.request.RequestResponseDto;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @Transactional
 class RequestServiceImplTest {
 
@@ -75,23 +76,25 @@ class RequestServiceImplTest {
     }
 
     @Test
-    @DisplayName("게시글 대기 -> 승인")
+    @DisplayName("게시글 대기")
     public void approve(){
         CreateRequestRequestDto requestDto = CreateRequestRequestDto.builder()
                 .title("문제 요청1")
                 .description("문제 요청 내용1")
                 .build();
-        Long requestId = requestService.createRequest(requestDto, memberId1);
+        Long requestId = requestService.createRequest(requestDto, 1L);
 
         RequestResponseDto request1 = requestService.getRequest(requestId);
         assertFalse(request1.isFlag());
 
         FlagRequestDto flag = new FlagRequestDto(requestId, true);
-        requestService.updateFlag(flag);
 
-        RequestResponseDto request2 = requestService.getRequest(requestId);
-        assertTrue(request2.isFlag());
+        Assertions.assertThatThrownBy(() -> requestService.updateFlag(flag))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("권한이 일치하지 않습니다.");
     }
+
+
 
     @Test
     @DisplayName("내 게시글 리스트 조회")

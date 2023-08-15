@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @Transactional
 class CompetitionServiceImplTest {
 
@@ -111,8 +111,9 @@ class CompetitionServiceImplTest {
     @DisplayName("끝난 대회 조회")
     public void finish() {
         Pageable pageable = PageRequest.of(0, 5);
+        LocalDateTime now = LocalDateTime.now();
         Page<CompetitionListResponseDto> competitionList =
-                  competitionService.getCompetitionList(true, pageable);
+                  competitionService.getCompetitionList(true, pageable, now);
         assertEquals(competitionList.getTotalElements(), 1);
         assertEquals(competitionList.getContent().get(0).getTitle(), "대회 이름2");
     }
@@ -120,10 +121,10 @@ class CompetitionServiceImplTest {
     @Test
     @DisplayName("시작 전 대회 조회")
     public void notFinish() {
-        Pageable pageable = PageRequest.of(0, 5);
-
+        Pageable pageable = PageRequest.of(0, 1);
+        LocalDateTime now = LocalDateTime.now();
         Page<CompetitionListResponseDto> competitionList =
-                  competitionService.getCompetitionList(false, pageable);
+                  competitionService.getCompetitionList(false, pageable, now);
 
         assertEquals(competitionList.getTotalElements(), 1);
         assertEquals(competitionList.getContent().get(0).getTitle(), "대회 이름1");

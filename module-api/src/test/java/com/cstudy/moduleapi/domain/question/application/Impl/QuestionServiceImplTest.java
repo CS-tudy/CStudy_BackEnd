@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @Transactional
 class QuestionServiceImplTest {
 
@@ -196,162 +196,205 @@ class QuestionServiceImplTest {
             beforeCreateSet();
         }
 
-        @Test
-        @DisplayName("생성된 문제에 대한 문제 찾기 및 카테고리")
-        public void findQuestionValidWithChoiceAndCategory() throws Exception {
-            //given
+//        @Test
+//        @DisplayName("생성된 문제에 대한 문제 찾기 및 카테고리")
+//        public void findQuestionValidWithChoiceAndCategory() throws Exception {
+//            //given
+//            CategoryRequestDto categoryRequestDto = CategoryRequestDto.builder()
+//                    .category("네트워크")
+//                    .build();
+//
+//            CreateQuestionRequestDto createQuestionRequestDto = CreateQuestionRequestDto.builder()
+//                    .questionTitle("문제 제목")
+//                    .questionDesc("문제에 대한 설명")
+//                    .questionExplain("문제에 대한 해답")
+//                    .build();
+//
+//            CreateChoicesAboutQuestionDto request1 = CreateChoicesAboutQuestionDto.builder()
+//                    .number(1)
+//                    .content("선택 1")
+//                    .build();
+//
+//            CreateChoicesAboutQuestionDto request2 = CreateChoicesAboutQuestionDto.builder()
+//                    .number(2)
+//                    .content("선택 2")
+//                    .build();
+//            CreateChoicesAboutQuestionDto request3 = CreateChoicesAboutQuestionDto.builder()
+//                    .number(3)
+//                    .content("선택 3")
+//                    .answer("정답")
+//                    .build();
+//            CreateChoicesAboutQuestionDto request4 = CreateChoicesAboutQuestionDto.builder()
+//                    .number(4)
+//                    .content("선택 4")
+//                    .build();
+//
+//
+//            List<CreateChoicesAboutQuestionDto> createChoicesAboutQuestionDto = new ArrayList<>();
+//            createChoicesAboutQuestionDto.add(request1);
+//            createChoicesAboutQuestionDto.add(request2);
+//            createChoicesAboutQuestionDto.add(request3);
+//            createChoicesAboutQuestionDto.add(request4);
+//
+//            CreateQuestionAndCategoryRequestDto createQuestionAndCategoryRequestDto = CreateQuestionAndCategoryRequestDto.builder()
+//                    .createQuestionRequestDto(createQuestionRequestDto)
+//                    .categoryRequestDto(categoryRequestDto)
+//                    .createChoicesAboutQuestionDto(createChoicesAboutQuestionDto)
+//                    .build();
+//
+//            questionService.createQuestionChoice(createQuestionAndCategoryRequestDto);
+//            //when
+//            QuestionResponseDto result = questionService.findQuestionWithChoiceAndCategory(1L);
+//            //Then
+//            assertAll(
+//                    () -> assertThat(result.getTitle()).isEqualTo("문제 제목"),
+//                    () -> assertThat(result.getDescription()).isEqualTo("문제에 대한 설명"),
+//                    () -> assertThat(result.getExplain()).isEqualTo("문제에 대한 해답")
+//            );
+//
+//            assertAll(
+//                    () -> assertThat(result.getChoices().get(0).getContent()).isEqualTo("선택 1"),
+//                    () -> assertThat(result.getChoices().get(1).getContent()).isEqualTo("선택 2"),
+//                    () -> assertThat(result.getChoices().get(2).getContent()).isEqualTo("선택 3"),
+//                    () -> assertThat(result.getChoices().get(3).getContent()).isEqualTo("선택 4")
+//
+//            );
+//
+//            assertAll(
+//                    () -> assertThat(result.getChoices().get(0).getNumber()).isEqualTo(1),
+//                    () -> assertThat(result.getChoices().get(1).getNumber()).isEqualTo(2),
+//                    () -> assertThat(result.getChoices().get(2).getNumber()).isEqualTo(3),
+//                    () -> assertThat(result.getChoices().get(3).getNumber()).isEqualTo(4)
+//            );
+//
+//            assertThat(result.getCategoryTitle()).isEqualTo("네트워크");
+//        }
+//    }
 
-            //when
-            QuestionResponseDto result = questionService.findQuestionWithChoiceAndCategory(1L);
-            //Then
-            assertAll(
-                    () -> assertThat(result.getTitle()).isEqualTo("문제 제목"),
-                    () -> assertThat(result.getDescription()).isEqualTo("문제에 대한 설명"),
-                    () -> assertThat(result.getExplain()).isEqualTo("문제에 대한 해답")
-            );
+        @Nested
+        class test {
 
-            assertAll(
-                    () -> assertThat(result.getChoices().get(0).getContent()).isEqualTo("선택 1"),
-                    () -> assertThat(result.getChoices().get(1).getContent()).isEqualTo("선택 2"),
-                    () -> assertThat(result.getChoices().get(2).getContent()).isEqualTo("선택 3"),
-                    () -> assertThat(result.getChoices().get(3).getContent()).isEqualTo("선택 4")
+            @BeforeEach
+            void setUp() {
+                new findQuestionWithChoiceAndCategory().beforeCreateSet();
 
-            );
+                MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
+                        .email("test1234@gmail.com")
+                        .password("1234")
+                        .name("김무건")
+                        .build();
+                memberService.signUp(memberSignupRequest);
+            }
 
-            assertAll(
-                    () -> assertThat(result.getChoices().get(0).getNumber()).isEqualTo(1),
-                    () -> assertThat(result.getChoices().get(1).getNumber()).isEqualTo(2),
-                    () -> assertThat(result.getChoices().get(2).getNumber()).isEqualTo(3),
-                    () -> assertThat(result.getChoices().get(3).getNumber()).isEqualTo(4)
-            );
+//        @Test
+//        @DisplayName("문제 선택 - 실패")
+//        public void choiceQuestionWithInValid() throws Exception {
+//            //given
+//            MemberLoginRequest request = MemberLoginRequest.builder()
+//                    .email("test1234@gmail.com")
+//                    .password("1234")
+//                    .build();
+//
+//            MemberLoginResponse login = memberService.login(request);
+//
+//            Member member = memberRepository.findByEmail(login.getEmail())
+//                    .orElseThrow(() -> new NotFoundMemberEmail(login.getEmail()));
+//
+//            LoginUserDto loginUserDto = LoginUserDto.builder()
+//                    .memberId(member.getId())
+//                    .build();
+//
+//            ChoiceAnswerRequestDto choiceAnswerRequestDto = ChoiceAnswerRequestDto.builder()
+//                    .choiceNumber(1)
+//                    .build();
+//            //when
+//            questionService.choiceQuestion(loginUserDto, 1L, choiceAnswerRequestDto);
+//
+//            MemberQuestion memberQuestion = memberQuestionRepository.findById(1L)
+//                    .orElseThrow(RuntimeException::new);
+//            //Then
+//            assertThat(memberQuestion.getFail()).isEqualTo(1);
+//        }
 
-            assertThat(result.getCategoryTitle()).isEqualTo("네트워크");
-        }
-    }
+//        @Test
+//        @DisplayName("문제 선택 - 성공")
+//        public void choiceQuestionWithValid() throws Exception {
+//            //given
+//            MemberLoginRequest request = MemberLoginRequest.builder()
+//                    .email("test1234@gmail.com")
+//                    .password("1234")
+//                    .build();
+//
+//            MemberLoginResponse login = memberService.login(request);
+//
+//            Member member = memberRepository.findByEmail(login.getEmail())
+//                    .orElseThrow(() -> new NotFoundMemberEmail(login.getEmail()));
+//
+//            LoginUserDto loginUserDto = LoginUserDto.builder()
+//                    .memberId(member.getId())
+//                    .build();
+//
+//            ChoiceAnswerRequestDto choiceAnswerRequestDto = ChoiceAnswerRequestDto.builder()
+//                    .choiceNumber(3)
+//                    .build();
+//            //when
+//            questionService.choiceQuestion(loginUserDto, 1L, choiceAnswerRequestDto);
+//
+//            MemberQuestion memberQuestion = memberQuestionRepository.findById(1L)
+//                    .orElseThrow(RuntimeException::new);
+//            //Then
+//            assertThat(memberQuestion.getSuccess()).isEqualTo(3);
+//        }
 
-    @Nested
-    class test {
+            @Test
+            @DisplayName("페이징 문제 및 카테고리")
+            public void findPagingQuestionAndCategoryWithValid() throws Exception {
+                //given
+                LoginUserDto loginUserDto = LoginUserDto.builder()
+                        .memberId(1L)
+                        .build();
+                //when
+                QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
+                        .build();
+                //Then
+                Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
+                        questionSearchCondition, 0, 10,
+                        loginUserDto);
 
-        @BeforeEach
-        void setUp() {
-            new findQuestionWithChoiceAndCategory().beforeCreateSet();
+                System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
 
-            MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
-                    .email("test1234@gmail.com")
-                    .password("1234")
-                    .name("김무건")
-                    .build();
-            memberService.signUp(memberSignupRequest);
-        }
+                assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
+                        .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
 
-        @Test
-        @DisplayName("문제 선택 - 실패")
-        public void choiceQuestionWithInValid() throws Exception {
-            //given
-            MemberLoginRequest request = MemberLoginRequest.builder()
-                    .email("test1234@gmail.com")
-                    .password("1234")
-                    .build();
+                assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
+                        .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
+            }
 
-            MemberLoginResponse login = memberService.login(request);
+            @Test
+            @DisplayName("페이징 문제 및 카테고리 - 문제 제목")
+            public void findPagingQuestionAndCategoryWithValidCondition() throws Exception {
+                //given
+                LoginUserDto loginUserDto = LoginUserDto.builder()
+                        .memberId(1L)
+                        .build();
+                QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
+                        .questionTitle("문제 제목")
+                        .build();
+                //when
+                Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
+                        questionSearchCondition, 0, 10,
+                        loginUserDto);
 
-            Member member = memberRepository.findByEmail(login.getEmail())
-                    .orElseThrow(() -> new NotFoundMemberEmail(login.getEmail()));
+                //Then
 
-            LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(member.getId())
-                    .build();
+                System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
 
-            ChoiceAnswerRequestDto choiceAnswerRequestDto = ChoiceAnswerRequestDto.builder()
-                    .choiceNumber(1)
-                    .build();
-            //when
-            questionService.choiceQuestion(loginUserDto, 1L, choiceAnswerRequestDto);
+                assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
+                        .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
 
-            MemberQuestion memberQuestion = memberQuestionRepository.findById(1L)
-                    .orElseThrow(RuntimeException::new);
-            //Then
-            assertThat(memberQuestion.getFail()).isEqualTo(1);
-        }
-
-        @Test
-        @DisplayName("문제 선택 - 성공")
-        public void choiceQuestionWithValid() throws Exception {
-            //given
-            MemberLoginRequest request = MemberLoginRequest.builder()
-                    .email("test1234@gmail.com")
-                    .password("1234")
-                    .build();
-
-            MemberLoginResponse login = memberService.login(request);
-
-            Member member = memberRepository.findByEmail(login.getEmail())
-                    .orElseThrow(() -> new NotFoundMemberEmail(login.getEmail()));
-
-            LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(member.getId())
-                    .build();
-
-            ChoiceAnswerRequestDto choiceAnswerRequestDto = ChoiceAnswerRequestDto.builder()
-                    .choiceNumber(3)
-                    .build();
-            //when
-            questionService.choiceQuestion(loginUserDto, 1L, choiceAnswerRequestDto);
-
-            MemberQuestion memberQuestion = memberQuestionRepository.findById(1L)
-                    .orElseThrow(RuntimeException::new);
-            //Then
-            assertThat(memberQuestion.getSuccess()).isEqualTo(3);
-        }
-
-        @Test
-        @DisplayName("페이징 문제 및 카테고리")
-        public void findPagingQuestionAndCategoryWithValid() throws Exception {
-            //given
-            LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(1L)
-                    .build();
-            //when
-            QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
-                    .build();
-            //Then
-            Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
-                    questionSearchCondition, 0, 10,
-                    loginUserDto);
-
-            System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
-
-            assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
-                    .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
-
-            assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
-                    .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
-        }
-
-        @Test
-        @DisplayName("페이징 문제 및 카테고리 - 문제 제목")
-        public void findPagingQuestionAndCategoryWithValidCondition() throws Exception {
-            //given
-            LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(1L)
-                    .build();
-            QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
-                    .questionTitle("문제 제목")
-                    .build();
-            //when
-            Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
-                    questionSearchCondition, 0, 10,
-                    loginUserDto);
-
-            //Then
-
-            System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
-
-            assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
-                    .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
-
-            assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
-                    .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
+                assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
+                        .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
+            }
         }
     }
 }

@@ -10,9 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
-@ActiveProfiles("test")
+import static org.assertj.core.api.Assertions.*;
+
+@ActiveProfiles("local")
 class JwtTokenizerTest {
     private static final String secretKey = "0123456789012345678901234567890123456789";
     private static final String refreshKey = "0123456789012345678901234567890123456789";
@@ -36,13 +39,13 @@ class JwtTokenizerTest {
         String accessToken = jwtTokenizer.createAccessToken(memberId, email, roles);
 
         // Then
-        Assertions.assertThat(accessToken).isNotBlank();
+        assertThat(accessToken).isNotBlank();
 
         // 토큰 파싱하여 클레임 값 확인
         Claims claims = jwtTokenizer.parseAccessToken(accessToken);
-        Assertions.assertThat(claims.getSubject()).isEqualTo(email);
-        Assertions.assertThat(claims.get("memberId", Long.class)).isEqualTo(memberId);
-        Assertions.assertThat(claims.get("roles", List.class)).isEqualTo(roles);
+        assertThat(claims.getSubject()).isEqualTo(email);
+        assertThat(claims.get("memberId", Long.class)).isEqualTo(memberId);
+        assertThat(claims.get("roles", List.class)).isEqualTo(roles);
     }
 
     @Test
@@ -59,6 +62,25 @@ class JwtTokenizerTest {
         String token = jwtTokenizer.createToken(id, email, roles, expire, secretKey);
 
         // then
-        Assertions.assertThat(token).isNotBlank();
+        assertThat(token).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("트레이드 오프에 따른 Date 토큰 생성하기")
+    public void createToken() throws Exception{
+        // given
+        Long id = 1L;
+        String email = "test@example.com";
+        List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+        Long expire = 3600000L; // 1 hour
+        byte[] secretKey = "0123456789012345678901234567890123456789".getBytes();
+        Date date = new Date(1656789000000L);//Tue Jun 02 2022 12:30:00 GMT+0000
+        // when
+        String token = jwtTokenizer.createTokenWithDate(id, email, roles, expire, secretKey,date);
+
+        //Then
+        assertThat(token).isEqualTo("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwibWVtYmVySWQiO" +
+                "jEsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjU2Nzg5MDAwLCJleHAiOjE2NTY3OTI2MDB9." +
+                "l8ZHBTJj7hYS3jYdJHYp6Sd0Xf-igWTzWl74u6x75cU");
     }
 }

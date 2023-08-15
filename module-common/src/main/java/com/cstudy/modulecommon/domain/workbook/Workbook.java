@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Workbook {
+public class Workbook  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

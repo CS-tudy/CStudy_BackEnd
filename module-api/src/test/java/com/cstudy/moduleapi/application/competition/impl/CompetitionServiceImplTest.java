@@ -1,28 +1,26 @@
 package com.cstudy.moduleapi.application.competition.impl;
 
-import com.cstudy.moduleapi.application.competition.CompetitionService;
-import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
-import com.cstudy.moduleapi.application.workbook.WorkbookService;
 import com.cstudy.moduleapi.dto.competition.CompetitionListResponseDto;
+import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.repository.competition.CompetitionRepository;
-import com.cstudy.modulecommon.repository.competition.MemberCompetitionRepository;
-import com.cstudy.modulecommon.repository.question.QuestionRepository;
-import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("local")
 @ExtendWith(MockitoExtension.class)
@@ -32,32 +30,78 @@ class CompetitionServiceImplTest {
     private CompetitionServiceImpl competitionService;
     @Mock
     private CompetitionRepository competitionRepository;
-    @Mock
-    private WorkbookRepository workbookRepository;
-    @Mock
-    private QuestionRepository questionRepository;
-    @Mock
-    private MemberCompetitionRepository memberCompetitionRepository;
-    @Mock
-    private MemberCompetitionService memberCompetitionService;
-    @Mock
-    private WorkbookService workbookService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
 
     }
 
     @Test
-    @DisplayName("test")
-    public void test() throws Exception{
-        //given
-        LocalDateTime now = LocalDateTime.now();
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        given(competitionRepository.findByCompetitionEndBefore(now,pageRequest)).willReturn(null);
+    public void testGetCompetitionListFinishTrue() {
+        // given
+        LocalDateTime now = LocalDateTime.of(2023, 8, 15, 12, 0);
+        boolean finish = true;
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
+
+        List<Competition> competitionList = new ArrayList<>();
+
+        Competition competition = Competition.builder()
+                .competitionStart(now)
+                .participants(5)
+                .competitionEnd(now.plusHours(1))
+                .competitionTitle("제목")
+                .build();
+        competitionList.add(competition);
+
+        Page<Competition> competitionPage = new PageImpl<>(competitionList);
+
         //when
-        Page<CompetitionListResponseDto> competitionList = competitionService.getCompetitionList(true, pageRequest, now);
-        //Then
-        Assertions.assertThat(competitionList).isNull();
+        when(competitionRepository.findByCompetitionEndBefore(any(), any())).thenReturn(competitionPage);
+        Page<CompetitionListResponseDto> result = competitionService.getCompetitionList(finish, pageable, now);
+
+        //then
+        CompetitionListResponseDto responseDto = result.getContent().get(0);
+        assertThat(responseDto.getTitle()).isEqualTo("제목");
+        assertThat(responseDto.getParticipants()).isEqualTo(5);
+
+        // 여러 다른 필드에 대한 추가적인 검증 추가 가능
+
+        verify(competitionRepository, times(1)).findByCompetitionEndBefore(any(), any());
+    }
+
+
+    @Test
+    public void testGetCompetitionListFinishFalse() {
+        // given
+        LocalDateTime now = LocalDateTime.of(2023, 8, 15, 12, 0);
+        boolean finish = false;
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
+
+        List<Competition> competitionList = new ArrayList<>();
+
+        Competition competition = Competition.builder()
+                .competitionStart(now)
+                .participants(5)
+                .competitionEnd(now.plusHours(1))
+                .competitionTitle("제목")
+                .build();
+
+        competitionList.add(competition);
+
+        Page<Competition> competitionPage = new PageImpl<>(competitionList);
+
+        when(competitionRepository.findByCompetitionEndAfter(any(), any())).thenReturn(competitionPage);
+
+        // when
+        Page<CompetitionListResponseDto> result = competitionService.getCompetitionList(finish, pageable, now);
+
+        //then
+        CompetitionListResponseDto responseDto = result.getContent().get(0);
+        assertThat(responseDto.getTitle()).isEqualTo("제목");
+        assertThat(responseDto.getParticipants()).isEqualTo(5);
+
+        // 여러 다른 필드에 대한 추가적인 검증 추가 가능
+
+        verify(competitionRepository, times(1)).findByCompetitionEndAfter(any(), any());
     }
 }

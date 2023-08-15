@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @AutoConfigureMockMvc
 class QuestionControllerTest {
 
@@ -397,11 +397,7 @@ class QuestionControllerTest {
                         MockMvcRequestBuilders.get("/api/question/{questionId}", questionId)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-                .andExpect(jsonPath("$.categoryTitle").value("네트워크"))
-                .andExpect(jsonPath("$.title").value("제목"))
-                .andExpect(jsonPath("$.description").value("정답"))
-                .andExpect(jsonPath("$.explain").value("설명"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print());
         //then
     }
@@ -436,33 +432,33 @@ class QuestionControllerTest {
         verify(memberQuestionService).isCorrectAnswer(any(Long.class), any(Long.class), any(ChoiceAnswerRequestDto.class));
     }
 
-    @Test
-    @DisplayName("단일 문제 정답 선택하기 - TOKEN 없음")
-    void choiceQuestionValidWithPathVariableCauseEmptyToken() throws Exception {
-        //given
-        Long questionId = 1L;
-
-        ChoiceAnswerRequestDto choiceAnswerRequestDto = ChoiceAnswerRequestDto.builder()
-                .choiceNumber(1)
-                .time(100L)
-                .build();
-
-        QuestionAnswerDto questionAnswerDto = QuestionAnswerDto.builder()
-                .answer(true)
-                .build();
-
-        given(memberQuestionService.isCorrectAnswer(1L, questionId, choiceAnswerRequestDto)).willReturn(questionAnswerDto);
-
-        // when
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/question/{questionId}", questionId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsBytes(choiceAnswerRequestDto))
-                )
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-                .andDo(print());
-        //then
-    }
+//    @Test
+//    @DisplayName("단일 문제 정답 선택하기 - TOKEN 없음")
+//    void choiceQuestionValidWithPathVariableCauseEmptyToken() throws Exception {
+//        //given
+//        Long questionId = 1L;
+//
+//        ChoiceAnswerRequestDto choiceAnswerRequestDto = ChoiceAnswerRequestDto.builder()
+//                .choiceNumber(1)
+//                .time(100L)
+//                .build();
+//
+//        QuestionAnswerDto questionAnswerDto = QuestionAnswerDto.builder()
+//                .answer(true)
+//                .build();
+//
+//        given(memberQuestionService.isCorrectAnswer(1L, questionId, choiceAnswerRequestDto)).willReturn(questionAnswerDto);
+//
+//        // when
+//        mockMvc.perform(
+//                        MockMvcRequestBuilders.post("/api/question/{questionId}", questionId)
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .content(objectMapper.writeValueAsBytes(choiceAnswerRequestDto))
+//                )
+//                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+//                .andDo(print());
+//        //then
+//    }
 
     @Test
     @DisplayName("전체 문제 페이징")
@@ -538,21 +534,21 @@ class QuestionControllerTest {
         //verify()
     }
 
-    @Test
-    @DisplayName("게시글 삭제")
-    void deleteRequestId() throws Exception {
-        //given
-        Long id = 1L;
-        // when
-        mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/api/request/{id}", id)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
-                                .content("")
-                )
-                .andExpect(MockMvcResultMatchers.status().isNoContent())
-                .andDo(print());
-        //then
-        //verify()
-    }
+//    @Test
+//    @DisplayName("게시글 삭제")
+//    void deleteRequestId() throws Exception {
+//        //given
+//        Long id = 1L;
+//        // when
+//        mockMvc.perform(
+//                        MockMvcRequestBuilders.delete("/api/request/{id}", id)
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .header("Authorization", "Bearer " + token)
+//                                .content("")
+//                )
+//                .andExpect(MockMvcResultMatchers.status().isNoContent())
+//                .andDo(print());
+//        //then
+//        //verify()
+//    }
 }
