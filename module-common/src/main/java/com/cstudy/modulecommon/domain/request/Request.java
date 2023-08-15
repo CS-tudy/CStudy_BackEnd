@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Request extends BaseEntity {
+public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

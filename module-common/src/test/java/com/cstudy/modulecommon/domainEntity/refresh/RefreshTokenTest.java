@@ -1,6 +1,7 @@
-package com.cstudy.moduleapi.domainEntity.refresh;
+package com.cstudy.modulecommon.domainEntity.refresh;
 
 import com.cstudy.modulecommon.domain.refresh.RefreshToken;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

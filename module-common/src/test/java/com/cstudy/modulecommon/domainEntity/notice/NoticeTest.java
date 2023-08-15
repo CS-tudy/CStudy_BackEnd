@@ -1,8 +1,9 @@
-package com.cstudy.moduleapi.domainEntity.notice;
+package com.cstudy.modulecommon.domainEntity.notice;
 
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.notice.Notice;
 import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

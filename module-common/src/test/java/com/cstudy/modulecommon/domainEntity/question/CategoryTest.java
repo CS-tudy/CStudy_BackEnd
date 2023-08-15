@@ -1,7 +1,8 @@
-package com.cstudy.moduleapi.domainEntity.question;
+package com.cstudy.modulecommon.domainEntity.question;
 
 import com.cstudy.modulecommon.domain.question.Category;
 import com.cstudy.modulecommon.domain.question.Question;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
