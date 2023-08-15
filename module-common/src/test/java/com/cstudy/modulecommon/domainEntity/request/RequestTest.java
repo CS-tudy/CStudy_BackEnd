@@ -1,8 +1,9 @@
-package com.cstudy.moduleapi.domainEntity.request;
+package com.cstudy.modulecommon.domainEntity.request;
 
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

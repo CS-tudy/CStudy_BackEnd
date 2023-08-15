@@ -3,6 +3,7 @@ package com.cstudy.moduleapi.domainEntity.comment;
 import com.cstudy.modulecommon.domain.comment.Comment;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.notice.Notice;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

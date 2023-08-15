@@ -1,7 +1,8 @@
-package com.cstudy.moduleapi.domainEntity.file;
+package com.cstudy.modulecommon.domainEntity.file;
 
 import com.cstudy.modulecommon.domain.file.File;
 import com.cstudy.modulecommon.domain.member.Member;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

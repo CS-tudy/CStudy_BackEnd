@@ -1,8 +1,9 @@
-package com.cstudy.moduleapi.domainEntity.member;
+package com.cstudy.modulecommon.domainEntity.member;
 
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
