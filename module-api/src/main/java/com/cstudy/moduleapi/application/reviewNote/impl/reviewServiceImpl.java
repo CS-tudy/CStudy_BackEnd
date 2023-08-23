@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 
-import static com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote.createFailNote;
 
 @Slf4j
 @Service
@@ -27,17 +26,16 @@ public class reviewServiceImpl implements ReviewService {
     private final ReviewNoteRepository reviewNoteRepository;
     private final MemberRepository memberRepository;
 
-    public reviewServiceImpl(ReviewUserRepository userRepository, ReviewNoteRepository reviewNoteRepository, MemberRepository memberRepository) {
+    public reviewServiceImpl(
+            ReviewUserRepository userRepository,
+            ReviewNoteRepository reviewNoteRepository,
+            MemberRepository memberRepository
+    ) {
         this.userRepository = userRepository;
         this.reviewNoteRepository = reviewNoteRepository;
         this.memberRepository = memberRepository;
     }
 
-    /**
-     * 회원가입을 하였을 때 몽고디비에 기본적인 세팅을 만든다.
-     *
-     * @param userName 회원 이름
-     */
     @Override
     @Transactional
     public void createUserWhenSignupSaveMongodb(String userName) {
@@ -50,7 +48,13 @@ public class reviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void solveQuestionWithValid(long questionId, int choiceNumber, boolean isAnswer, LoginUserDto loginUserDto) {
+    public void solveQuestionWithValid(
+            long questionId,
+            int choiceNumber,
+            boolean isAnswer,
+            LoginUserDto loginUserDto,
+            Integer choiceAnswerNumber
+    ) {
         LocalDateTime now = LocalDateTime.now();
 
         Member member = memberRepository.findById(loginUserDto.getMemberId())
@@ -79,7 +83,13 @@ public class reviewServiceImpl implements ReviewService {
             reviewNoteRepository.save(successNote);
             byName.getReviewNotes().add(successNote);
         } else {
-            ReviewNote failNote = createFailNote(now, questionId, false, choiceNumber);
+            ReviewNote failNote = ReviewNote.builder()
+                    .questionId(questionId)
+                    .successChoiceNumber(choiceAnswerNumber)
+                    .failChoiceNumber(choiceNumber)
+                    .createdDate(now)
+                    .isAnswer(false)
+                    .build();
             reviewNoteRepository.save(failNote);
             byName.getReviewNotes().add(failNote);
         }
