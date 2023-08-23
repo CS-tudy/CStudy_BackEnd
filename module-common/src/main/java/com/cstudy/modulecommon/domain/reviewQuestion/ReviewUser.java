@@ -38,11 +38,4 @@ public class ReviewUser {
         this.reviewNotes = reviewNotes;
     }
 
-    public void nullCheck(){
-        if(successQuestion == null)
-            successQuestion = new LinkedList<>();
-
-        if(failQuestion == null)
-            failQuestion = new LinkedList<>();
-    }
 }

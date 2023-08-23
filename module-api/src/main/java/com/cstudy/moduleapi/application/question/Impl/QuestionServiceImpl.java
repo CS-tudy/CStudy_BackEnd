@@ -195,8 +195,16 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void choiceQuestion(LoginUserDto loginUserDto, Long questionId, ChoiceAnswerRequestDto choiceNumber) {
 
-        Question question = questionRepository.findById(questionId)
+        Question question = questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
                 .orElseThrow(() -> new NotFoundQuestionId(questionId));
+
+        Integer choiceAnswerNumber = question.getChoices().stream()
+                .filter(Choice::isAnswer)
+                .map(Choice::getNumber)
+                .findFirst().orElseThrow();
+
+        log.warn(">>>>>>>>>>>>>>>>>>>>>>>{}",choiceAnswerNumber);
+
 
         List<Choice> choices = question.getChoices();
         choices.stream()
@@ -225,14 +233,15 @@ public class QuestionServiceImpl implements QuestionService {
                                 questionId,
                                 choiceNumber.getChoiceNumber(),
                                 true,
-                                loginUserDto
-                        );
+                                loginUserDto,
+                                choiceAnswerNumber);
                     } else {
                         reviewService.solveQuestionWithValid(
                                 questionId,
                                 choiceNumber.getChoiceNumber(),
                                 false,
-                                loginUserDto
+                                loginUserDto,
+                                choiceAnswerNumber
                         );
                     }
 
