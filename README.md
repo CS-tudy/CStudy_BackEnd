@@ -191,6 +191,11 @@ CStudy
 
 
 ## 🥕 Back-end 기술적 의사결정
+
+<details>
+      
+<summary> 본문 확인 (👈 Click) </summary>
+
 ### 1. JWT Refresh Token
 
 - 로그인, 로그아웃을 위해 RefreshToken 사용
@@ -364,7 +369,7 @@ public class DuplicateServiceFinder {
 
 <br/>
 
-
+</details>
 
 ## 🥃 Wireframe
 
