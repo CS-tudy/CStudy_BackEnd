@@ -3,16 +3,17 @@ services:
   CStudy-redis:
     container_name: study-redis
     build:
-      dockerfile: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/redis/Dockerfile
-      context: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/redis
+      dockerfile: Dockerfile
+      context: ./redis
     image: immunogen/study-redis
     ports:
       - "6379:6379"
+
   CStudy-database:
     container_name: study-database
     build:
-      dockerfile: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/database/Dockerfile
-      context: ../../OneDrive/바탕 화면/CStudy_BackEnd/infra/database
+      dockerfile: Dockerfile
+      context: ./database
     image: immunogen/study-database
     environment:
       - MYSQL_DATABASE=CStudy
@@ -21,3 +22,9 @@ services:
       - ./database/config:/etc/mysql/conf.d
     ports:
       - "3306:3306"
+
+  CStudy-mongodb:
+    container_name: study-mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
