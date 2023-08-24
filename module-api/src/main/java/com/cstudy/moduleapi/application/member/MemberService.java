@@ -9,19 +9,12 @@ import javax.mail.MessagingException;
 
 public interface MemberService {
     MemberSignupResponse signUp(MemberSignupRequest request);
-
-
+//    MemberSignupResponse signUp(MemberSignupRequest request, GeoLocationDto geoLocationDto);
     MemberLoginResponse login(MemberLoginRequest request);
-
     Member oauthSignUp(String email, String name);
-
     MemberLoginResponse oauthLogin(String email);
-
     MyPageResponseDto getMyPage(Long id);
-
     void changePassword(MemberPasswordChangeRequest request, Long id);
-
     MemberSignupResponse signUpForTest(MemberSignupRequest request);
-
     String sendEmail(String recipientEmail) throws MailException, MessagingException;
 }
