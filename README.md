@@ -176,7 +176,8 @@ CStudy
 
 <p align="center">
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/3e111f97-c1d4-488d-81bb-6e4229d18682)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/cebb79ea-4a76-4e15-82ef-da7e294ac787)
+
 
 </p>
 
