@@ -60,7 +60,15 @@ public class Question {
     private List<WorkbookQuestion> workbookQuestions;
 
     @Builder
-    public Question(Long id, String title, String description, String explain, Set<MemberQuestion> questions, List<Choice> choices, Category category) {
+    public Question(
+            Long id,
+            String title,
+            String description,
+            String explain,
+            Set<MemberQuestion> questions,
+            List<Choice> choices,
+            Category category
+    ) {
         this.id = id;
         this.title = title;
         this.description = description;

@@ -78,6 +78,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberSignupResponse signUp(
             MemberSignupRequest request
+//            GeoLocationDto geoLocationDto
     ) {
         checkEmailAndNameDuplication(request);
 
@@ -85,6 +86,8 @@ public class MemberServiceImpl implements MemberService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
+//                .memberIpAddress(geoLocationDto.getHostAddress())
+//                .countryIsoCode(geoLocationDto.getCountryIsoCode())
                 .roles(new HashSet<>())
                 .build());
 
@@ -99,9 +102,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+
     @Override
     public MemberSignupResponse signUpForTest(MemberSignupRequest request) {
+        return getMemberSignupResponse(request);
+    }
 
+    private MemberSignupResponse getMemberSignupResponse(MemberSignupRequest request) {
         signupWithRole(Member.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
