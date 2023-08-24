@@ -67,7 +67,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private static final String COLLECT_ANSWER = "정답";
-
+    private static final String RANKING_INVALIDATION ="ranking-invalidation";
+    private static final String RANKING ="ranking";
 
     /**
      * Create problems that are appropriate for the category.
@@ -111,10 +112,20 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public void recursiveCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos) {
-        String questionSql = "INSERT INTO question (category_id, question_description, question_explain, question_title) " +
+        String questionSql = "" +
+                "INSERT INTO question" +
+                " (category_id," +
+                " question_description," +
+                " question_explain," +
+                " question_title) " +
                 "VALUES (?, ?, ?, ?)";
 
-        String choiceSql = "INSERT INTO choice (answer, content, choice_number, question_id) " +
+        String choiceSql = "" +
+                "INSERT INTO choice" +
+                " (answer," +
+                " content," +
+                " choice_number," +
+                " question_id) " +
                 "VALUES (?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(questionSql, new BatchPreparedStatementSetter() {
@@ -163,12 +174,16 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private Long getCategoryIdByTitle(String categoryTitle) {
-        String sql = "SELECT category_id FROM category WHERE category_title = ?";
+        String sql = "SELECT category_id" +
+                     " FROM category " +
+                     "WHERE category_title = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, categoryTitle);
     }
 
     private Long getQuestionIdByTitle(String questionTitle) {
-        String sql = "SELECT question_id FROM question WHERE question_title = ?";
+        String sql = "SELECT question_id " +
+                     "FROM question " +
+                     "WHERE question_title = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, questionTitle);
     }
 
@@ -176,11 +191,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionResponseDto findQuestionWithChoiceAndCategory(Long questionId) {
-
-        Question question = questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
-                .orElseThrow(() -> new NotFoundQuestionWithChoicesAndCategoryById(questionId));
-
-        return QuestionResponseDto.of(question);
+        return QuestionResponseDto.of(questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
+                .orElseThrow(() -> new NotFoundQuestionWithChoicesAndCategoryById(questionId)));
     }
 
     /**
@@ -195,19 +207,17 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void choiceQuestion(LoginUserDto loginUserDto, Long questionId, ChoiceAnswerRequestDto choiceNumber) {
 
-        Question question = questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
-                .orElseThrow(() -> new NotFoundQuestionId(questionId));
-
-        Integer choiceAnswerNumber = question.getChoices().stream()
+        Integer choiceAnswerNumber = questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
+                .orElseThrow(() -> new NotFoundQuestionId(questionId)).getChoices().stream()
                 .filter(Choice::isAnswer)
                 .map(Choice::getNumber)
                 .findFirst().orElseThrow();
 
-        log.warn(">>>>>>>>>>>>>>>>>>>>>>>{}",choiceAnswerNumber);
+        log.warn("정답 info {}",choiceAnswerNumber);
 
 
-        List<Choice> choices = question.getChoices();
-        choices.stream()
+        questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
+                .orElseThrow(() -> new NotFoundQuestionId(questionId)).getChoices().stream()
                 .filter(Choice::isAnswer)
                 .forEach(choice -> {
                     if (choice.getNumber() == choiceNumber.getChoiceNumber()) {
@@ -225,7 +235,8 @@ public class QuestionServiceImpl implements QuestionService {
                     }
                 });
 
-        choices.stream()
+        questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
+                .orElseThrow(() -> new NotFoundQuestionId(questionId)).getChoices().stream()
                 .filter(Choice::isAnswer)
                 .forEach(choice -> {
                     if (choice.getNumber() == choiceNumber.getChoiceNumber()) {
@@ -246,7 +257,7 @@ public class QuestionServiceImpl implements QuestionService {
                     }
 
                 });
-        redisPublisher.publish(ChannelTopic.of("ranking-invalidation"), "ranking");
+        redisPublisher.publish(ChannelTopic.of(RANKING_INVALIDATION), RANKING);
     }
 
 
