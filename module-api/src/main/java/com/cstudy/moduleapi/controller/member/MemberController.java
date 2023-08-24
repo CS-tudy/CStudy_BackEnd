@@ -1,9 +1,11 @@
 package com.cstudy.moduleapi.controller.member;
 
 
+import com.cstudy.moduleapi.application.geoIpAddress.GeoService;
 import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
+import com.cstudy.moduleapi.dto.ipAddress.GeoLocationDto;
 import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.moduleapi.dto.refresh.RefreshTokenDto;
 import com.cstudy.moduleapi.exception.ErrorResponse;
@@ -17,8 +19,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.List;
+
+import static com.cstudy.moduleapi.dto.ipAddress.GeoLocationDto.getIpAddress;
 
 
 @Tag(name = "Member(회원 API)", description = "회원 관련 API(회원가입, 로그인, 로그아웃, 재할당)")
@@ -39,15 +40,18 @@ public class MemberController {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
     private final FileService fileService;
+    private final GeoService geoService;
 
     public MemberController(
             MemberService memberService,
             RefreshTokenService refreshTokenService,
-            FileService fileService
+            FileService fileService,
+            GeoService geoService
     ) {
         this.memberService = memberService;
         this.refreshTokenService = refreshTokenService;
         this.fileService = fileService;
+        this.geoService = geoService;
     }
 
     @Operation(summary = "회원가입", description = "Email, Password, Name을 이용하여 회원가입을 합니다.")
@@ -63,6 +67,8 @@ public class MemberController {
             @RequestBody MemberSignupRequest request
     ) {
         log.info(String.format("request:>>{%s}", request));
+        //todo : 회원 아이피
+//        GeoLocationDto location = geoService.findLocation(getIpAddress());
         memberService.signUp(request);
     }
 
@@ -123,7 +129,7 @@ public class MemberController {
             @Parameter(name = "loginUserDto", description = "로그인 했던 회원의 회원 정보")
             @IfLogin LoginUserDto loginUserDto
     ) {
-        fileService.uploadFiles(multipartFile,loginUserDto);
+        fileService.uploadFiles(multipartFile, loginUserDto);
     }
 
     @Operation(summary = "S3 버켓에서 사진 가져오기", description = "버켓을 기준으로 업로드 회원 사진 가져오기")
@@ -158,7 +164,6 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "비밀번호 수정 성공"),
             @ApiResponse(responseCode = "400", description = "비밀번호 수정 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-
     @PostMapping("/mypage/password")
     public void changePassword(
             @RequestBody MemberPasswordChangeRequest request,
@@ -176,7 +181,6 @@ public class MemberController {
             @ApiResponse(responseCode = "404", description = "사용자 없음"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-
     @GetMapping("/email")
     @ResponseStatus(HttpStatus.OK)
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
