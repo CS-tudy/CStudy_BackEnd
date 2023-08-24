@@ -8,6 +8,7 @@ import com.cstudy.modulecommon.domain.question.MemberQuestion;
 import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,9 @@ import java.util.Set;
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +39,12 @@ public class Member extends BaseEntity {
     private String name;
 
     private double rankingPoint = 0L;
+
+    private String sex;
+
+    private String memberIpAddress;
+
+    private String countryIsoCode;
 
     @OneToOne(mappedBy = "member")
     private File file;
