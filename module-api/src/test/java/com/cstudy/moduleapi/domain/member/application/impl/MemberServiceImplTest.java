@@ -1,6 +1,6 @@
 package com.cstudy.moduleapi.domain.member.application.impl;
 
-import com.cstudy.moduleapi.application.member.MemberService;
+import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
@@ -11,16 +11,10 @@ import com.cstudy.modulecommon.error.member.EmailDuplication;
 import com.cstudy.modulecommon.error.member.InvalidMatchPasswordException;
 import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
-import com.cstudy.modulecommon.repository.member.MemberRepository;
-import com.cstudy.modulecommon.repository.role.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,22 +23,9 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
 @Transactional
-@ActiveProfiles("local")
-class MemberServiceImplTest {
+class MemberServiceImplTest extends ServiceTestBase {
 
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     private static final String VALID_EMAIL = "test1234@email.com";
     private static final String VALID_PASSWORD = "password1234!";

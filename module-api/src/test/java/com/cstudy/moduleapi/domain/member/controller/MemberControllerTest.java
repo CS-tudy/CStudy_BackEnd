@@ -1,26 +1,16 @@
 package com.cstudy.moduleapi.domain.member.controller;
 
-import com.cstudy.moduleapi.application.member.FileService;
-import com.cstudy.moduleapi.application.member.MemberService;
-import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
-import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.config.ControllerTestBase;
 import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.moduleapi.dto.refresh.RefreshTokenDto;
 import com.cstudy.moduleapi.enums.MemberTestEnum;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.util.LoginUserDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -32,28 +22,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@ActiveProfiles("local")
-@AutoConfigureMockMvc
-class MemberControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+class MemberControllerTest extends ControllerTestBase {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-
-    @MockBean
-    private FileService fileService;
-
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private RefreshTokenService refreshTokenService;
 
     private String token;
 
@@ -64,7 +35,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원가입 성공")
-    void signupWithValidParameter() throws Exception {
+    void 회원가입_성공() throws Exception {
         //given
         MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
                 .email(MemberTestEnum.VALID_EMAIL.getMessage())
@@ -84,7 +55,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원가입 실패 (이메일 유효성 실패)")
-    void signupWithInvalidCauseNotValidEmail() throws Exception {
+    void 회원가입_실패_이메일_유효성_Fail() throws Exception {
         //given
         MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
                 .email("invalidEmail")

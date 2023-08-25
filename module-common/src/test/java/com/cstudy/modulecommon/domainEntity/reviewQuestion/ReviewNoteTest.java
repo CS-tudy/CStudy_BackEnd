@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ReviewNoteTest {
     @Test
     public void createReviewNote() {
@@ -25,12 +23,12 @@ class ReviewNoteTest {
 
     @Test
     public void createFailNote() {
-        ReviewNote reviewNote = ReviewNote.createFailNote(
-                LocalDateTime.now(),
-                1L,
-                false,
-                3
-        );
+        ReviewNote reviewNote = ReviewNote.builder()
+                .createdDate(LocalDateTime.now())
+                .questionId(1L)
+                .failChoiceNumber(3)
+                .isAnswer(false)
+                .build();
 
         Assertions.assertEquals(1L, reviewNote.getQuestionId());
         Assertions.assertEquals(3, reviewNote.getFailChoiceNumber());

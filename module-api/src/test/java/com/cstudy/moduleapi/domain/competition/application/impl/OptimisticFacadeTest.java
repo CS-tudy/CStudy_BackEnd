@@ -1,24 +1,14 @@
 package com.cstudy.moduleapi.domain.competition.application.impl;
 
-import com.cstudy.moduleapi.application.competition.CompetitionService;
-import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
-import com.cstudy.moduleapi.application.competition.impl.OptimisticFacade;
-import com.cstudy.moduleapi.application.member.MemberService;
+import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.competition.CreateCompetitionRequestDto;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
 import com.cstudy.modulecommon.domain.competition.Competition;
-import com.cstudy.modulecommon.repository.competition.CompetitionRepository;
-import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
@@ -27,27 +17,8 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("local")
-class OptimisticFacadeTest {
+class OptimisticFacadeTest extends ServiceTestBase {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private CompetitionService competitionService;
-
-    @Autowired
-    private MemberCompetitionService memberCompetitionService;
-
-    @Autowired
-    private CompetitionRepository competitionRepository;
-
-    @Autowired
-    private OptimisticFacade facade;
 
     private static final String EMAIL = "test1213@email.com";
     private static final String PASSWORD = "test1234!";

@@ -1,8 +1,6 @@
 package com.cstudy.moduleapi.domain.question.controller;
 
-import com.cstudy.moduleapi.application.question.MemberQuestionService;
-import com.cstudy.moduleapi.application.question.QuestionService;
-import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.config.ControllerTestBase;
 import com.cstudy.moduleapi.dto.choice.CreateChoicesAboutQuestionDto;
 import com.cstudy.moduleapi.dto.question.*;
 import com.cstudy.moduleapi.enums.MemberTestEnum;
@@ -12,21 +10,14 @@ import com.cstudy.modulecommon.dto.ChoiceQuestionResponseDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
 import com.cstudy.modulecommon.dto.QuestionSearchCondition;
 import com.cstudy.modulecommon.util.LoginUserDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -41,25 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@SpringBootTest
-@ActiveProfiles("local")
-@AutoConfigureMockMvc
-class QuestionControllerTest {
+class QuestionControllerTest extends ControllerTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-
-    @MockBean
-    private MemberQuestionService memberQuestionService;
-
-    @MockBean
-    private QuestionService questionService;
 
     private String token;
 
