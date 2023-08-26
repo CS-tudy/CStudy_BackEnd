@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  CStudy-redis:
+    container_name: study-redis
+    build:
+      dockerfile: Dockerfile
+      context: ./infra/redis
+    image: immunogen/study-redis
+    ports:
+      - "6379:6379"
+  CStudy-database:
+    container_name: study-database
+    build:
+      dockerfile: Dockerfile
+      context: ./infra/database
+    image: immunogen/study-database
+    environment:
+      - MYSQL_DATABASE=CStudy
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - ./infra/database/config:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+
+  CStudy-mongodb:
+    container_name: study-mongodb
+    image: mongo
+    volumes:
+      - ./infra/mongo/config:/etc/mongodb/conf.d
+    ports:
+      - "27017:27017"

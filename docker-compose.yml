@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  study-redis:
+    container_name: study-redis
+    build:
+      dockerfile: Dockerfile
+      context: ./infra/redis
+    image: immunogen/study-redis
+    ports:
+      - "6379:6379"
+  study-database:
+    container_name: study-database
+    build:
+      dockerfile: Dockerfile
+      context: ./infra/database
+    image: immunogen/study-database
+    environment:
+      - MYSQL_DATABASE=CStudy
+      - MYSQL_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - ./infra/database/config:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+  study-mongodb:
+    container_name: study-mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+  study-app:
+    container_name: study-app
+    build: .
+    depends_on: # DB, REDIS 컨테이너가 실행된 다음 WEB을 실행시킨다.
+      - study-database
+      - study-redis
+      - study-mongodb
+    image: immunogen/study-app
+    environment:
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    ports:
+      - "80:8080"
+    restart: always
