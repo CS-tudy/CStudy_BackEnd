@@ -1,19 +1,19 @@
 version: "3.8"
 services:
-  CStudy-redis:
+  cstudy-redis:
     container_name: study-redis
     build:
       dockerfile: Dockerfile
       context: ./infra/redis
-    image: immunogen/study-redis
+    image: immunogen/study-redis  # 이미지 이름 소문자로 변경
     ports:
       - "6379:6379"
-  CStudy-database:
+  cstudy-database:
     container_name: study-database
     build:
       dockerfile: Dockerfile
       context: ./infra/database
-    image: immunogen/study-database
+    image: immunogen/study-database  # 이미지 이름 소문자로 변경
     environment:
       - MYSQL_DATABASE=CStudy
       - MYSQL_ROOT_PASSWORD=1234
@@ -22,9 +22,11 @@ services:
     ports:
       - "3306:3306"
 
-  CStudy-mongodb:
+  cstudy-mongodb:
     container_name: study-mongodb
-    image: mongo
+    build:
+      dockerfile: Dockerfile
+      context: ./infra/mongo
     volumes:
       - ./infra/mongo/config:/etc/mongodb/conf.d
     ports:
