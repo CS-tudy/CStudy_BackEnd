@@ -55,10 +55,6 @@ public class MemberController {
     }
 
     @Operation(summary = "회원가입", description = "Email, Password, Name을 이용하여 회원가입을 합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "중복 회원가입", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
     @PostMapping("signup")
     @ResponseStatus(HttpStatus.CREATED)
     public void signUpWithRole(
@@ -74,10 +70,6 @@ public class MemberController {
 
 
     @Operation(summary = "로그인", description = "회원 로그인 jwt, refresh Token을 발급한다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "비밀번호 인증 실패/회원 ID를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
     @PostMapping("login")
     @ResponseStatus(HttpStatus.CREATED)
     public MemberLoginResponse login(
@@ -90,9 +82,6 @@ public class MemberController {
     }
 
     @Operation(summary = "로그아웃", description = "Local Storage를 access Token을 삭제하고 redis에 refresh Token을 삭제합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
-    })
     @DeleteMapping("logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(
@@ -117,10 +106,6 @@ public class MemberController {
 
 
     @Operation(summary = "S3 파일 업로드", description = "AWS S3 버켓에 IAM 파일 업로드")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "파일 업로드 성공"),
-            @ApiResponse(responseCode = "500", description = "HttpStatus.INTERNAL_SERVER_ERROR")
-    })
     @GetMapping("/upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(
@@ -133,10 +118,6 @@ public class MemberController {
     }
 
     @Operation(summary = "S3 버켓에서 사진 가져오기", description = "버켓을 기준으로 업로드 회원 사진 가져오기")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 사진 가져오기 성공"),
-            @ApiResponse(responseCode = "500", description = "회원 사진 가져오기 실패")
-    })
     @GetMapping("/download")
     public ResponseEntity<byte[]> downloadFile(@IfLogin LoginUserDto loginUserDto) {
         byte[] imageBytes = fileService.getImageBytes(loginUserDto);
@@ -147,10 +128,6 @@ public class MemberController {
     }
 
     @Operation(summary = "마이페이지", description = "마이페이지")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "마이페이지 가져오기 성공"),
-            @ApiResponse(responseCode = "400", description = "마이페이지 가져오기 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
     @GetMapping("/mypage")
     public MyPageResponseDto myPage(
             @Parameter(hidden = true)
@@ -160,10 +137,6 @@ public class MemberController {
     }
 
     @Operation(summary = "비밀번호 수정", description = "비밀번호 수정")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "비밀번호 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "비밀번호 수정 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
     @PostMapping("/mypage/password")
     public void changePassword(
             @RequestBody MemberPasswordChangeRequest request,
@@ -175,12 +148,6 @@ public class MemberController {
 
 
     @Operation(summary = "회원 가입시 이메인 인증", description = "기존사용하고 있는 이메일을 통해 인증")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "401", description = "인증 실패"),
-            @ApiResponse(responseCode = "404", description = "사용자 없음"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
     @GetMapping("/email")
     @ResponseStatus(HttpStatus.OK)
     public String sendEmail(@RequestBody EmailRequest emailRequest) {

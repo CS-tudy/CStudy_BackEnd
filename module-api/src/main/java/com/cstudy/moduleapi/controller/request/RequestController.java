@@ -110,18 +110,22 @@ public class RequestController {
         return requestService.getRequestList(pageable);
     }
 
+    @Operation(summary = "게시판 업데이트", description = "단일 게시판 업데이트")
     @PutMapping("/request")
     @ResponseStatus(HttpStatus.OK)
     public void updateRequest(
+            @Parameter(description = "게시판 update dto", name = "UpdateRequestRequestDto")
             @RequestBody UpdateRequestRequestDto updateRequestRequestDto
             , @IfLogin LoginUserDto loginUserDto
     ) {
         requestService.updateRequest(updateRequestRequestDto, loginUserDto);
     }
 
+    @Operation(summary = "게시판 삭제", description = "단일 게시판 삭제")
     @DeleteMapping("/request/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteRequestById(
+            @Parameter(description = "게시판 아이디", name = "단일 게시판 아이디")
             @PathVariable Long id,
             @IfLogin LoginUserDto loginUserDto
     ) {
