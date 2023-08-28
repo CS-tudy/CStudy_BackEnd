@@ -31,7 +31,7 @@
 - [AWS S3 이미지 파일 Deflater 활용하여 압축을 통해서 JPG 기준 이미지 16.01% 크기 감소 ](https://github.com/CS-tudy/CStudy_BackEnd/wiki/AWS-S3-%EC%9D%B4%EB%AF%B8%EC%A7%80-%ED%8C%8C%EC%9D%BC-Deflater-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%95%95%EC%B6%95%EC%9D%84-%ED%86%B5%ED%95%B4%EC%84%9C-JPG-%EA%B8%B0%EC%A4%80-%EC%9D%B4%EB%AF%B8%EC%A7%80-16.01%25-%ED%81%AC%EA%B8%B0-%EA%B0%90%EC%86%8C)
 
 ### 프로젝트 진행 이슈
-
+- [CS 문제에 대한 번호를 선택을 하여 7개의 데이터 정합성 체크](https://github.com/CS-tudy/CStudy_BackEnd/wiki/CS-%EB%AC%B8%EC%A0%9C%EC%97%90-%EB%8C%80%ED%95%9C-%EB%B2%88%ED%98%B8%EB%A5%BC-%EC%84%A0%ED%83%9D%EC%9D%84-%ED%95%98%EC%97%AC-7%EA%B0%9C%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%ED%95%A9%EC%84%B1-%EC%B2%B4%ED%81%AC)
 - [IP 기반 유저 블랙리스트 추가](https://github.com/CS-tudy/CStudy_BackEnd/wiki/IP-%EA%B8%B0%EB%B0%98-%EC%9C%A0%EC%A0%80-%EB%B8%94%EB%9E%99%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80)
 - [FE & BE 운영 및 테스트를 위하여 Logback Rolling FileAppendar 적용 및  Slack Webhook 도입](https://github.com/CS-tudy/CStudy_BackEnd/wiki/FE-&-BE-%EC%9A%B4%EC%98%81-%EB%B0%8F-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EC%9C%84%ED%95%98%EC%97%AC-Logback-Rolling-FileAppendar-%EC%A0%81%EC%9A%A9-%EB%B0%8F--Slack-Webhook-%EB%8F%84%EC%9E%85)
 - [Exception을 추상 클래스을 활용하여 응집도 증가 및 Front와 협업을 위해 Custom Error Status 생성](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Exception%EC%9D%84-%EC%B6%94%EC%83%81-%ED%81%B4%EB%9E%98%EC%8A%A4%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%9D%91%EC%A7%91%EB%8F%84-%EC%A6%9D%EA%B0%80-%EB%B0%8F-Front%EC%99%80-%ED%98%91%EC%97%85%EC%9D%84-%EC%9C%84%ED%95%B4-Custom-Error-Status-%EC%83%9D%EC%84%B1)
