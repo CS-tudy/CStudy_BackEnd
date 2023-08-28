@@ -27,7 +27,7 @@ public class ReviewUser {
 
 
     /********************************* 연관관계 매핑 *********************************/
-    @DBRef(lazy = true)
+    @DBRef(lazy = false)
     private List<ReviewNote> reviewNotes = new ArrayList<>();
 
 

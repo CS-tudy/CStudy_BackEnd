@@ -1,6 +1,7 @@
 package com.cstudy.moduleapi.application.reviewNote.impl;
 
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
+import com.cstudy.moduleapi.dto.review.ReviewUserResponseDto;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewUser;
@@ -10,11 +11,13 @@ import com.cstudy.modulecommon.repository.reviewNote.ReviewNoteRepository;
 import com.cstudy.modulecommon.repository.reviewNote.ReviewUserRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -60,6 +63,8 @@ public class reviewServiceImpl implements ReviewService {
             LoginUserDto loginUserDto,
             Integer choiceAnswerNumber
     ) {
+
+
         LocalDateTime now = LocalDateTime.now();
 
         //TODO : 실패 -> 성공일때 문제 데이터 정합성
@@ -70,9 +75,39 @@ public class reviewServiceImpl implements ReviewService {
         ReviewUser byName = userRepository.findByUserName(member.getName())
                 .orElseThrow(RuntimeException::new);
 
+        boolean questionExistsInFailList = byName.getFailQuestion().stream()
+                .anyMatch(failQuestionId -> failQuestionId.equals(String.valueOf(questionId)));
+
+
+        boolean questionExistsInSuccessList = byName.getSuccessQuestion().stream()
+                .anyMatch(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
+
+        log.info("questionExistsInFailList : {}", questionExistsInFailList);
+        log.info("questionExistsInSuccessList : {}", questionExistsInSuccessList);
+
+        if (questionExistsInSuccessList) {
+            List<String> successQuestion = byName.getSuccessQuestion();
+            successQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
+        } else if (questionExistsInFailList) {
+            List<String> failQuestion = byName.getFailQuestion();
+            failQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
+        }
+
+        if (questionExistsInFailList || questionExistsInSuccessList) {
+            ReviewNote match = byName.getReviewNotes().stream()
+                    .filter(reviewNote -> reviewNote.getQuestionId() == questionId)
+                    .findFirst().orElseThrow(() -> new RuntimeException("fds"));
+
+            ObjectId objectId = new ObjectId(match.getId());
+
+            log.info("id : {}", objectId);
+
+            reviewNoteRepository.deleteById(objectId.toString());
+        }
+
+
         log.info("reviewUser_Name : {}", byName.getUserName());
 
-//        byName.getReviewNotes().removeIf(note -> note.getQuestionId() == questionId);
         if (isAnswer) {
             byName.getSuccessQuestion().add(String.valueOf(questionId));
         } else {
@@ -105,4 +140,17 @@ public class reviewServiceImpl implements ReviewService {
         userRepository.save(byName);
     }
 
+    @Override
+    public ReviewUserResponseDto findMongoAboutReviewNote(LoginUserDto loginUserDto) {
+
+        Member member = memberRepository.findById(loginUserDto.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
+
+        String memberName = member.getName();
+
+        ReviewUser reviewUser = userRepository.findByUserName(memberName).orElseThrow(RuntimeException::new);
+
+        // Create a ReviewUserResponseDto using the static method 'of' from ReviewUserResponseDto class
+        return ReviewUserResponseDto.of(reviewUser);
+    }
 }
