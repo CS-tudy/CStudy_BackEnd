@@ -1,6 +1,7 @@
 package com.cstudy.moduleapi.domain.request.controller;
 
 import com.cstudy.moduleapi.application.request.RequestService;
+import com.cstudy.moduleapi.config.ControllerTestBase;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
@@ -41,22 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("local")
-class RequestControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+class RequestControllerTest extends ControllerTestBase {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-
-    @MockBean
-    private RequestService requestService;
 
     private String token;
     private static String INVALID_TOKEN;

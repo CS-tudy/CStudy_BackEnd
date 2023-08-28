@@ -11,11 +11,12 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class MemberQuestion {
-
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /********************************* PK가 아닌 필드 *********************************/
     @Column(name = "question_success")
     private int success;
 
@@ -23,6 +24,8 @@ public class MemberQuestion {
     private int fail;
 
     private Long solveTime;
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @ManyToOne(
             fetch = FetchType.LAZY,
@@ -38,6 +41,7 @@ public class MemberQuestion {
     @JoinColumn(name = "question_id")
     private Question question;
 
+    /********************************* 빌더 *********************************/
     @Builder
     public MemberQuestion(
             int success,

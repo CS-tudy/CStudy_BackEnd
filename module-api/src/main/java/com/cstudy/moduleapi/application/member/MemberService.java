@@ -6,6 +6,7 @@ import com.cstudy.modulecommon.domain.member.Member;
 import org.springframework.mail.MailException;
 
 import javax.mail.MessagingException;
+import java.util.concurrent.CompletableFuture;
 
 public interface MemberService {
     MemberSignupResponse signUp(MemberSignupRequest request);
@@ -16,5 +17,5 @@ public interface MemberService {
     MyPageResponseDto getMyPage(Long id);
     void changePassword(MemberPasswordChangeRequest request, Long id);
     MemberSignupResponse signUpForTest(MemberSignupRequest request);
-    String sendEmail(String recipientEmail) throws MailException, MessagingException;
+    CompletableFuture<String> sendEmail(String recipientEmail) throws MailException, MessagingException;
 }

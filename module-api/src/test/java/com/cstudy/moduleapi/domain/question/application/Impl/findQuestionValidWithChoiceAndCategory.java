@@ -1,27 +1,14 @@
 package com.cstudy.moduleapi.domain.question.application.Impl;
 
-import com.cstudy.moduleapi.application.member.MemberService;
-import com.cstudy.moduleapi.application.question.QuestionService;
+import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.choice.CreateChoicesAboutQuestionDto;
-import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
-import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
 import com.cstudy.moduleapi.dto.question.CategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.CreateQuestionAndCategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.CreateQuestionRequestDto;
 import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
-import com.cstudy.modulecommon.domain.member.Member;
-import com.cstudy.modulecommon.domain.question.MemberQuestion;
-import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
-import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
-import com.cstudy.modulecommon.repository.member.MemberRepository;
-import com.cstudy.modulecommon.repository.question.MemberQuestionRepository;
-import com.cstudy.modulecommon.util.LoginUserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +16,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@SpringBootTest
-@ActiveProfiles("local")
-public class questionService {
-
-    @Autowired
-    private QuestionService questionService;
-
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private MemberQuestionRepository memberQuestionRepository;
+public class findQuestionValidWithChoiceAndCategory extends ServiceTestBase {
 
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         CategoryRequestDto categoryRequestDto = CategoryRequestDto.builder()
                 .category("네트워크")
                 .build();
@@ -92,8 +65,6 @@ public class questionService {
 
         questionService.createQuestionChoice(createQuestionAndCategoryRequestDto);
     }
-
-
 
     @Test
     @DisplayName("생성된 문제에 대한 문제 찾기 및 카테고리")
@@ -168,8 +139,4 @@ public class questionService {
 
         assertThat(result.getCategoryTitle()).isEqualTo("네트워크");
     }
-
-
-
 }
-

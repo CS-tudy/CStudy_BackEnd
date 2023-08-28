@@ -13,12 +13,10 @@ import java.time.LocalDateTime;
 public class NoticeResponseDto {
     private String title;
     private String content;
-    private LocalDateTime createDate;
 
     @QueryProjection
-    public NoticeResponseDto(String title, String content, LocalDateTime createDate) {
+    public NoticeResponseDto(String title, String content) {
         this.title = title;
         this.content = content;
-        this.createDate = createDate;
     }
 }

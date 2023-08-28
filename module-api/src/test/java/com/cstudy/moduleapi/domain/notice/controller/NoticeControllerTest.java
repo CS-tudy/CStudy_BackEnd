@@ -1,22 +1,14 @@
 package com.cstudy.moduleapi.domain.notice.controller;
 
-import com.cstudy.moduleapi.application.notice.NoticeService;
-import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.config.ControllerTestBase;
 import com.cstudy.moduleapi.dto.notice.NoticeSaveRequestDto;
 import com.cstudy.moduleapi.enums.MemberTestEnum;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -24,21 +16,9 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("local")
-class NoticeControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+class NoticeControllerTest extends ControllerTestBase {
 
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-
-    @MockBean
-    private NoticeService noticeService;
 
     private String token;
 
@@ -134,7 +114,7 @@ class NoticeControllerTest {
 
     @Test
     @DisplayName("공지사항 삭제")
-    public void deleteNoticeWithValid() throws Exception{
+    public void deleteNoticeWithValid() throws Exception {
         //given
         Long id = 1L;
 

@@ -17,22 +17,28 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "question", indexes = {
         @Index(name = "idx_question_title", columnList = "question_title")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "description", columnNames = {"question_description"}),
+        @UniqueConstraint(name = "title", columnNames = {"question_title"}),
 })
 public class Question {
-
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private Long id;
 
-    @Column(name = "question_title")
+    /********************************* PK가 아닌 필드 *********************************/
+    @Column(nullable = false, name = "question_title")
     private String title;
 
-    @Column(name = "question_description")
+    @Column(nullable = false, name = "question_description")
     private String description;
 
-    @Column(name = "question_explain")
+    @Column(nullable = false, name = "question_explain")
     private String explain;
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @OneToMany(
             mappedBy = "question",
@@ -46,18 +52,20 @@ public class Question {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    List<Choice>choices = new ArrayList<>();
+    List<Choice> choices = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(
-        mappedBy = "question",
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL
+            mappedBy = "question",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
     )
     private List<WorkbookQuestion> workbookQuestions;
+
+    /********************************* 빌더 *********************************/
 
     @Builder
     public Question(
@@ -77,6 +85,9 @@ public class Question {
         this.choices = choices;
         this.category = category;
     }
+
+    /********************************* 비즈니스 로직 *********************************/
+
     public void setChoices(List<Choice> choices) {
         this.choices = choices;
     }

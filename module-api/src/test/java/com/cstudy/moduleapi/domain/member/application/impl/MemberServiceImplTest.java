@@ -1,6 +1,6 @@
 package com.cstudy.moduleapi.domain.member.application.impl;
 
-import com.cstudy.moduleapi.application.member.MemberService;
+import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
@@ -11,40 +11,22 @@ import com.cstudy.modulecommon.error.member.EmailDuplication;
 import com.cstudy.modulecommon.error.member.InvalidMatchPasswordException;
 import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
-import com.cstudy.modulecommon.repository.member.MemberRepository;
-import com.cstudy.modulecommon.repository.role.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
 @Transactional
-@ActiveProfiles("local")
-class MemberServiceImplTest {
+class MemberServiceImplTest extends ServiceTestBase {
 
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     private static final String VALID_EMAIL = "test1234@email.com";
     private static final String VALID_PASSWORD = "password1234!";
@@ -222,6 +204,23 @@ class MemberServiceImplTest {
                     .isInstanceOf(InvalidMatchPasswordException.class)
                     .hasMessage(InvalidPassword+"가 일치하지 않습니다.");
         }
+
+    }
+
+    @Test
+    @DisplayName("이메일 보내기 성공")
+    public void 이메일_보내기() throws Exception {
+        // Given
+        String recipientEmail = "pos04167@kakao.com";
+
+        // When
+        CompletableFuture<String> future = memberService.sendEmail(recipientEmail);
+
+
+        Thread.sleep(1000); // 이메일 서버의 동기화를 위한 잠깐의 대기
+        // 이메일 내용의 검증 로직 구현
+        String expectedKey = future.get();
+        assertThat(expectedKey).isNotNull();
 
     }
 }

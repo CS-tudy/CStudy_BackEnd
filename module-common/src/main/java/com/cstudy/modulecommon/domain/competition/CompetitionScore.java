@@ -12,10 +12,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class CompetitionScore {
 
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "competition_score_id")
     private Long id;
+
+    /********************************* PK가 아닌 필드 *********************************/
+
+    private Integer choiceNumber;
+    private boolean success;
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_competition_id")
@@ -25,9 +33,8 @@ public class CompetitionScore {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    private Integer choiceNumber;
-    private boolean success;
 
+    /********************************* 빌더 *********************************/
     @Builder
     public CompetitionScore(MemberCompetition memberCompetition, Question question, Integer choiceNumber){
         this.memberCompetition = memberCompetition;
@@ -36,6 +43,7 @@ public class CompetitionScore {
         this.success = false;
     }
 
+    /********************************* 비즈니스 로직 *********************************/
     public void setSuccess(boolean success) {
         this.success = success;
     }

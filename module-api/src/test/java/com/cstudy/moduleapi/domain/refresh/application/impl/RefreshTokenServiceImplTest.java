@@ -1,24 +1,17 @@
 package com.cstudy.moduleapi.domain.refresh.application.impl;
 
-import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
-import com.cstudy.moduleapi.config.redis.RedisService;
+import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.refresh.RefreshTokenDto;
 import com.cstudy.modulecommon.domain.member.Member;
-import com.cstudy.modulecommon.repository.refresh.RefreshTokenRepositry;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest
-@ActiveProfiles("local")
-public class RefreshTokenServiceImplTest {
+public class RefreshTokenServiceImplTest extends ServiceTestBase {
 
 
     private static final String REFRESH_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsIm1lbWJlcklkIjoxLCJyb2xlcy" +
@@ -27,15 +20,6 @@ public class RefreshTokenServiceImplTest {
     private static final String email = "test1234@email.com";
     private static final String password = "1234!";
 
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private RefreshTokenRepositry refreshTokenRepositry;
-
-    @Autowired
-    private RedisService redisService;
 
     @BeforeEach
     void setUp() {
