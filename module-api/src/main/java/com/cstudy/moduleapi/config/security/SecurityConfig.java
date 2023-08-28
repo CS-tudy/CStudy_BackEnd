@@ -126,6 +126,9 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/competitions/scores/submit").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/competitions/scores/{competitionId}").authenticated()
 
+                //ReviewNoteController
+                .antMatchers(HttpMethod.GET, "/api/review").authenticated()
+
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling()
