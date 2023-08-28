@@ -54,23 +54,6 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    public String createTokenWithDate(Long id, String email, List<String> roles, Long expire, byte[] secretKey, Date date) {
-        Claims claims = Jwts.claims().setSubject(email);
-
-        claims.put("memberId", id);
-        claims.put("roles", roles);
-
-        Date expirationDate = new Date(date.getTime() + expire);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(date)
-                .setExpiration(expirationDate)
-                .signWith(getSigningKey(secretKey))
-                .compact();
-    }
-
-
 
     public Long getUserIdFromToken(String token) {
         String[] tokenArr = token.split(" ");
@@ -96,8 +79,24 @@ public class JwtTokenizer {
                 .getBody();
     }
 
+    public String createTokenWithDate(Long id, String email, List<String> roles, Long expire, byte[] secretKey, Date date) {
+        Claims claims = Jwts.claims().setSubject(email);
+
+        claims.put("memberId", id);
+        claims.put("roles", roles);
+
+        Date expirationDate = new Date(date.getTime() + expire);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(date)
+                .setExpiration(expirationDate)
+                .signWith(getSigningKey(secretKey))
+                .compact();
+    }
+
+
     public static Key getSigningKey(byte[] secretKey) {
         return Keys.hmacShaKeyFor(secretKey);
     }
-
 }
