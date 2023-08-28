@@ -113,6 +113,24 @@ public class ExceptionControllerAdvice {
                 .body(body).getBody();
     }
 
+    //CommentAbstractException
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CommentAbstractException.class)
+    public ErrorResponse CommentAbstractException(CommentAbstractException e) {
+        int statusCode = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .build();
+
+        body.addValidation("CommentAbstractException", "댓글 관련 Exception");
+
+        return ResponseEntity.status(statusCode)
+                .body(body).getBody();
+    }
+
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RequestAbstractException.class)
