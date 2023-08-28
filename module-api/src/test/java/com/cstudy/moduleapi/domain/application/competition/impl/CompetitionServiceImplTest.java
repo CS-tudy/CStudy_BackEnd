@@ -1,5 +1,6 @@
-package com.cstudy.moduleapi.application.competition.impl;
+package com.cstudy.moduleapi.domain.application.competition.impl;
 
+import com.cstudy.moduleapi.application.competition.impl.CompetitionServiceImpl;
 import com.cstudy.moduleapi.dto.competition.CompetitionListResponseDto;
 import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.repository.competition.CompetitionRepository;

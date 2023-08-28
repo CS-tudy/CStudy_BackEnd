@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -203,6 +204,23 @@ class MemberServiceImplTest extends ServiceTestBase {
                     .isInstanceOf(InvalidMatchPasswordException.class)
                     .hasMessage(InvalidPassword+"가 일치하지 않습니다.");
         }
+
+    }
+
+    @Test
+    @DisplayName("이메일 보내기 성공")
+    public void 이메일_보내기() throws Exception {
+        // Given
+        String recipientEmail = "pos04167@kakao.com";
+
+        // When
+        CompletableFuture<String> future = memberService.sendEmail(recipientEmail);
+
+
+        Thread.sleep(1000); // 이메일 서버의 동기화를 위한 잠깐의 대기
+        // 이메일 내용의 검증 로직 구현
+        String expectedKey = future.get();
+        assertThat(expectedKey).isNotNull();
 
     }
 }

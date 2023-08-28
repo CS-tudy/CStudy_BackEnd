@@ -1,11 +1,10 @@
-package com.cstudy.moduleapi.application.reviewNote.impl;
+package com.cstudy.moduleapi.domain.application.reviewNote.impl;
 
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewUser;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.reviewNote.ReviewNoteRepository;
 import com.cstudy.modulecommon.repository.reviewNote.ReviewUserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("local")
