@@ -33,15 +33,13 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
                 .select(
                         new QNoticeResponseDto(
                                 notice.title.as("noticeTitle"),
-                                notice.content.as("noticeContent"),
-                                notice.createdDate.as("createdAt")
+                                notice.content.as("noticeContent")
                         )
                 )
                 .from(notice)
                 .where(
                         noticeTitleEq(noticeSearchRequestDto.getTitle()),
-                        noticeContentEq(noticeSearchRequestDto.getContent()),
-                        noticeCreatedDateEq(noticeSearchRequestDto.getCreatedDate())
+                        noticeContentEq(noticeSearchRequestDto.getContent())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -51,15 +49,11 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
                 .selectFrom(notice)
                 .where(
                         noticeTitleEq(noticeSearchRequestDto.getTitle()),
-                        noticeContentEq(noticeSearchRequestDto.getContent()),
-                        noticeCreatedDateEq(noticeSearchRequestDto.getCreatedDate())
+                        noticeContentEq(noticeSearchRequestDto.getContent())
                 );
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
-    private BooleanExpression noticeCreatedDateEq(LocalDateTime createdDate) {
-        return null;
-    }
 
     private BooleanExpression noticeContentEq(String content) {
         return StringUtils.hasText(content) ? notice.content.eq(content) : null;

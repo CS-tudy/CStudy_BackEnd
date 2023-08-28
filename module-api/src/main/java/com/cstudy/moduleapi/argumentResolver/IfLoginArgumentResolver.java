@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.util;
+package com.cstudy.moduleapi.argumentResolver;
 
 import com.cstudy.moduleapi.config.jwt.token.JwtAuthenticationToken;
 import com.cstudy.modulecommon.util.LoginUserDto;
@@ -43,6 +43,7 @@ public class IfLoginArgumentResolver implements HandlerMethodArgumentResolver {
 
         LoginInfoDto loginInfoDto = (LoginInfoDto) principal;
         loginUserDto.setMemberId(loginInfoDto.getMemberId());
+        loginUserDto.setRoles(loginInfoDto.getRoles());
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {

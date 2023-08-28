@@ -14,44 +14,55 @@
 ``` Introduce ```
 - 취업에 있어 필요한 CS 지식을 학습할 수 있는 웹 어플리케이션 플랫폼 입니다. 카테고리 별 문제를 통해 필요한 지식을 빠르게 학습할 수 있으며 틀린 문제를 모아서 부족한 부분을 빠르게 인지할 수 있습니다.  또한 경쟁을 통하여 지루한 CS 학습에 재미를 부여하며 선의의 경쟁을 통해 동료와 함께 성장이 가능합니다.
 
+
+  
+- 기존에 팀 프로젝트를 진행을 하면서 같이 개발을 진행을 하던 팀원이 취업을 하여 실제 서비스를 만들기 위해 프로젝트를 고도화를 진행을 했습니다. 이전에 진행한 프로젝트 [1차 개발 프로젝트](https://github.com/CStudyTeam)
+
+
 - [⭐️ 팀 노션](https://sunny-radiator-7f3.notion.site/CStudy-5da03f7b12d5477eae1e35caacd04615?pvs=4) | ~~[📝 배포 사이트 ](https://dbsyacmkozvg1.cloudfront.net/)~~
 
-<br>
+<br/>
 
+## 🥕프로젝트 백엔드 의사결정 및 이슈
 
+### 최적화
+- [실행 계획 분석을 통한 인덱스 추가 및 QueryDSL 페이징 쿼리 성능 튜닝 58.20% 개선](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EC%8B%A4%ED%96%89-%EA%B3%84%ED%9A%8D-%EB%B6%84%EC%84%9D%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%B6%94%EA%B0%80-%EB%B0%8F-QueryDSL-%ED%8E%98%EC%9D%B4%EC%A7%95-%EC%BF%BC%EB%A6%AC-%EC%84%B1%EB%8A%A5-%ED%8A%9C%EB%8B%9D-58.20%25-%EA%B0%9C%EC%84%A0)
+- [문제 Bulk Insert 문제를 Recursion(재귀)에서 Batch Insert으로 10,000건 데이터 1440초에서 105초 성능 개선](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%AC%B8%EC%A0%9C-Bulk-Insert-%EB%AC%B8%EC%A0%9C%EB%A5%BC-Recursion(%EC%9E%AC%EA%B7%80)%EC%97%90%EC%84%9C-Batch-Insert%EC%9C%BC%EB%A1%9C-10,000%EA%B1%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-1440%EC%B4%88%EC%97%90%EC%84%9C-105%EC%B4%88)
+- [AWS S3 이미지 파일 Deflater 활용하여 압축을 통해서 JPG 기준 이미지 16.01% 크기 감소 ](https://github.com/CS-tudy/CStudy_BackEnd/wiki/AWS-S3-%EC%9D%B4%EB%AF%B8%EC%A7%80-%ED%8C%8C%EC%9D%BC-Deflater-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%95%95%EC%B6%95%EC%9D%84-%ED%86%B5%ED%95%B4%EC%84%9C-JPG-%EA%B8%B0%EC%A4%80-%EC%9D%B4%EB%AF%B8%EC%A7%80-16.01%25-%ED%81%AC%EA%B8%B0-%EA%B0%90%EC%86%8C)
 
+### 프로젝트 진행 이슈
 
-<br>
+- [IP 기반 유저 블랙리스트 추가](https://github.com/CS-tudy/CStudy_BackEnd/wiki/IP-%EA%B8%B0%EB%B0%98-%EC%9C%A0%EC%A0%80-%EB%B8%94%EB%9E%99%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%B6%94%EA%B0%80)
+- [FE & BE 운영 및 테스트를 위하여 Logback Rolling FileAppendar 적용 및  Slack Webhook 도입](https://github.com/CS-tudy/CStudy_BackEnd/wiki/FE-&-BE-%EC%9A%B4%EC%98%81-%EB%B0%8F-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EC%9C%84%ED%95%98%EC%97%AC-Logback-Rolling-FileAppendar-%EC%A0%81%EC%9A%A9-%EB%B0%8F--Slack-Webhook-%EB%8F%84%EC%9E%85)
+- [Exception을 추상 클래스을 활용하여 응집도 증가 및 Front와 협업을 위해 Custom Error Status 생성](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Exception%EC%9D%84-%EC%B6%94%EC%83%81-%ED%81%B4%EB%9E%98%EC%8A%A4%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%9D%91%EC%A7%91%EB%8F%84-%EC%A6%9D%EA%B0%80-%EB%B0%8F-Front%EC%99%80-%ED%98%91%EC%97%85%EC%9D%84-%EC%9C%84%ED%95%B4-Custom-Error-Status-%EC%83%9D%EC%84%B1)
 
-## 💎프로젝트 구조도
-```bash
-CStudy
-├── module-api 
-│        ├── application
-│        ├── config
-│        ├── controller
-│        ├── dto # Dto request, response
-│        ├── exception # Exception Handler
-│        ├── initializer
-│        └── util
-│ 
-├── module-common   
-│             └── config
-│             └── domain
-│             └── dto
-│             └── error
-│             └── repository
-│             └── util
-│
-│
-└── infra
-      └── docker
-      └── redis
-   
-```
+### 리펙토링
+
+- [전략 패턴을 사용하여 Param에 따른 서비스 호출 및 개별 컴포넌트 분리](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EC%A0%84%EB%9E%B5-%ED%8C%A8%ED%84%B4%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-Param%EC%97%90-%EB%94%B0%EB%A5%B8-%EC%84%9C%EB%B9%84%EC%8A%A4-%ED%98%B8%EC%B6%9C-%EB%B0%8F-%EA%B0%9C%EB%B3%84-%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EB%B6%84%EB%A6%AC)
+- [Redis 자료구조 랭킹 시스템 도입 및 캐싱 오버헤드를 고려하여 Redis Pub/Sub 캐싱 정합성](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Redis-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%EB%9E%AD%ED%82%B9-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EB%8F%84%EC%9E%85-%EC%BA%90%EC%8B%B1-%EC%98%A4%EB%B2%84%ED%97%A4%EB%93%9C%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%98%EC%97%AC-Redis-Pub-Sub-%EC%BA%90%EC%8B%B1-%EC%A0%95%ED%95%A9%EC%84%B1)
+- [테스트 코드를 통하여 코드 안전성 검증 및 Test Double 사용하며 컨트롤 할 수 없는 코드 영향 최소화](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C%EB%A5%BC-%ED%86%B5%ED%95%98%EC%97%AC-%EC%BD%94%EB%93%9C-%EC%95%88%EC%A0%84%EC%84%B1-%EA%B2%80%EC%A6%9D-%EB%B0%8F-Test-Double-%EC%82%AC%EC%9A%A9%ED%95%98%EB%A9%B0-%EC%BB%A8%ED%8A%B8%EB%A1%A4-%ED%95%A0-%EC%88%98-%EC%97%86%EB%8A%94-%EC%BD%94%EB%93%9C-%EC%98%81%ED%96%A5-%EC%B5%9C%EC%86%8C%ED%99%94)
+- [랭킹 참가 낙관적 락을 이용해 동시성 문제를 통한 중복요청 제어](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%9E%AD%ED%82%B9-%EC%B0%B8%EA%B0%80-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%B4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C%EB%A5%BC-%ED%86%B5%ED%95%9C-%EC%A4%91%EB%B3%B5%EC%9A%94%EC%B2%AD-%EC%A0%9C%EC%96%B4)
+- [일반 문제 오답노트 기존에 MySQL에서 MongoDB Data Modelig 변경](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EC%9D%BC%EB%B0%98-%EB%AC%B8%EC%A0%9C-%EC%98%A4%EB%8B%B5%EB%85%B8%ED%8A%B8-%EA%B8%B0%EC%A1%B4%EC%97%90-MySQL%EC%97%90%EC%84%9C-MongoDB-Data-Modelig-%EB%B3%80%EA%B2%BD)
+- [랭킹 시스템 동일한 점수일 경우 시간을 추가하여 Redis Structure 변경](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%9E%AD%ED%82%B9-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EB%8F%99%EC%9D%BC%ED%95%9C-%EC%A0%90%EC%88%98%EC%9D%BC-%EA%B2%BD%EC%9A%B0-Redis-Data-Structure-%EB%B3%80%EA%B2%BD)
+- [HandlerMethodArgumentResolver, AOP를 적용하여 횡단 관심사 분리하기](https://github.com/CS-tudy/CStudy_BackEnd/wiki/HandlerMethodArgumentResolver,-AOP%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%98%EC%97%AC-%ED%9A%A1%EB%8B%A8-%EA%B4%80%EC%8B%AC%EC%82%AC-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0)
+- [Session 방식의 문제점  JWT 개선](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Session-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90--JWT-%EA%B0%9C%EC%84%A0)
+
+### 인프라
+
+- [도커 컴포즈를 통한 고정 IP를 이용한 클라우드 서비스 배포](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%8F%84%EC%BB%A4-%EC%BB%B4%ED%8F%AC%EC%A6%88%EB%A5%BC-%ED%86%B5%ED%95%9C-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC)
+- [Github Webhook을 통해 Jenkins를 이용한 배포 자동화 + SSHAgent](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Github-Webhook%EC%9D%84-%ED%86%B5%ED%95%B4-Jenkins%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EC%9E%90%EB%8F%99%ED%99%94---SSHAgent)
 
 <br>
-<br>
+
+### 지속적인 리펙토링 
+- [Swagger, Rest Docs 어떤 걸 선택을 할까?]()
+- [Spring Security .hasAnyAuthority (권한) 가독성 높이기]()
+- [REST API에 적합한 URL 수정]()
+- [PUT, PATCH 구분]()
+- [Test Code 실행 시간을 감소를 위한 Application Context 재활용]()
+- [예외 코드 구조 변경]()
+
+
 
 ## 👨‍기술 스택
 
@@ -111,6 +122,11 @@ CStudy
 <br>
 
 ## 🐌Git Commit Convention
+<details>
+
+<summary> 본문 확인 (👈 Click) </summary>
+
+
 <table>
   <tr>
     <td>
@@ -170,198 +186,18 @@ CStudy
   </tr>
 </table>
 
-<br>
+</details>
+
 
 ## 🎨 ERD Diagram
+<details>
 
-<p align="center">
+<summary> 본문 확인 (👈 Click) </summary>
 
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/3e111f97-c1d4-488d-81bb-6e4229d18682)
 
-</p>
+</details>
 
-
-## 📋 API 문서
-
-
-[https://documenter.getpostman.com/view/23650109/2s9XxztCdN](https://documenter.getpostman.com/view/23650109/2s9XxztChm)
-
-<BR/>
-
-
-## 🥕 Back-end 기술적 의사결정
-### 1. JWT Refresh Token
-
-- 로그인, 로그아웃을 위해 RefreshToken 사용
-- Token의 탈취의 보안적인 측면을 고려하여 AccessToken : 15 min , RefreshToken: 7 Day
-- 저장의 위치 : Coockie vs LocalStorage
-  - 현재 저장의 위치는 LocalStorage에 저장을 하였습니다. 왜냐하면 LocalStorage에 저장하면 구현의 난이도가 쉬워지기 때문에 초기 프로젝트에서 LocalStorage를 선택을 하였습니다.
-  - 하지만 보안적인 측면을 생각하면 Coockie에 저장하는 방식이 적합합니다. 왜냐하면 Rest Api의 특성은 상태의 관리를 클라이언트에서 처리를 합니다. LocalStorage에 저장하면 RDB, Redis에 저장을 하여 상태관리를 Server에서 위치를 합니다.
-  - XSS, CSRF 보안적인 측면
-    - XSS 공격 : Script를 통하여 Token의 탈취의 가능성이 있습니다. Coockie에 Token을 저장하면 HttpOnly를 통하여 스크립트를 통하여 Token의 문제를 방지할 수 있습니다.
-    - CSRF 공격 : SameSite, Csrf Token을 통하여 방지를 할 수 있다. SameSite를 사용하면 쿠키를 해당 사이트와 동일한 사이트로만 전송되도록 제한할 수 있습니다. Chrome은 기본적으로 Lax로 설정이 되어져 있습니다.
-
-<br/>
-
-### 2. 성공 및 실패 오답노트 MySQL에서 MongoDB 변경
-
-- 일반 문제를 풀었을 때 성공, 실패의 데이터를 memberQuestion 테이블에 Insert가 됩니다.
-- MySQL 에서 특정 회원의 문제 성공 유무를 찾기 위해서는 회원, 문제, 성공 실패 유무를 탐색을 해야된다.
-- 데이터 성공 또는 실패를 하였을 때 필연적으로 Null 또는 Default Data를 삽입을 한다
-- MongoDB의 Collection의 유연한 데이터 구조로 빠르게 데이터를 접근이 가능하며 가시성이 높아졌다.
-
-![img.png](image/img.png)
-<br/>
-
-### 3. 전략 패턴을 사용하여 Param에 따른 서비스 호출 및 개별 컴포넌트 분리
-
-- ```api/email``` , ```api/name```은 이메일, 이름의 중복을 체크하는 로직을 처리한다.
-- 각각 추상, 구현체를 구현하기 보다 하나의 인터페이스에 Type을 추가하여 Param에 따라서 서비스를 호출하는 로직 작성
-- ```Duplication```, ```Member``` 2부분에서 사용이 되면서 중복적인 코드가 발생
-- 개별 컴포넌트로 분리하여 필요한 부분에 의존성을 주입하여 중복적인 코드 제거
-```java
-@Component
-public class DuplicateServiceFinder {
-
-    private final List<DuplicateService>duplicateServices;
-
-    public DuplicateServiceFinder(List<DuplicateService> duplicateServices) {
-        this.duplicateServices = duplicateServices;
-    }
-
-    public DuplicateResponseDto getVerifyResponseDto(String type, String value) {
-        DuplicateService duplicateService = duplicateServices.stream()
-                .filter(verifyService -> verifyService.getType().name().equals(type))
-                .findAny()
-                .orElseThrow(RuntimeException::new);
-
-        return duplicateService.signupDivisionDuplicateCheck(type, value);
-    }
-}
-
-```
-
-<br/>
-
-### 4. 랭킹 점수는 실시간
-
-- 실시간으로 랭킹의 점수와 랭킹의 불러오는 쿼리의 성능의 부담을 줄이기 위하여 캐싱을 사용을 했습니다.
-- 문제를 성공/실패를 하였을 때 캐싱의 정합성을 맞추기 위해서 많은 Write 작업이 발생을 하여 캐싱 오버헤드가 발생을 한다고 생각합니다.
-- 기존의 ```@CacheEvict```로 캐싱의 정합성을 맞추기 보다 Redis Pub/Sub으로 분산 환경에서 비동기 캐시 정합성을 맞추게 변경을 하였습니다.
-
-<br/>
-
-### 5. 동일한 점수의 회원의 랭킹 처리
-- 동일한 점수를 가진 회원 A,B가 있다면 등수를 처리하는데 문제가 있습니다.
-- 해당 회원의 등수를 처리하기 위해 Redis Structure를 Double로 변경
-- 기존의 데이터의 구조는  { UserName , Score }에서  { UserName , Score.Time }으로 처리를 하였습니다.
-
-![img_1.png](image/img_1.png)
-
-<br/>
-
-### 6. 문제 Bulk Insert의 성능 문제점 Batch Insert 10,000건을 기준으로 1440초 - 15.75 성능 개선
-- 문제를 생성하는 로직을 재귀호출을 통하여 대량 문제를 생성하는 로직에서 각 문제가 생성하며 하나의 트랜잭션을 차지하여 10,000건을 기준으로 1440초 발생
-- 성능적인 문제를 해결하기 위하여 하나의 트랜잭션으로 처리하는 Batch Insert 적용
-
-```java
-@Override
-    @Transactional
-    public void recursiveCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos) {
-        String questionSql = "INSERT INTO question (category_id, question_description, question_explain, question_title) " +
-                "VALUES (?, ?, ?, ?)";
-
-        String choiceSql = "INSERT INTO choice (answer, content, choice_number, question_id) " +
-                "VALUES (?, ?, ?, ?)";
-
-        jdbcTemplate.batchUpdate(questionSql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(@NotNull PreparedStatement preparedStatement, int i) throws SQLException {
-                CreateQuestionAndCategoryRequestDto questionDto = requestDtos.get(i);
-
-                Long categoryId = getCategoryIdByTitle(questionDto.getCategoryRequestDto().getCategory());
-
-                preparedStatement.setLong(1, categoryId);
-                preparedStatement.setString(2, questionDto.getCreateQuestionRequestDto().getQuestionDesc());
-                preparedStatement.setString(3, questionDto.getCreateQuestionRequestDto().getQuestionExplain());
-                preparedStatement.setString(4, questionDto.getCreateQuestionRequestDto().getQuestionTitle());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return requestDtos.size();
-            }
-        });
-
-
-        for (CreateQuestionAndCategoryRequestDto questionDto : requestDtos) {
-            Long questionId = getQuestionIdByTitle(questionDto.getCreateQuestionRequestDto().getQuestionTitle());
-
-            List<CreateChoicesAboutQuestionDto> choiceDtos = questionDto.getCreateChoicesAboutQuestionDto();
-
-            jdbcTemplate.batchUpdate(choiceSql, new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(@NotNull PreparedStatement preparedStatement, int i) throws SQLException {
-                    CreateChoicesAboutQuestionDto choiceDto = choiceDtos.get(i);
-                    boolean answer = isCollectAnswer(choiceDto.getAnswer());
-
-                    preparedStatement.setBoolean(1, answer);
-                    preparedStatement.setString(2, choiceDto.getContent());
-                    preparedStatement.setInt(3, choiceDto.getNumber());
-                    preparedStatement.setLong(4, questionId);
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return choiceDtos.size();
-                }
-            });
-        }
-    }
-
-    private Long getCategoryIdByTitle(String categoryTitle) {
-        String sql = "SELECT category_id FROM category WHERE category_title = ?";
-        return jdbcTemplate.queryForObject(sql, Long.class, categoryTitle);
-    }
-
-    private Long getQuestionIdByTitle(String questionTitle) {
-        String sql = "SELECT question_id FROM question WHERE question_title = ?";
-        return jdbcTemplate.queryForObject(sql, Long.class, questionTitle);
-    }
-```
-<br/>
-
-### 7. 실행 계획 분석을 통한 인덱스 추가 및 QueryDSL 페이징 쿼리 튜닝 (10,000건을 기준으로 58.20% 개선) 
-
-- 실행계획을 통하여 페이징 쿼리를 조회를 하였을 때 3개의 테이블이 Type ALL로 Full Scan을 하여 효율적인 검색을 하지 못함
-- 인덱스를 추가하여 Type를 ```ref, eq_ref```로 변경하여 커버링 인덱스 적용.
-- 카테고리를 조회하는 쿼리를 서브쿼리에서 Dto를 추가시켜 동등 조인으로 변경
-<br/>
-
-### 8. 횡단 관심사 분리 (Feat. HandlermethodArgumentResolver, AOP)
-
-- 사용자의 정보를 Security Context Holder에 접근하여 사용자의 Id를 접근하는 중복적인 로직이 발생
-- ```HandlermethodArgumentResolver```를 사용하여 Controller 객체 바인딩을 통하여 중복적인 코드 제거
-- 특정 게시글의 Write 사용자의 권한을 체크하는 횡단 관심사를 분리하기 위하여 AOP 적용
-- Parameter에 순서에 따른 JoinPoint를 설정하여 권한을 체크하는 로직 작성
-
-<br/>
-
-### 9. 추상 클래스를 통한 Exception 응집도 증가 및 Custom Error Status
-
-- ```Runtime Exception```을 상속받는 Custom Exception의 수가 많아지면서 작성의 실수 및 Handler Exception의 코드 가독성이 떨어짐
-- 도메인에 따른 추상 클래스를 작성하여 Handler Exception은 추상 클래스만 관리하여 코드의 가독성 증가
-- 상태의 코드를 400, 500..보다는 프론트와 협업을 위해 직관적인 Status Code를 작성
-
-<br/>
-
-### 10. Swagger
-- 팀 간 효율적인 소통을 위해 도입
-- API를 문서화하여 구조와 기능을 쉽게 이해
-- 테스트 가능한 사용자 인터페이스 제공
-- API 호출을 직접 실행해보며 결과를 확인할 수 있어 테스트 및 디버깅 과정이 효율적으로 진행
-
-<br/>
 
 
 
@@ -379,6 +215,19 @@ public class DuplicateServiceFinder {
 </details>
 
 
+## 📋 API 문서
+
+
+<details>
+
+<summary> 본문 확인 (👈 Click) </summary>
+
+https://documenter.getpostman.com/view/23650109/2s9Y5YTihZ
+
+
+</details>
+
+
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
 
@@ -388,15 +237,13 @@ public class DuplicateServiceFinder {
 
 ![image](https://github.com/CStudyTeam/CStudy-backend/assets/103854287/d34ed6b2-b91f-4e27-a175-6dc2629e5747)
 
+- 코드의 변경이 생겼을 때 새로 배포의 어려움을 해결하기 위해 배포 자동화를 추가를 하였습니다.
+- 배포 자동화를 위해 기술을 선택해야 되는 문제가 있었습니다. 
+- 물론 다양한 서비스를 제공하는 SASS 서비스와 (GIT, Travis)와 수동 설치하는 Jenkins가 있었습니다.
+- 선택의 기준은 러닝커브가 제일 적은 부분을 선택을 했습니다.
+- 젠킨스는 다른 기술에 비해 러닝 커브가 있지만 이전에 스터디를 통해서 경험을 하였기 때문에 비교적 러닝커브가 적다고 판단하여 젠킨스를 선택을 하였습니다.
 
 </details>
 
 
-## ✍️ 프로젝트 종료 이후 혼자서 진행한 리팩토링
-<details>
 
-<summary> 본문 확인 (👈 Click) </summary>
-
-
-
-</details>

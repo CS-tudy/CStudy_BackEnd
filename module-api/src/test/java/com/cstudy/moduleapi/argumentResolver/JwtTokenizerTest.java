@@ -1,9 +1,8 @@
-package com.cstudy.moduleapi.util;
+package com.cstudy.moduleapi.argumentResolver;
 
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import io.jsonwebtoken.Claims;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,7 @@ package com.cstudy.moduleapi.config.jwt.provider;
 
 import com.cstudy.moduleapi.config.jwt.token.JwtAuthenticationToken;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
-import com.cstudy.moduleapi.util.LoginInfoDto;
+import com.cstudy.moduleapi.argumentResolver.LoginInfoDto;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;

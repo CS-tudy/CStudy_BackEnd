@@ -1,10 +1,6 @@
 package com.cstudy.moduleapi.domain.competition.application.impl;
 
-import com.cstudy.moduleapi.application.competition.CompetitionScoreService;
-import com.cstudy.moduleapi.application.competition.CompetitionService;
-import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
-import com.cstudy.moduleapi.application.member.MemberService;
-import com.cstudy.moduleapi.application.workbook.WorkbookService;
+import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.competition.*;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
 import com.cstudy.moduleapi.dto.workbook.QuestionIdRequestDto;
@@ -17,21 +13,14 @@ import com.cstudy.modulecommon.error.competition.DuplicateMemberWithCompetition;
 import com.cstudy.modulecommon.error.competition.NotFoundMemberCompetition;
 import com.cstudy.modulecommon.error.competition.ParticipantsWereInvitedParticipateException;
 import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
-import com.cstudy.modulecommon.repository.choice.ChoiceRepository;
-import com.cstudy.modulecommon.repository.member.MemberRepository;
-import com.cstudy.modulecommon.repository.question.QuestionRepository;
-import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -40,29 +29,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("local")
 @Transactional
-class CompetitionServiceImplTest {
-
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private CompetitionService competitionService;
-    @Autowired
-    private CompetitionScoreService competitionScoreService;
-    @Autowired
-    private MemberCompetitionService memberCompetitionService;
-    @Autowired
-    private QuestionRepository questionRepository;
-    @Autowired
-    private WorkbookService workbookService;
-    @Autowired
-    private WorkbookRepository workbookRepository;
-    @Autowired
-    private ChoiceRepository choiceRepository;
+class CompetitionServiceImplTest extends ServiceTestBase {
 
 
     private List<Long> memberIds = new ArrayList<>();
@@ -70,7 +38,7 @@ class CompetitionServiceImplTest {
     private Long competitionId2;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
 
         for (int i = 0; i < 10; i++) {
             MemberSignupRequest memberSignupRequest1 = MemberSignupRequest.builder()
@@ -113,7 +81,7 @@ class CompetitionServiceImplTest {
         Pageable pageable = PageRequest.of(0, 5);
         LocalDateTime now = LocalDateTime.now();
         Page<CompetitionListResponseDto> competitionList =
-                  competitionService.getCompetitionList(true, pageable, now);
+                competitionService.getCompetitionList(true, pageable, now);
         assertEquals(competitionList.getTotalElements(), 1);
         assertEquals(competitionList.getContent().get(0).getTitle(), "대회 이름2");
     }
@@ -124,7 +92,7 @@ class CompetitionServiceImplTest {
         Pageable pageable = PageRequest.of(0, 1);
         LocalDateTime now = LocalDateTime.now();
         Page<CompetitionListResponseDto> competitionList =
-                  competitionService.getCompetitionList(false, pageable, now);
+                competitionService.getCompetitionList(false, pageable, now);
 
         assertEquals(competitionList.getTotalElements(), 1);
         assertEquals(competitionList.getContent().get(0).getTitle(), "대회 이름1");
@@ -139,8 +107,8 @@ class CompetitionServiceImplTest {
         public void joinSuccess() {
             Long memberId = memberIds.get(0);
             LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(memberId)
-                .build();
+                    .memberId(memberId)
+                    .build();
             memberCompetitionService.joinCompetition(loginUserDto, competitionId1);
             CompetitionResponseDto competition = competitionService.getCompetition(competitionId1);
 
@@ -155,8 +123,8 @@ class CompetitionServiceImplTest {
         public void joinDuplicate() {
             Long memberId = memberIds.get(0);
             LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(memberId)
-                .build();
+                    .memberId(memberId)
+                    .build();
             memberCompetitionService.joinCompetition(loginUserDto, competitionId1);
 
             Exception exception = assertThrows(DuplicateMemberWithCompetition.class, () -> {
@@ -173,8 +141,8 @@ class CompetitionServiceImplTest {
             for (int i = 0; i < 5; i++) {
                 Long memberId = memberIds.get(i);
                 LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(memberId)
-                    .build();
+                        .memberId(memberId)
+                        .build();
                 memberCompetitionService.joinCompetition(loginUserDto, competitionId1);
             }
 
@@ -199,28 +167,28 @@ class CompetitionServiceImplTest {
         private List<Long> questionIds = new ArrayList<>();
 
         @BeforeEach
-        public void setUp(){
+        public void setUp() {
             //대회에 문제 추가
             List<QuestionIdRequestDto> requestDtos = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 Question question = Question.builder()
-                    .title("문제 제목"+i)
-                    .description("문제 내용"+i)
-                    .build();
+                        .title("문제 제목" + i)
+                        .description("문제 내용" + i)
+                        .build();
                 questionRepository.save(question);
                 for (int j = 1; j <= 4; j++) {
                     Choice choice = Choice.builder()
-                        .number(j)
-                        .content("보기" + j)
-                        .answer(i%4==j-1)
-                        .question(question)
-                        .build();
+                            .number(j)
+                            .content("보기" + j)
+                            .answer(i % 4 == j - 1)
+                            .question(question)
+                            .build();
                     choiceRepository.save(choice);
                 }
 
                 requestDtos.add(QuestionIdRequestDto.builder()
-                    .id(question.getId())
-                    .build()
+                        .id(question.getId())
+                        .build()
                 );
                 questionIds.add(question.getId());
             }
@@ -232,23 +200,25 @@ class CompetitionServiceImplTest {
 
             workbookService.addQuestion(requestDto);
         }
+
         @Test
         @DisplayName("대회 점수 채점 및 점수 조회")
         public void score() {
             Long memberId = memberIds.get(0);
             LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(memberId)
-                .build();
+                    .memberId(memberId)
+                    .build();
             memberCompetitionService.joinCompetition(loginUserDto, competitionId1);
             for (int i = 1; i <= 4; i++) {
                 scoring(memberId, i);
                 //1,2번 3개, 3,4번은 2개.
-                if(i <= 2){
+                if (i <= 2) {
                     assertEquals(competitionScoreService.getScore(memberId, competitionId1), 3);
                 } else {
                     assertEquals(competitionScoreService.getScore(memberId, competitionId1), 2);
                 }
-            };
+            }
+            ;
             Exception exception = assertThrows(NotFoundMemberCompetition.class, () -> {
                 competitionScoreService.getAnswer(memberIds.get(1), competitionId1);
             });
@@ -257,11 +227,11 @@ class CompetitionServiceImplTest {
 
         @Test
         @DisplayName("대회 랭킹 조회")
-        public void ranking(){
+        public void ranking() {
             for (int i = 1; i <= 4; i++) {
                 LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(memberIds.get(i))
-                    .build();
+                        .memberId(memberIds.get(i))
+                        .build();
                 memberCompetitionService.joinCompetition(loginUserDto, competitionId1);
                 scoring(memberIds.get(i), i);
             }
@@ -274,15 +244,13 @@ class CompetitionServiceImplTest {
         }
 
 
-
-
         public void scoring(Long memberId, int choice) {
             List<CompetitionScoreRequestDto.CompetitionAnswerRequestDto> questionDto = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 questionDto.add(CompetitionScoreRequestDto.CompetitionAnswerRequestDto.builder()
-                    .questionId(questionIds.get(i))
-                    .choiceNumber(choice)
-                    .build()
+                        .questionId(questionIds.get(i))
+                        .choiceNumber(choice)
+                        .build()
                 );
             }
             CompetitionScoreRequestDto scoreRequestDto = CompetitionScoreRequestDto.builder()

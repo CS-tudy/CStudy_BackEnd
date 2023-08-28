@@ -1,6 +1,7 @@
 package com.cstudy.moduleapi.application.notice.Impl;
 
 import com.cstudy.moduleapi.application.notice.NoticeService;
+import com.cstudy.moduleapi.dto.comment.NoticeWithCommentDto;
 import com.cstudy.modulecommon.dto.NoticeResponseDto;
 import com.cstudy.moduleapi.dto.notice.NoticeSaveRequestDto;
 import com.cstudy.modulecommon.dto.NoticeSearchRequestDto;

@@ -18,6 +18,11 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
 
-        log.info("oauth login fail");
+        log.warn("oauth login fail");
+
+        String redirectUri = "http://localhost:3000/oauth2/fail";
+        response.sendRedirect(
+                redirectUri +
+                        "?login_success=" + false);
     }
 }

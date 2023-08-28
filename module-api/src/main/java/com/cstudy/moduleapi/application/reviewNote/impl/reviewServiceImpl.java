@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.Objects;
 
 
 @Slf4j
@@ -39,6 +40,10 @@ public class reviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void createUserWhenSignupSaveMongodb(String userName) {
+
+        Objects.requireNonNull(userName, "유저 이름이 Null 입니다.");
+
+
         userRepository.save(ReviewUser.builder()
                 .userName(userName)
                 .successQuestion(new LinkedList<>())
@@ -67,6 +72,7 @@ public class reviewServiceImpl implements ReviewService {
 
         log.info("reviewUser_Name : {}", byName.getUserName());
 
+//        byName.getReviewNotes().removeIf(note -> note.getQuestionId() == questionId);
         if (isAnswer) {
             byName.getSuccessQuestion().add(String.valueOf(questionId));
         } else {
@@ -98,6 +104,5 @@ public class reviewServiceImpl implements ReviewService {
 
         userRepository.save(byName);
     }
-
 
 }

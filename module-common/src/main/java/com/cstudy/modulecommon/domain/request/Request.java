@@ -1,6 +1,5 @@
 package com.cstudy.modulecommon.domain.request;
 
-import com.cstudy.modulecommon.domain.BaseEntity;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
 import lombok.Builder;
@@ -15,12 +14,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class Request {
-
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private Long id;
-
+    /********************************* PK가 아닌 필드 *********************************/
     @Column(name = "request_flag")
     private boolean flag;
 
@@ -34,22 +33,25 @@ public class Request {
     @Column(name = "created_at")
     private final LocalDateTime createdAt = LocalDateTime.now();
 
+    /********************************* 연관관계 매핑 *********************************/
     @ManyToOne(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
     )
     @JoinColumn(name = "member_id")
     private Member member;
 
+    /********************************* 빌더 *********************************/
     @Builder
-    public Request(String title, String description, Member member){
+    public Request(String title, String description, Member member) {
         this.flag = false;
         this.title = title;
         this.description = description;
         this.member = member;
     }
 
-    public void updateFlag(boolean flag){
+    /********************************* 비즈니스 로직 *********************************/
+    public void updateFlag(boolean flag) {
         this.flag = flag;
     }
 

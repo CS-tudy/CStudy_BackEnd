@@ -27,6 +27,7 @@ public enum ErrorCode {
     NotFoundNoticeId(7000),
     NotMatchAdminIp(7001),
     NotFoundChoiceWithQuestionAndNumber(8000),
+    NotFoundCommentParentId(9000),
     MethodArgumentNotValidException(9999);//Valid에 적합하지 않습니다.
 
     private final int errorCode;

@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.util;
+package com.cstudy.moduleapi.argumentResolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

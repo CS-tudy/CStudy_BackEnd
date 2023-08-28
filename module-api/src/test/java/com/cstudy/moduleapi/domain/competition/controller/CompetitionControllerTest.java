@@ -1,9 +1,7 @@
 package com.cstudy.moduleapi.domain.competition.controller;
 
 
-import com.cstudy.moduleapi.application.competition.CompetitionService;
-import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
-import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.config.ControllerTestBase;
 import com.cstudy.moduleapi.dto.competition.*;
 import com.cstudy.moduleapi.dto.workbook.QuestionIdRequestDto;
 import com.cstudy.moduleapi.enums.MemberTestEnum;
@@ -11,21 +9,14 @@ import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.dto.ChoiceQuestionResponseDto;
 import com.cstudy.modulecommon.error.competition.NotFoundCompetitionId;
 import com.cstudy.modulecommon.util.LoginUserDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -39,24 +30,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("local")
-class CompetitionControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-
-    @MockBean
-    private CompetitionService competitionService;
-
-    @MockBean
-    private MemberCompetitionService memberCompetitionService;
+class CompetitionControllerTest extends ControllerTestBase {
 
     private static String VALID_TOKEN;
     private static String INVALID_TOKEN;
@@ -81,25 +55,24 @@ class CompetitionControllerTest {
         List<com.cstudy.modulecommon.dto.CompetitionQuestionDto> result = new ArrayList<>();
 
 
-
         com.cstudy.modulecommon.dto.CompetitionQuestionDto build =
-               com.cstudy.modulecommon.dto.CompetitionQuestionDto.builder()
-                .questionId(1L)
-                .description("설명")
-                .choices(List.of(ChoiceQuestionResponseDto.builder()
-                        .number(1)
-                        .content("정답")
-                        .build(), ChoiceQuestionResponseDto.builder()
-                        .number(2)
-                        .content("오답")
-                        .build(), ChoiceQuestionResponseDto.builder()
-                        .number(3)
-                        .content("오답")
-                        .build(), ChoiceQuestionResponseDto.builder()
-                        .number(4)
-                        .content("오답")
-                        .build()))
-                .build();
+                com.cstudy.modulecommon.dto.CompetitionQuestionDto.builder()
+                        .questionId(1L)
+                        .description("설명")
+                        .choices(List.of(ChoiceQuestionResponseDto.builder()
+                                .number(1)
+                                .content("정답")
+                                .build(), ChoiceQuestionResponseDto.builder()
+                                .number(2)
+                                .content("오답")
+                                .build(), ChoiceQuestionResponseDto.builder()
+                                .number(3)
+                                .content("오답")
+                                .build(), ChoiceQuestionResponseDto.builder()
+                                .number(4)
+                                .content("오답")
+                                .build()))
+                        .build();
 
         result.add(build);
 
