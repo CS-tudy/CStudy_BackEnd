@@ -54,6 +54,16 @@
 
 <br>
 
+### 지속적인 리펙토링 
+- [Swagger, Rest Docs 어떤 걸 선택을 할까?]()
+- [Spring Security .hasAnyAuthority (권한) 가독성 높이기]()
+- [REST API에 적합한 URL 수정]()
+- [PUT, PATCH 구분]()
+- [Test Code 실행 시간을 감소를 위한 Application Context 재활용]()
+- [예외 코드 구조 변경]()
+
+
+
 ## 👨‍기술 스택
 
 <h3 align="center">어플리케이션</h3>
@@ -212,7 +222,7 @@
 
 <summary> 본문 확인 (👈 Click) </summary>
 
-[https://documenter.getpostman.com/view/23650109/2s9XxztCdN](https://documenter.getpostman.com/view/23650109/2s9XxztChm)
+https://documenter.getpostman.com/view/23650109/2s9Y5YTihZ
 
 
 </details>
@@ -227,6 +237,13 @@
 
 ![image](https://github.com/CStudyTeam/CStudy-backend/assets/103854287/d34ed6b2-b91f-4e27-a175-6dc2629e5747)
 
+- 코드의 변경이 생겼을 때 새로 배포의 어려움을 해결하기 위해 배포 자동화를 추가를 하였습니다.
+- 배포 자동화를 위해 기술을 선택해야 되는 문제가 있었습니다. 
+- 물론 다양한 서비스를 제공하는 SASS 서비스와 (GIT, Travis)와 수동 설치하는 Jenkins가 있었습니다.
+- 선택의 기준은 러닝커브가 제일 적은 부분을 선택을 했습니다.
+- 젠킨스는 다른 기술에 비해 러닝 커브가 있지만 이전에 스터디를 통해서 경험을 하였기 때문에 비교적 러닝커브가 적다고 판단하여 젠킨스를 선택을 하였습니다.
 
 </details>
+
+
 
