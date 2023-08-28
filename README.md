@@ -52,7 +52,6 @@
 - [도커 컴포즈를 통한 고정 IP를 이용한 클라우드 서비스 배포](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%8F%84%EC%BB%A4-%EC%BB%B4%ED%8F%AC%EC%A6%88%EB%A5%BC-%ED%86%B5%ED%95%9C-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC)
 - [Github Webhook을 통해 Jenkins를 이용한 배포 자동화 + SSHAgent](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Github-Webhook%EC%9D%84-%ED%86%B5%ED%95%B4-Jenkins%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EC%9E%90%EB%8F%99%ED%99%94---SSHAgent)
 
-<br>
 
 ### 지속적인 리펙토링 
 - [REST API에 적합한 URL 수정](https://github.com/CS-tudy/CStudy_BackEnd/wiki/REST-API%EC%97%90-%EC%A0%81%ED%95%A9%ED%95%9C-URL-%EC%88%98%EC%A0%95)
