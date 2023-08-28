@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.PermitAll;
 import java.util.List;
 
-@Tag(name = "Ranking", description = "Redis Cache Aside 전략으로 랭킹보드")
-
+@Tag(name = "전체 랭킹 처리", description = "Redis Cache Aside 전략으로 랭킹보드")
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api")
 public class RankingController {
 
     private final RankingServiceImpl rankingServiceImpl;
@@ -29,14 +29,10 @@ public class RankingController {
     }
 
 
-    @Operation(summary = "redis cache 랭킹 처리", description = "랭킹 sorted set")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "랭킹 가져오기 성공"),
-            @ApiResponse(responseCode = "500", description = "랭킹 가져오기 실패")
-
-    })
-    @GetMapping("members/ranks")
+    @Operation(summary = "redis cache 랭킹 처리", description = "랭킹 sorted set / @PermitAll")
+    @GetMapping("/rank")
     @ResponseStatus(HttpStatus.OK)
+    @PermitAll
     public List<ZSetOperations.TypedTuple<String>> findMemberAllAboutRankingBoard() {
         return rankingServiceImpl.getRanking();
     }
