@@ -15,16 +15,23 @@ import java.util.List;
 @Document(collection = "reviewUser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewUser {
+
+    /********************************* PK 필드 *********************************/
     @Id
     private String userName;
 
+    /********************************* PK가 아닌 필드 *********************************/
     private List<String> successQuestion;
 
     private List<String> failQuestion;
 
+
+    /********************************* 연관관계 매핑 *********************************/
     @DBRef(lazy = true)
     private List<ReviewNote> reviewNotes = new ArrayList<>();
 
+
+    /********************************* 빌더 *********************************/
     @Builder
     public ReviewUser(
             String userName,

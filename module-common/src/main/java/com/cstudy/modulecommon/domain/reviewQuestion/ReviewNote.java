@@ -16,8 +16,12 @@ import java.time.LocalDateTime;
 @Document(collection = "reviewNote")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewNote {
+
+    /********************************* PK 필드 *********************************/
     @Id
     private String id;
+
+    /********************************* PK가 아닌 필드 *********************************/
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
@@ -29,25 +33,6 @@ public class ReviewNote {
 
     private boolean isAnswer;
 
-
-//    @Builder
-//    public ReviewNote(String id, LocalDateTime createdDate, Long questionId, int successChoiceNumber, boolean isAnswer) {
-//        this.id = id;
-//        this.createdDate = createdDate;
-//        this.questionId = questionId;
-//        this.successChoiceNumber = successChoiceNumber;
-//        this.isAnswer = isAnswer;
-//    }
-//
-//    @Builder
-//    public ReviewNote(String id, LocalDateTime createdDate, Long questionId, int successChoiceNumber, int failChoiceNumber, boolean isAnswer) {
-//        this.id = id;
-//        this.createdDate = createdDate;
-//        this.questionId = questionId;
-//        this.successChoiceNumber = successChoiceNumber;
-//        this.failChoiceNumber = failChoiceNumber;
-//        this.isAnswer = isAnswer;
-//    }
 
     public ReviewNote(LocalDateTime createdDate, Long questionId, int failChoiceNumber, boolean isAnswer) {
         this.createdDate = createdDate;
@@ -65,9 +50,5 @@ public class ReviewNote {
         this.failChoiceNumber = failChoiceNumber;
         this.isAnswer = isAnswer;
     }
-
-    //    public static ReviewNote createFailNote(LocalDateTime createdDate, Long questionId, boolean isAnswer, int failChoiceNumber) {
-//        return new ReviewNote(createdDate, questionId,failChoiceNumber,isAnswer);
-//    }
 
 }

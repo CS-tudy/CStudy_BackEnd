@@ -15,17 +15,23 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "Workbook", uniqueConstraints = {
+        @UniqueConstraint(name = "Workbook_title", columnNames = {"title"}),
+        @UniqueConstraint(name = "Workbook_description", columnNames = {"description"})
+})
 public class Workbook  {
 
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "workbook_id")
     private Long id;
 
-    @Column(name = "workbook_title")
+    /********************************* PK가 아닌 필드 *********************************/
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "workbook_description")
+    @Column(nullable = false)
     private String description;
 
     @CreationTimestamp
@@ -34,6 +40,9 @@ public class Workbook  {
 
     @Column(name = "competition_end_time")
     private LocalDateTime competitionEndTime;
+
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @OneToMany(
             mappedBy = "workbook",
@@ -49,12 +58,16 @@ public class Workbook  {
     )
     private Competition competition;
 
+    /********************************* 빌더 *********************************/
+
     @Builder
     public Workbook(String title, String description, LocalDateTime endTime){
         this.title = title;
         this.description = description;
         this.competitionEndTime = LocalDateTime.now();
     }
+
+    /********************************* 비즈니스 로직 *********************************/
 
     public void addQuestion(WorkbookQuestion question){
         this.questions.add(question);

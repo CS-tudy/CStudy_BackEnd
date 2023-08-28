@@ -13,24 +13,37 @@ import java.util.Set;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "Competition", uniqueConstraints = {
+        @UniqueConstraint(name = "competitionTitle", columnNames = {"competitionTitle"})
+})
 public class Competition {
+
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "competition_id")
     private Long id;
 
-    @Column(name = "Competition_title")
+    /********************************* PK가 아닌 필드 *********************************/
+
+    @Column(nullable = false)
     private String competitionTitle;
 
-    @Column(name = "competition_participants")
+    @Column(nullable = false)
     private int participants;
 
+    @Column(nullable = false)
     private LocalDateTime competitionStart;
 
+    @Column(nullable = false)
     private LocalDateTime competitionEnd;
+
+    /********************************* 동시성 버전 *********************************/
 
     @Version
     private Long version;
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @OneToMany(
             mappedBy = "competition",
@@ -46,6 +59,7 @@ public class Competition {
     @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 
+    /********************************* 빌더 *********************************/
     @Builder
     public Competition(String competitionTitle, int participants, LocalDateTime competitionStart, LocalDateTime competitionEnd, Workbook workbook) {
         this.competitionTitle = competitionTitle;
@@ -54,6 +68,8 @@ public class Competition {
         this.competitionEnd = competitionEnd;
         this.workbook = workbook;
     }
+
+    /********************************* 비니지스 로직 *********************************/
 
     public void decreaseParticipantsCount() {
         this.participants--;

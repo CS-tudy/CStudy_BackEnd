@@ -1,6 +1,7 @@
 package com.cstudy.modulecommon.domain.choice;
 
 import com.cstudy.modulecommon.domain.question.Question;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +10,14 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Choice {
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /********************************* PK가 아닌 필드 *********************************/
 
     @Column(name = "choice_number")
     private int number;
@@ -21,6 +25,8 @@ public class Choice {
     private String content;
 
     private boolean answer = false;
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")

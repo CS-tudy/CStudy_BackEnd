@@ -14,10 +14,24 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class MemberCompetition {
+
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_competition_id")
     private Long id;
+
+    /********************************* PK가 아닌 필드 *********************************/
+    private Integer score;
+
+    private LocalDateTime endTime;
+
+    /********************************* 동시성 버전 *********************************/
+
+    @Version
+    private Long version;
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "competition_id")
@@ -28,13 +42,6 @@ public class MemberCompetition {
     private Member member;
 
 
-    @Version
-    private Long version;
-
-    private Integer score;
-
-    private LocalDateTime endTime;
-
     @OneToMany(
         mappedBy = "memberCompetition",
         fetch = FetchType.LAZY,
@@ -43,12 +50,16 @@ public class MemberCompetition {
     private List<CompetitionScore> competitionScore = new ArrayList<>();
 
 
+    /********************************* 빌더 *********************************/
+
     @Builder
     public MemberCompetition(Long id, Competition competition, Member member) {
         this.id = id;
         this.competition = competition;
         this.member = member;
     }
+
+    /********************************* 비니지스 로직 *********************************/
 
     public void setScore(int score){
         this.score = score;

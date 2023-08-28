@@ -8,6 +8,7 @@ import com.cstudy.modulecommon.domain.question.MemberQuestion;
 import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,23 +25,31 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "MEMBER", uniqueConstraints = {
+        @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
+        @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
+        @UniqueConstraint(name = "name", columnNames = {"name"}),
+})
 public class Member extends BaseEntity {
+
+    /********************************* PK 필드 *********************************/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "member_email")
+    /********************************* PK가 아닌 필드 *********************************/
+
+    @Column(nullable = false, length = 100)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "member_name")
+    @Column(nullable = false)
     private String name;
 
     private double rankingPoint = 0L;
-
-    private String sex;
 
     private String memberIpAddress;
 
@@ -49,8 +58,14 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member")
     private File file;
 
+
+    /********************************* 동시성 버전 *********************************/
+
     @Version
     private Long version;
+
+
+    /********************************* 연관관계 매핑 *********************************/
 
     @OneToMany(
             mappedBy = "member",
@@ -66,7 +81,7 @@ public class Member extends BaseEntity {
     )
     List<MemberCompetition> memberCompetitions = new ArrayList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Notice> notices = new ArrayList<>();
 
@@ -85,6 +100,8 @@ public class Member extends BaseEntity {
     )
     private Set<Role> roles = new HashSet<>();
 
+
+    /********************************* 비니지스 로직 *********************************/
 
     public void changePassword(String password) {
         this.password = password;
@@ -109,6 +126,9 @@ public class Member extends BaseEntity {
         this.name = name;
         this.roles = roles;
     }
+
+
+    /********************************* 연관관계 편의 메서드 *********************************/
 
     public void addRequest(Request request) {
         this.requests.add(request);

@@ -3,10 +3,7 @@ package com.cstudy.modulecommon.domain.comment;
 import com.cstudy.modulecommon.domain.BaseEntity;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.notice.Notice;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
@@ -14,20 +11,27 @@ import java.util.Set;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
+
+    /********************************* PK 필드 *********************************/
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String content;
 
+    @Setter
+    @Column(updatable = false)
+    private Long parentCommentId; // 부모 댓글 ID
+
+    /********************************* 연관관계 매핑 *********************************/
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Setter
-    @Column(updatable = false)
-    private Long parentCommentId; // 부모 댓글 ID
 
     @ToString.Exclude
     @OrderBy("createdDate ASC")
@@ -36,6 +40,9 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(optional = false)
     private Notice notice;
+
+
+    /********************************* 빌더 *********************************/
 
     @Builder
     public Comment(Long id, Member member, Long parentCommentId, Set<Comment> childComments, Notice notice) {
@@ -46,9 +53,6 @@ public class Comment extends BaseEntity {
         this.notice = notice;
     }
 
-    protected Comment() {
-
-    }
 
     public Comment(Notice notice, Member member, Long parentCommentId, String content) {
         this.notice = notice;
@@ -60,6 +64,9 @@ public class Comment extends BaseEntity {
     public static Comment of(Notice notice, Member member, String content) {
         return new Comment(notice, member, null, content);
     }
+
+
+    /********************************* 연관관계 편의 메서드 *********************************/
 
     public void addChildComment(Comment child) {
         child.setParentCommentId(this.getId());
