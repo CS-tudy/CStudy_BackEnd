@@ -102,6 +102,7 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         signupWithRole(member);
+        reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
         return MemberSignupResponse.of(memberRepository.save(member));
     }
 
