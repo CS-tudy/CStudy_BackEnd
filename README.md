@@ -55,12 +55,11 @@
 <br>
 
 ### 지속적인 리펙토링 
-- [Swagger, Rest Docs 어떤 걸 선택을 할까?]()
-- [Spring Security .hasAnyAuthority (권한) 가독성 높이기]()
-- [REST API에 적합한 URL 수정]()
-- [PUT, PATCH 구분]()
-- [Test Code 실행 시간을 감소를 위한 Application Context 재활용]()
-- [예외 코드 구조 변경]()
+- [REST API에 적합한 URL 수정](https://github.com/CS-tudy/CStudy_BackEnd/wiki/REST-API%EC%97%90-%EC%A0%81%ED%95%A9%ED%95%9C-URL-%EC%88%98%EC%A0%95)
+- [Test Code 실행 시간을 감소를 위한 Application Context 재활용](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Test-Code-%EC%8B%A4%ED%96%89-%EC%8B%9C%EA%B0%84%EC%9D%84-%EA%B0%90%EC%86%8C%EB%A5%BC-%EC%9C%84%ED%95%9C-Application-Context-%EC%9E%AC%ED%99%9C%EC%9A%A9)
+- [Spring Security .hasAnyAuthority (권한) 가독성 높이기](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Spring-Security-.hasAnyAuthority-(%EA%B6%8C%ED%95%9C)-%EA%B0%80%EB%8F%85%EC%84%B1-%EB%86%92%EC%9D%B4%EA%B8%B0)
+- [예외 코드 추상 클래스 구조 변경](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EC%98%88%EC%99%B8-%EC%BD%94%EB%93%9C-%EC%B6%94%EC%83%81-%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%A1%B0-%EB%B3%80%EA%B2%BD)
+- [Swagger, Rest Docs 어떤 걸 선택을 할까?](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Swagger,-Rest-Docs-%EC%96%B4%EB%96%A4-%EA%B1%B8-%EC%84%A0%ED%83%9D%EC%9D%84-%ED%95%A0%EA%B9%8C%3F)
 
 
 
