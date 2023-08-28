@@ -18,6 +18,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -67,8 +70,17 @@ public class MemberServiceImpl implements MemberService {
         this.reviewNoteService = reviewNoteService;
     }
 
+
     /**
-     * Returns the MemberSignupResponse With request
+     * 유저의 회원가입
+     * 유저를 생성하고 다음과 같은 로직을 실행을 합니다.
+     * 1. 유저를 생성한다.
+     * 2. 유저에 대한 권한을 생성한다.
+     * 3.  MongoDB의 ReviewUser를 생성한다.
+     *
+     * 다음과 같은 체크를 한다.
+     * 1. 이메일에 대한 중복을 체크한다.
+     * 2. 이메일에 대한 로직을 체크한다.
      *
      * @param request 회원가입 Signup
      * @return 회원가입 성공을 하면 이메일, 이름을 리턴을 합니다.
@@ -82,73 +94,25 @@ public class MemberServiceImpl implements MemberService {
     ) {
         checkEmailAndNameDuplication(request);
 
-        signupWithRole(Member.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-//                .memberIpAddress(geoLocationDto.getHostAddress())
-//                .countryIsoCode(geoLocationDto.getCountryIsoCode())
-                .roles(new HashSet<>())
-                .build());
-
-        reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
-
-        return MemberSignupResponse.of(memberRepository.save(Member.builder()
+        Member member = Member.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .roles(new HashSet<>())
-                .build()));
+                .build();
+
+        signupWithRole(member);
+        return MemberSignupResponse.of(memberRepository.save(member));
     }
 
 
-
     @Override
+    @Transactional
     public MemberSignupResponse signUpForTest(MemberSignupRequest request) {
         return getMemberSignupResponse(request);
     }
 
-    private MemberSignupResponse getMemberSignupResponse(MemberSignupRequest request) {
-        signupWithRole(Member.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .roles(new HashSet<>())
-                .build());
 
-        reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
-
-        return MemberSignupResponse.of(memberRepository.save(Member.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .roles(new HashSet<>())
-                .build()));
-    }
-
-
-    private void checkEmailAndNameDuplication(MemberSignupRequest request) {
-        divisionDuplicationAboutNickEmail(request);
-        divisionDuplicationAboutName(request);
-    }
-
-    private void divisionDuplicationAboutName(MemberSignupRequest request) {
-        DuplicateResponseDto name = duplicateServiceFinder.getVerifyResponseDto("name", request.getName());
-        Optional.of(name)
-                .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
-                .ifPresent(duplicateResponseDto -> {
-                    throw new NameDuplication("중복 이름");
-                });
-    }
-
-    private void divisionDuplicationAboutNickEmail(MemberSignupRequest request) {
-        DuplicateResponseDto email = duplicateServiceFinder.getVerifyResponseDto("email", request.getEmail());
-        Optional.of(email)
-                .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
-                .ifPresent(duplicateResponseDto -> {
-                    throw new EmailDuplication("중복 이메일");
-                });
-    }
 
     /**
      * Returns login member with LoginRequest
@@ -230,7 +194,9 @@ public class MemberServiceImpl implements MemberService {
     @Async
     @Override
     @Transactional
-    public String sendEmail(String recipientEmail) throws MailException, MessagingException {
+    public CompletableFuture<String> sendEmail(String recipientEmail) throws MailException, MessagingException {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         String key = createKey();
@@ -240,8 +206,14 @@ public class MemberServiceImpl implements MemberService {
         helper.setSubject("회원가입 코드 메일");
         helper.setText(emailHtml(key), true);
 
-        javaMailSender.send(message);
-        return key;
+        try {
+            javaMailSender.send(message);
+            future.complete(key);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
+        }
+
+        return future;
     }
 
     @NotNull
@@ -292,6 +264,7 @@ public class MemberServiceImpl implements MemberService {
                 roles
         );
 
+
         refreshTokenService.addRefreshToken(refreshToken);
         return MemberLoginResponse.of(member, accessToken, refreshToken);
     }
@@ -317,5 +290,47 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return key.toString();
+    }
+
+
+    private void checkEmailAndNameDuplication(MemberSignupRequest request) {
+        divisionDuplicationAboutNickEmail(request);
+        divisionDuplicationAboutName(request);
+    }
+
+    private void divisionDuplicationAboutName(MemberSignupRequest request) {
+        DuplicateResponseDto name = duplicateServiceFinder.getVerifyResponseDto("name", request.getName());
+        Optional.of(name)
+                .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
+                .ifPresent(duplicateResponseDto -> {
+                    throw new NameDuplication("중복 이름");
+                });
+    }
+
+    private void divisionDuplicationAboutNickEmail(MemberSignupRequest request) {
+        DuplicateResponseDto email = duplicateServiceFinder.getVerifyResponseDto("email", request.getEmail());
+        Optional.of(email)
+                .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
+                .ifPresent(duplicateResponseDto -> {
+                    throw new EmailDuplication("중복 이메일");
+                });
+    }
+
+    private MemberSignupResponse getMemberSignupResponse(MemberSignupRequest request) {
+        signupWithRole(Member.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .roles(new HashSet<>())
+                .build());
+
+        reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
+
+        return MemberSignupResponse.of(memberRepository.save(Member.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .roles(new HashSet<>())
+                .build()));
     }
 }
