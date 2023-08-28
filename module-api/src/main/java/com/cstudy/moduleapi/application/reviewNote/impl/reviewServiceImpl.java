@@ -67,8 +67,6 @@ public class reviewServiceImpl implements ReviewService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        //TODO : 실패 -> 성공일때 문제 데이터 정합성
-
         Member member = memberRepository.findById(loginUserDto.getMemberId())
                 .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
 
