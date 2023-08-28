@@ -72,6 +72,7 @@ public class reviewServiceImpl implements ReviewService {
 
         log.info("reviewUser_Name : {}", byName.getUserName());
 
+//        byName.getReviewNotes().removeIf(note -> note.getQuestionId() == questionId);
         if (isAnswer) {
             byName.getSuccessQuestion().add(String.valueOf(questionId));
         } else {
@@ -103,4 +104,5 @@ public class reviewServiceImpl implements ReviewService {
 
         userRepository.save(byName);
     }
+
 }
