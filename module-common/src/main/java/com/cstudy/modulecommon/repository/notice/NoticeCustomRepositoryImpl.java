@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.cstudy.modulecommon.domain.notice.QNotice.notice;
 
 
 public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
@@ -32,11 +29,11 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
         List<NoticeResponseDto> content = queryFactory
                 .select(
                         new QNoticeResponseDto(
-                                notice.title.as("noticeTitle"),
-                                notice.content.as("noticeContent")
+                                QNotice.notice.title.as("noticeTitle"),
+                                QNotice.notice.content.as("noticeContent")
                         )
                 )
-                .from(notice)
+                .from(QNotice.notice)
                 .where(
                         noticeTitleEq(noticeSearchRequestDto.getTitle()),
                         noticeContentEq(noticeSearchRequestDto.getContent())
@@ -46,7 +43,7 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
                 .fetch();
 
         JPAQuery<Notice> countQuery = queryFactory
-                .selectFrom(notice)
+                .selectFrom(QNotice.notice)
                 .where(
                         noticeTitleEq(noticeSearchRequestDto.getTitle()),
                         noticeContentEq(noticeSearchRequestDto.getContent())
@@ -56,10 +53,10 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
 
 
     private BooleanExpression noticeContentEq(String content) {
-        return StringUtils.hasText(content) ? notice.content.eq(content) : null;
+        return StringUtils.hasText(content) ? QNotice.notice.content.eq(content) : null;
     }
 
     private BooleanExpression noticeTitleEq(String title) {
-        return StringUtils.hasText(title) ? notice.title.eq(title) : null;
+        return StringUtils.hasText(title) ? QNotice.notice.title.eq(title) : null;
     }
 }

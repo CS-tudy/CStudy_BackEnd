@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.domainEntity.comment;
+package com.cstudy.modulecommon.domainEntity.comment;
 
 import com.cstudy.modulecommon.domain.comment.Comment;
 import com.cstudy.modulecommon.domain.member.Member;

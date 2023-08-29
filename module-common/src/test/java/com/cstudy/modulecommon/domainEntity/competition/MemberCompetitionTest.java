@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.domainEntity.competition;
+package com.cstudy.modulecommon.domainEntity.competition;
 
 import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.domain.competition.CompetitionScore;
