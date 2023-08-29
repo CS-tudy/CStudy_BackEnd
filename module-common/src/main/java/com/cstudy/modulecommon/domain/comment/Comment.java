@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Comment extends BaseEntity {
 
     /********************************* PK 필드 *********************************/

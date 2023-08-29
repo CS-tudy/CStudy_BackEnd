@@ -12,7 +12,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Notice extends BaseEntity {
 
     /********************************* PK 필드 *********************************/

@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 @Getter
 @Document(collection = "reviewUser")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ReviewUser {
 
     /********************************* PK 필드 *********************************/

@@ -9,9 +9,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "RefreshToken", uniqueConstraints = {
-        @UniqueConstraint(name = "value", columnNames = {"value"})
-})
 public class RefreshToken {
     /********************************* PK 필드 *********************************/
     @Id

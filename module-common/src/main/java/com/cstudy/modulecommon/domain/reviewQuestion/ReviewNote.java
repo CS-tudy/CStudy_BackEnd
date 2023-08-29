@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Component
 @Getter
 @Document(collection = "reviewNote")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ReviewNote {
 
     /********************************* PK 필드 *********************************/
