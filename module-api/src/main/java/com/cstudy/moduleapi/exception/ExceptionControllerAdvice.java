@@ -2,6 +2,7 @@ package com.cstudy.moduleapi.exception;
 
 import com.cstudy.modulecommon.error.abstracts.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -36,6 +37,21 @@ public class ExceptionControllerAdvice {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        ErrorResponse response = ErrorResponse.builder()
+                .code("400")
+                .message(e.getMessage())
+                .build();
+
+        response.addValidation("유니크 키 중복 데이터 삽입", e.getMessage());
+
+        return response;
+    }
+
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MessagingException.class)
     public ErrorResponse invalidRequestHandler(MessagingException e) {
         ErrorResponse response = ErrorResponse.builder()
@@ -54,7 +70,7 @@ public class ExceptionControllerAdvice {
     public ErrorResponse AccessDeniedException(AccessDeniedException e) {
         ErrorResponse response = ErrorResponse.builder()
                 .code("403")
-                .message("Access Denied: "+e.getMessage())
+                .message("Access Denied: " + e.getMessage())
                 .build();
         response.addValidation("Spring Security", "권한이 일치하지 않습니다.");
         return response;
