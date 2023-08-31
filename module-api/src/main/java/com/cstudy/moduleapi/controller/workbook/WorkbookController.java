@@ -2,6 +2,7 @@ package com.cstudy.moduleapi.controller.workbook;
 
 import com.cstudy.moduleapi.application.workbook.WorkbookService;
 import com.cstudy.moduleapi.dto.workbook.CreateWorkbookRequestDto;
+import com.cstudy.moduleapi.dto.workbook.WorkbookIdWithImagePath;
 import com.cstudy.moduleapi.dto.workbook.WorkbookQuestionRequestDto;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
@@ -16,8 +17,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.PermitAll;
+import java.util.List;
 
 @Tag(name = "Workbook(문제집 API)", description = "문제집 관련 API(문제집 생성, 조회)")
 @RestController
@@ -52,6 +55,21 @@ public class WorkbookController {
     public WorkbookResponseDto getWorkbook(@Parameter(name = "id", description = "문제집 id")
                                            @PathVariable("id") Long id) {
         return workbookService.getWorkbook(id);
+    }
+
+    @Operation(summary = "문제집 이미지 업로드", description = "문제집 이미지 업로드, FILE을 기반으로 workbookId로 매핑한다.")
+    @PostMapping("/upload/{workbookId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadFile(@Parameter(name = "문제집 업로드 이미지 파일", description = "MultipartFile 이미지 업로드 파일")
+                           @RequestParam(value = "file") MultipartFile file, @PathVariable Long workbookId) {
+        workbookService.uploadFile(file, workbookId);
+    }
+
+    @Operation(summary = "문제집 이미지 Path를 List 형태로 보여준다.", description = "문제집 아이디와 해당 아이디의 이미지 Path를 보여준다.")
+    @GetMapping("/images")
+    @ResponseStatus(HttpStatus.OK)
+    public List<WorkbookIdWithImagePath> getWorkbookImagePathList() {
+        return workbookService.getWorkbookImagePathList();
     }
 
     @Operation(summary = "문제집 문제 요청", description = "문제집 id를 이용해 문제집에 포함된 문제를 요청합니다. title: 문제집 제목, description: 문제집 설명 / PermitAll")

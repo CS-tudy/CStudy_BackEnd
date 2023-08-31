@@ -1,8 +1,5 @@
 package com.cstudy.modulecommon.repository.workbook;
 
-import com.cstudy.modulecommon.domain.competition.QCompetition;
-import com.cstudy.modulecommon.domain.workbook.QWorkbook;
-import com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
 import com.querydsl.core.types.Projections;
@@ -16,10 +13,10 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.cstudy.modulecommon.domain.competition.QCompetition.*;
+import static com.cstudy.modulecommon.domain.competition.QCompetition.competition;
 import static com.cstudy.modulecommon.domain.question.QQuestion.question;
-import static com.cstudy.modulecommon.domain.workbook.QWorkbook.*;
-import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.*;
+import static com.cstudy.modulecommon.domain.workbook.QWorkbook.workbook;
+import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.workbookQuestion;
 
 
 public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
