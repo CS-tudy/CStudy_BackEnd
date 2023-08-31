@@ -1,13 +1,5 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
-<p align="center">
-
-
-<img src="https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/8388ec52-c87a-4710-9bd7-5ce5e28df2bc" style="width: 70%"/>
-
-
-</p>
-
 <br>
 
 ## ✨ 프로젝트 소개
