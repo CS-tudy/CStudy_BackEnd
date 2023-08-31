@@ -43,7 +43,6 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
