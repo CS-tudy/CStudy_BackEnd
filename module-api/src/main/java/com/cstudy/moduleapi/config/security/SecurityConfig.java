@@ -77,6 +77,7 @@ public class SecurityConfig {
                 //CommentController
                 .antMatchers(HttpMethod.GET, "/api/comment/*").permitAll() // 계층형 댓글 조회
                 .antMatchers(HttpMethod.POST, "/api/comment").authenticated() // 댓글 생성하기
+                .antMatchers(HttpMethod.DELETE, "/api/comment/*").authenticated() // 계층형 댓글 삭제
 
                 //NoticeController
                 .antMatchers(HttpMethod.GET, "/api/notice").permitAll() //공지사항 조회

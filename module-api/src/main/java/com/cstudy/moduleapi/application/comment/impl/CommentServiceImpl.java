@@ -4,6 +4,7 @@ import com.cstudy.moduleapi.application.comment.CommentService;
 import com.cstudy.moduleapi.dto.comment.NoticeCommentRequestDto;
 import com.cstudy.moduleapi.dto.comment.NoticeCommentResponse;
 import com.cstudy.modulecommon.error.abstracts.CommentAbstractException;
+import com.cstudy.modulecommon.error.comment.NotFoundCommentId;
 import com.cstudy.modulecommon.error.comment.NotFoundCommentParentId;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.util.LoginUserDto;
@@ -101,5 +102,25 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return topLevelResponses;
+    }
+
+    /**
+     * 해당 공지사항의 댓글을 삭제를 합니다.
+     * 댓글 부모 아이디를 판단하고 만약에 있으면 자식 댓글도 삭제를 합니다.
+     * @param commentId 댓글 아이디
+     */
+    @Override
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment commentToDelete = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundCommentId(commentId));
+
+        if (commentToDelete.getParentCommentId() == null) {
+            commentRepository.delete(commentToDelete);
+        } else {
+            Comment parentComment = commentRepository.findById(commentToDelete.getParentCommentId())
+                    .orElseThrow(() -> new NotFoundCommentParentId(String.valueOf(commentId)));
+            parentComment.getChildComments().remove(commentToDelete);
+        }
     }
 }

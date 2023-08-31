@@ -47,4 +47,13 @@ public class NoticeCommentController {
         return commentService.getCommentsForNotice(noticeId);
     }
 
+    @Operation(summary = "계층형 댓글 삭제", description = "계층형 댓글 삭제하기 / ROLE_ADMIN")
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public void deleteComment(@Parameter(name = "commentId", description = "댓글 아이디")
+                              @PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+    }
+
 }

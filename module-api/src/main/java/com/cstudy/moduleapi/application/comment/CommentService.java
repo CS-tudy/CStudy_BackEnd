@@ -9,4 +9,5 @@ import java.util.List;
 public interface CommentService {
     void saveNoticeComment(NoticeCommentRequestDto noticeCommentRequestDto, LoginUserDto loginUserDto);
     List<NoticeCommentResponse> getCommentsForNotice(Long noticeId);
+    void deleteComment(Long commentId);
 }
