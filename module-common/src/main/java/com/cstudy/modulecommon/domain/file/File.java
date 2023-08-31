@@ -1,6 +1,8 @@
 package com.cstudy.modulecommon.domain.file;
 
 import com.cstudy.modulecommon.domain.member.Member;
+import com.cstudy.modulecommon.domain.workbook.Workbook;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,10 +11,12 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @Table(name = "File", uniqueConstraints = {
         @UniqueConstraint(name = "fileName", columnNames = {"fileName"})
 })
+@AllArgsConstructor
 public class File {
 
     /********************************* PK 필드 *********************************/
@@ -28,10 +32,14 @@ public class File {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST
+    )
+    @JoinColumn(name = "workbook_id")
+    private Workbook workbook;
+
+
     /********************************* 빌더 *********************************/
-    @Builder
-    public File(String fileName, Member member) {
-        this.fileName = fileName;
-        this.member = member;
-    }
+
 }

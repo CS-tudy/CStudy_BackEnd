@@ -1,7 +1,9 @@
 package com.cstudy.modulecommon.domain.workbook;
 
 import com.cstudy.modulecommon.domain.competition.Competition;
+import com.cstudy.modulecommon.domain.file.File;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,8 @@ import java.util.List;
         @UniqueConstraint(name = "Workbook_title", columnNames = {"title"}),
         @UniqueConstraint(name = "Workbook_description", columnNames = {"description"})
 })
+@Builder
+@AllArgsConstructor
 public class Workbook  {
 
     /********************************* PK 필드 *********************************/
@@ -51,6 +55,12 @@ public class Workbook  {
     )
     List<WorkbookQuestion> questions = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "workbook",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST)
+    List<File> files = new ArrayList<>();
+
     @OneToOne(
         mappedBy = "workbook",
         fetch = FetchType.LAZY,
@@ -60,12 +70,12 @@ public class Workbook  {
 
     /********************************* 빌더 *********************************/
 
-    @Builder
-    public Workbook(String title, String description, LocalDateTime endTime){
-        this.title = title;
-        this.description = description;
-        this.competitionEndTime = LocalDateTime.now();
-    }
+//    @Builder
+//    public Workbook(String title, String description, LocalDateTime endTime){
+//        this.title = title;
+//        this.description = description;
+//        this.competitionEndTime = LocalDateTime.now();
+//    }
 
     /********************************* 비즈니스 로직 *********************************/
 
