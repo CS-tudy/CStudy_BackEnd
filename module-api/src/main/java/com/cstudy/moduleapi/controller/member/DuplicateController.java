@@ -28,7 +28,7 @@ public class DuplicateController {
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     public DuplicateResponseDto checkEmailDuplication(@Parameter(name = "email", description = "email 중복 체크")
-                                                      @RequestParam(value = "account", required = true) String account,
+                                                      @RequestParam(value = "email", required = true) String account,
                                                       HttpServletRequest request) {
         return duplicateServiceFinder.getVerifyResponseDto(request.getParameterNames().nextElement(), account);
     }
@@ -38,7 +38,7 @@ public class DuplicateController {
     @PermitAll
     @ResponseStatus(HttpStatus.OK)
     public DuplicateResponseDto checkNameDuplication(@Parameter(name = "name", description = "name 중복 체크")
-                                                     @RequestParam(value = "account", required = true) String account,
+                                                     @RequestParam(value = "name", required = true) String account,
                                                      HttpServletRequest request) {
         return duplicateServiceFinder.getVerifyResponseDto(request.getParameterNames().nextElement(), account);
     }

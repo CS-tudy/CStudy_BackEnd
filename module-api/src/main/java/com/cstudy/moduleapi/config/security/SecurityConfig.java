@@ -68,8 +68,10 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/member/upload").authenticated() //이미지 업로드
                 .antMatchers(HttpMethod.GET, "/api/member/download").authenticated() // 다운로드
                 .antMatchers(HttpMethod.GET, "/api/member/member").authenticated() // 마이페이지
-                .antMatchers(HttpMethod.GET, "/api/email").authenticated() //이메일 중복검사
-                .antMatchers(HttpMethod.GET, "/api/name").authenticated() // 닉네임 중복검사
+
+
+                .antMatchers(HttpMethod.GET, "/api/email").permitAll() //이메일 중복검사
+                .antMatchers(HttpMethod.GET, "/api/name").permitAll() // 닉네임 중복검사
 
                 .antMatchers(HttpMethod.PUT, "/api/member/member").authenticated() // 비밀번호 변경
                 .antMatchers(HttpMethod.DELETE, "/api/member/logout").authenticated() //로그아웃
@@ -108,6 +110,7 @@ public class SecurityConfig {
                 //WorkbookController
                 .antMatchers(HttpMethod.GET, "/api/workbook/**").permitAll() // 특정 GET 요청은 모든 사용자에게 허용
                 .antMatchers(HttpMethod.POST, "/api/workbook").authenticated() // POST 요청은 ROLE_ADMIN 권한 필요
+                .antMatchers(HttpMethod.POST, "/api/workbook/upload/*").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/workbook/questions").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/workbook").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/workbook").authenticated()
