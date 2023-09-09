@@ -3,6 +3,7 @@ package com.cstudy.moduleapi.config.security;
 
 import com.cstudy.moduleapi.config.jwt.exception.CustomAccessDeniedHandler;
 import com.cstudy.moduleapi.config.jwt.exception.CustomAuthenticationEntryPoint;
+import com.cstudy.moduleapi.config.oauth.CustomLogoutSuccessHandler;
 import com.cstudy.moduleapi.config.oauth.CustomOAuth2UserService;
 import com.cstudy.moduleapi.config.oauth.OAuth2FailureHandler;
 import com.cstudy.moduleapi.config.oauth.OAuth2SuccessHandler;
@@ -17,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
@@ -26,10 +26,11 @@ public class SecurityConfig {
 
     private final AuthenticationManagerConfig authenticationManagerConfig;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final OAuth2FailureHandler failureHandler;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -139,11 +140,17 @@ public class SecurityConfig {
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
                 .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .and()
                 .oauth2Login()
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .userInfoEndpoint()
-                .userService(oAuth2UserService);
+                .userService(customOAuth2UserService);
 
 
 
