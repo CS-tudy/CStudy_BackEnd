@@ -143,7 +143,9 @@ public class MemberController {
     @GetMapping("/email/send")
     @ResponseStatus(HttpStatus.OK)
     public CompletableFuture<String> sendEmail(@Parameter(name = "emailRequest", description = "전송을 원하는 이메일 주소")
-                                               @RequestBody EmailRequest emailRequest) throws MessagingException {
-        return memberService.sendEmail(emailRequest.getTo());
+                                               String to
+
+    ) throws MessagingException {
+        return memberService.sendEmail(to);
     }
 }

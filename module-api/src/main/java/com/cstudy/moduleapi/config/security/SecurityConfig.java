@@ -3,6 +3,7 @@ package com.cstudy.moduleapi.config.security;
 
 import com.cstudy.moduleapi.config.jwt.exception.CustomAccessDeniedHandler;
 import com.cstudy.moduleapi.config.jwt.exception.CustomAuthenticationEntryPoint;
+import com.cstudy.moduleapi.config.oauth.CustomLogoutSuccessHandler;
 import com.cstudy.moduleapi.config.oauth.CustomOAuth2UserService;
 import com.cstudy.moduleapi.config.oauth.OAuth2FailureHandler;
 import com.cstudy.moduleapi.config.oauth.OAuth2SuccessHandler;
@@ -17,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
@@ -26,10 +26,11 @@ public class SecurityConfig {
 
     private final AuthenticationManagerConfig authenticationManagerConfig;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final OAuth2FailureHandler failureHandler;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -68,8 +69,10 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/member/upload").authenticated() //이미지 업로드
                 .antMatchers(HttpMethod.GET, "/api/member/download").authenticated() // 다운로드
                 .antMatchers(HttpMethod.GET, "/api/member/member").authenticated() // 마이페이지
-                .antMatchers(HttpMethod.GET, "/api/email").authenticated() //이메일 중복검사
-                .antMatchers(HttpMethod.GET, "/api/name").authenticated() // 닉네임 중복검사
+
+
+                .antMatchers(HttpMethod.GET, "/api/email").permitAll() //이메일 중복검사
+                .antMatchers(HttpMethod.GET, "/api/name").permitAll() // 닉네임 중복검사
 
                 .antMatchers(HttpMethod.PUT, "/api/member/member").authenticated() // 비밀번호 변경
                 .antMatchers(HttpMethod.DELETE, "/api/member/logout").authenticated() //로그아웃
@@ -108,6 +111,7 @@ public class SecurityConfig {
                 //WorkbookController
                 .antMatchers(HttpMethod.GET, "/api/workbook/**").permitAll() // 특정 GET 요청은 모든 사용자에게 허용
                 .antMatchers(HttpMethod.POST, "/api/workbook").authenticated() // POST 요청은 ROLE_ADMIN 권한 필요
+                .antMatchers(HttpMethod.POST, "/api/workbook/upload/*").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/workbook/questions").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/workbook").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/workbook").authenticated()
@@ -136,11 +140,17 @@ public class SecurityConfig {
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
                 .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .and()
                 .oauth2Login()
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .userInfoEndpoint()
-                .userService(oAuth2UserService);
+                .userService(customOAuth2UserService);
 
 
 
