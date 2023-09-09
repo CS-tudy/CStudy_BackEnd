@@ -26,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MEMBER", uniqueConstraints = {
-        @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
+//        @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
         @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
         @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
@@ -49,6 +49,8 @@ public class Member extends BaseEntity {
     private String name;
 
     private double rankingPoint = 0L;
+
+    private String picture;
 
     private String memberIpAddress;
 
@@ -125,6 +127,14 @@ public class Member extends BaseEntity {
         this.name = name;
         this.roles = roles;
     }
+
+    public Member update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+
+        return this;
+    }
+
 
 
     /********************************* 연관관계 편의 메서드 *********************************/

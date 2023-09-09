@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,13 @@ public class WorkbookServiceImpl implements WorkbookService {
     private final FileRepository fileRepository;
     private final AwsS3Util awsS3Util;
 
-    public WorkbookServiceImpl(WorkbookRepository workbookRepository, WorkbookQuestionRepository workbookQuestionRepository, QuestionRepository questionRepository, FileRepository fileRepository, AwsS3Util awsS3Util) {
+    public WorkbookServiceImpl(
+            WorkbookRepository workbookRepository,
+            WorkbookQuestionRepository workbookQuestionRepository,
+            QuestionRepository questionRepository,
+            FileRepository fileRepository,
+            AwsS3Util awsS3Util
+    ) {
         this.workbookRepository = workbookRepository;
         this.workbookQuestionRepository = workbookQuestionRepository;
         this.questionRepository = questionRepository;
@@ -67,6 +72,10 @@ public class WorkbookServiceImpl implements WorkbookService {
         return workbookRepository.findWorkbookList(pageable, title, description, titleDesc);
     }
 
+    /**
+     * 문제집 전체 List와 List에 따른 이미지 Path
+     * @return WorkbookIdWithImagePath -> workbookId, imagePath (List)
+     */
     @Override
     @Transactional(readOnly = true)
     public List<WorkbookIdWithImagePath> getWorkbookImagePathList() {
@@ -86,7 +95,6 @@ public class WorkbookServiceImpl implements WorkbookService {
                 })
                 .collect(Collectors.toList());
     }
-
 
 
     /**
@@ -176,11 +184,9 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional
     public void updateWorkbook(UpdateWorkbookRequestDto requestDto) {
-
-        Workbook workbook = workbookRepository.findById(requestDto.getId())
-                .orElseThrow(() -> new NotFoundWorkbook(requestDto.getId()));
-
-        workbook.changeWorkbook(requestDto);
+        workbookRepository.findById(requestDto.getId())
+                .orElseThrow(() -> new NotFoundWorkbook(requestDto.getId()))
+                .changeWorkbook(requestDto);
     }
 
     /**

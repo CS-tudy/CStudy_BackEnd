@@ -60,6 +60,7 @@ public class WorkbookController {
     @Operation(summary = "문제집 이미지 업로드", description = "문제집 이미지 업로드, FILE을 기반으로 workbookId로 매핑한다.")
     @PostMapping("/upload/{workbookId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void uploadFile(@Parameter(name = "문제집 업로드 이미지 파일", description = "MultipartFile 이미지 업로드 파일")
                            @RequestParam(value = "file") MultipartFile file, @PathVariable Long workbookId) {
         workbookService.uploadFile(file, workbookId);
@@ -68,6 +69,7 @@ public class WorkbookController {
     @Operation(summary = "문제집 이미지 Path를 List 형태로 보여준다.", description = "문제집 아이디와 해당 아이디의 이미지 Path를 보여준다.")
     @GetMapping("/images")
     @ResponseStatus(HttpStatus.OK)
+    @PermitAll
     public List<WorkbookIdWithImagePath> getWorkbookImagePathList() {
         return workbookService.getWorkbookImagePathList();
     }

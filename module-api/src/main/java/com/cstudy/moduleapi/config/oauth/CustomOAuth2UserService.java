@@ -1,10 +1,8 @@
 package com.cstudy.moduleapi.config.oauth;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
-import com.cstudy.moduleapi.application.member.MemberService;
+import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
+import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.config.security.auth.OAuthAttributes;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
@@ -19,34 +17,53 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+import java.util.Collections;
+import java.util.List;
 
+@Slf4j
+@RequiredArgsConstructor
+@Service
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtTokenizer jwtTokenizer;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
+                .getUserInfoEndpoint().getUserNameAttributeName();
 
-        String email = "google_" + oAuth2User.getAttributes().get("email");
-        String name = (String) oAuth2User.getAttributes().get("name");
-        Optional<Member> memberOption = memberRepository.findByEmail(email);
+        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        Member member = memberOption.orElseGet(() -> memberService.oauthSignUp(email, name));
+        Member member = saveOrUpdate(attributes);
 
-        // 4번
-        OAuth2Attribute oAuth2Attribute =
-            OAuth2Attribute.of(member, oAuth2User.getAttributes());
 
-        Map<String, Object> memberAttribute = oAuth2Attribute.convertToMap();
+        log.info("getEmail : {}", member.getEmail());
+        log.info("memberId : {}", member.getId());
+
+
+        String refreshToken = jwtTokenizer.createRefreshToken(member.getId(), member.getEmail(), List.of(RoleEnum.CUSTOM.getRoleName()));
+
+        log.info("refresh token: {} " , refreshToken);
+
+        refreshTokenService.addRefreshToken(refreshToken);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(RoleEnum.CUSTOM.getRoleName())),
-                memberAttribute, "email");
+                attributes.getAttributes(),
+                attributes.getNameAttributeKey());
+    }
+
+
+    private Member saveOrUpdate(OAuthAttributes attributes) {
+        Member member = memberRepository.findByEmail(attributes.getEmail())
+                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
+                .orElse(attributes.toEntity());
+
+        return memberRepository.save(member);
     }
 }
