@@ -180,13 +180,8 @@
 
 
 ## 🎨 ERD Diagram
-<details>
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/d3501ab7-abe0-4809-99af-dcc0a1ecb903)
 
-<summary> 본문 확인 (👈 Click) </summary>
-
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/3e111f97-c1d4-488d-81bb-6e4229d18682)
-
-</details>
 
 
 
