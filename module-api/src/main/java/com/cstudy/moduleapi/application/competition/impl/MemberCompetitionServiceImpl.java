@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -67,7 +68,7 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
                 .findFinishMember(competitionId);
         Integer myRank = null;
         for (int i = 0; i < finishMember.size(); i++) {
-            if (finishMember.get(i) == memberId) {
+            if (Objects.equals(finishMember.get(i), memberId)) {
                 myRank = i + 1;
                 break;
             }
