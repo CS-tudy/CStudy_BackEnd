@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.argumentResolver;
+package com.cstudy.moduleapi.config.argumentResolver;
 
 import com.cstudy.moduleapi.config.jwt.token.JwtAuthenticationToken;
 import com.cstudy.modulecommon.util.LoginUserDto;

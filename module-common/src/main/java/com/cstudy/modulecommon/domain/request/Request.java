@@ -34,10 +34,7 @@ public class Request {
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     /********************************* 연관관계 매핑 *********************************/
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
