@@ -1,11 +1,12 @@
 package com.cstudy.moduleapi.controller.notice;
 
 import com.cstudy.moduleapi.application.notice.NoticeService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.notice.NoticeSaveRequestDto;
 import com.cstudy.modulecommon.dto.NoticeResponseDto;
 import com.cstudy.modulecommon.dto.NoticeSearchRequestDto;
 import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
+import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Tag(name = "공지사항 API", description = "공지사항 생성, 조회 API")
 @Slf4j
@@ -45,6 +47,18 @@ public class NoticeController {
         return noticeService.findNoticePage(page, size, noticeSearchRequestDto);
     }
 
+    @Operation(summary = "세부 공지사항", description = "세부 공지사항 내용/ @PermitAll")
+    @GetMapping("{noticeId}")
+    @PermitAll
+    @ResponseStatus(HttpStatus.OK)
+    public NoticeResponseDto findByNoticeId(@Parameter(name = "noticeID", description = "공지사항 아이디")
+                                            @PathVariable Long noticeId) {
+        Optional.of(noticeId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(noticeId));
+        return noticeService.findNoticeWithId(noticeId);
+    }
+
     @Operation(summary = "공지사항 생성", description = "공지사항 생성 / ROLE_ADMIN")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -63,9 +77,12 @@ public class NoticeController {
     public void updateNotice(@Parameter(name = "noticeId", description = "공지사항 아이디")
                              @PathVariable Long noticeId,
                              @Parameter(name = "NoticeUpdateRequestDto", description = "공지사항 update dto")
-                             @RequestBody NoticeUpdateRequestDto noticeUpdateRequestDto,
+                             @Valid @RequestBody NoticeUpdateRequestDto noticeUpdateRequestDto,
                              @Parameter(hidden = true)
                              @IfLogin LoginUserDto loginUserDto) {
+        Optional.of(noticeId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(noticeId));
         noticeService.updateNotice(noticeId, noticeUpdateRequestDto, loginUserDto);
     }
 
@@ -77,6 +94,9 @@ public class NoticeController {
                              @PathVariable Long noticeId,
                              @Parameter(hidden = true)
                              @IfLogin LoginUserDto loginUserDto) {
+            Optional.of(noticeId)
+                    .filter(id -> id >= 0)
+                    .orElseThrow(() -> new PositivePatriarchal(noticeId));
         noticeService.deleteNotice(noticeId, loginUserDto);
     }
 }

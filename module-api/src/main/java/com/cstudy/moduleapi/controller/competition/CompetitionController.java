@@ -2,9 +2,10 @@ package com.cstudy.moduleapi.controller.competition;
 
 import com.cstudy.moduleapi.application.competition.CompetitionService;
 import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.competition.*;
 import com.cstudy.modulecommon.dto.CompetitionQuestionDto;
+import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +25,7 @@ import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Competition(경기 API)", description = "경기 생성 및 Get")
 @Slf4j
@@ -46,8 +48,9 @@ public class CompetitionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public void createCompetition(@Parameter(name = "CreateCompetitionRequestDto", description = "대회 생성 제목, 참가인원, 시작, 끝 시작 ")
-                                  @RequestBody CreateCompetitionRequestDto createCompetitionRequestDto) {
+    public void createCompetition(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "대회 생성 request Dto", required = true)
+                                  @Valid @RequestBody CreateCompetitionRequestDto createCompetitionRequestDto) {
+
         competitionService.createCompetition(createCompetitionRequestDto);
     }
 
@@ -59,6 +62,9 @@ public class CompetitionController {
                                     @IfLogin LoginUserDto loginUserDto,
                                     @Parameter(name = "competitionId", description = "경기 아이디")
                                     @PathVariable(name = "competitionId") Long competitionId) {
+        Optional.of(competitionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(competitionId));
         competitionService.checkCompetitionTime(competitionId);
         memberCompetitionService.joinCompetition(loginUserDto, competitionId);
     }
@@ -69,6 +75,9 @@ public class CompetitionController {
     @PermitAll
     public CompetitionResponseDto getCompetition(@Parameter(name = "competitionId", description = "경기 아이디")
                                                  @PathVariable Long competitionId) {
+        Optional.of(competitionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(competitionId));
         return competitionService.getCompetition(competitionId);
     }
 
@@ -80,6 +89,9 @@ public class CompetitionController {
                                                                @PathVariable Long competitionId,
                                                                @Parameter(hidden = true)
                                                                @IfLogin LoginUserDto loginUserDto) {
+        Optional.of(competitionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(competitionId));
         return competitionService.getCompetitionQuestion(competitionId, loginUserDto);
     }
 
@@ -119,7 +131,7 @@ public class CompetitionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void deleteCompetitionQuestion(@Parameter(name = "CompetitionQuestionRequestDto", description = "대회 문제 삭제 정보")
-                                          @RequestBody CompetitionQuestionRequestDto requestDto
+                                          @Valid @RequestBody CompetitionQuestionRequestDto requestDto
     ) {
         competitionService.deleteCompetitionQuestion(requestDto);
     }
@@ -137,6 +149,9 @@ public class CompetitionController {
             @Parameter(name = "competitionId", description = "경기 아이디")
             @PathVariable Long competitionId
     ) {
+        Optional.of(competitionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(competitionId));
         return competitionService.getCompetitionRanking(competitionId, pageable);
     }
 
@@ -148,6 +163,9 @@ public class CompetitionController {
                                                            @PathVariable Long competitionId,
                                                            @Parameter(hidden = true)
                                                            @IfLogin LoginUserDto loginUserDto) {
+        Optional.of(competitionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(competitionId));
         return memberCompetitionService.myRanking(loginUserDto.getMemberId(), competitionId);
     }
 }
