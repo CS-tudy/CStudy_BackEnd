@@ -1,7 +1,7 @@
 package com.cstudy.moduleapi.controller.reviewNote;
 
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.review.ReviewUserResponseDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;

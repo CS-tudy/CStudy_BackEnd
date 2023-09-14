@@ -12,4 +12,5 @@ public interface NoticeService {
     void updateNotice(Long noticeId, NoticeUpdateRequestDto noticeUpdateRequestDto, LoginUserDto loginUserDto);
     void deleteNotice(Long noticeId, LoginUserDto loginUserDto);
     Page<NoticeResponseDto> findNoticePage(int page, int size, NoticeSearchRequestDto requestDto);
+    NoticeResponseDto findNoticeWithId(Long noticeId);
 }

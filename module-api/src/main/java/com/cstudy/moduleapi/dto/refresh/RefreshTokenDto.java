@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefreshTokenDto {
-    @NotEmpty(message = "refresh token을 입력하세요.")
+    @NotNull(message = "refresh token을 입력하세요.")
     String refreshToken;
 }

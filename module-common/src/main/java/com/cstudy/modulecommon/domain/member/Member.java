@@ -83,13 +83,12 @@ public class Member extends BaseEntity {
     List<MemberCompetition> memberCompetitions = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "member",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            fetch = FetchType.LAZY
     )
     List<Request> requests = new ArrayList<>();
 

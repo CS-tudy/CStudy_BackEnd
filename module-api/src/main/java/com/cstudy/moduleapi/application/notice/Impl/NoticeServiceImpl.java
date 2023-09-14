@@ -75,4 +75,11 @@ public class NoticeServiceImpl implements NoticeService {
         PageRequest pageRequest = PageRequest.of(page, size);
         return noticeRepository.findNoticePage(pageRequest, requestDto);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public NoticeResponseDto findNoticeWithId(Long noticeId) {
+        return NoticeResponseDto.of(noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NotFoundNoticeId(noticeId)));
+    }
 }

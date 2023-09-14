@@ -1,9 +1,10 @@
 package com.cstudy.moduleapi.controller.comment;
 
 import com.cstudy.moduleapi.application.comment.CommentService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.comment.NoticeCommentRequestDto;
 import com.cstudy.moduleapi.dto.comment.NoticeCommentResponse;
+import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +14,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "notice 댓글", description = "댓글 생성")
 @RestController
@@ -31,7 +34,7 @@ public class NoticeCommentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void postNewNoticeComment(@Parameter(name = "noticeCommentRequestDto", description = "공지사항 아이디, 부모 댓글 Id, 내용")
-                                     @RequestBody NoticeCommentRequestDto noticeCommentRequestDto,
+                                     @Valid @RequestBody NoticeCommentRequestDto noticeCommentRequestDto,
                                      @Parameter(hidden = true)
                                      @IfLogin LoginUserDto loginUserDto) {
         commentService.saveNoticeComment(noticeCommentRequestDto, loginUserDto);
@@ -44,15 +47,21 @@ public class NoticeCommentController {
     @PermitAll
     public List<NoticeCommentResponse> getCommentsForNotice(@Parameter(name = "noticeId", description = "공지사항 아이디")
                                                             @PathVariable Long noticeId) {
+        Optional.of(noticeId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(noticeId));
         return commentService.getCommentsForNotice(noticeId);
     }
 
-    @Operation(summary = "계층형 댓글 삭제", description = "계층형 댓글 삭제하기 / ROLE_ADMIN")
+    @Operation(summary = "계층형 댓글 삭제", description = "계층형 댓글 삭제하기 (최상위 댓글만 삭제 - 자식 대댓글 모두 삭제) / ROLE_ADMIN")
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void deleteComment(@Parameter(name = "commentId", description = "댓글 아이디")
                               @PathVariable Long commentId) {
+        Optional.of(commentId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(commentId));
         commentService.deleteComment(commentId);
     }
 
