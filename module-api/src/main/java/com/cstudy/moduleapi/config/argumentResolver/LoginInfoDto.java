@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.argumentResolver;
+package com.cstudy.moduleapi.config.argumentResolver;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

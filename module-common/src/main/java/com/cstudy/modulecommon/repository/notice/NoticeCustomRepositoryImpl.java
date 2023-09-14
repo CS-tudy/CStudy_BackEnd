@@ -29,8 +29,10 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
         List<NoticeResponseDto> content = queryFactory
                 .select(
                         new QNoticeResponseDto(
+                                QNotice.notice.id,
                                 QNotice.notice.title.as("noticeTitle"),
-                                QNotice.notice.content.as("noticeContent")
+                                QNotice.notice.content.as("noticeContent"),
+                                QNotice.notice.createdDate.as("createdDate")
                         )
                 )
                 .from(QNotice.notice)

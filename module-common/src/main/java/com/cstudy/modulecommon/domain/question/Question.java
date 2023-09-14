@@ -17,9 +17,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "question", indexes = {
         @Index(name = "idx_question_title", columnList = "question_title")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "description", columnNames = {"question_description"}),
-        @UniqueConstraint(name = "title", columnNames = {"question_title"}),
+//}, uniqueConstraints = {
+//        @UniqueConstraint(name = "description", columnNames = {"question_description"}),
+//        @UniqueConstraint(name = "title", columnNames = {"question_title"}),
 })
 public class Question {
     /********************************* PK 필드 *********************************/

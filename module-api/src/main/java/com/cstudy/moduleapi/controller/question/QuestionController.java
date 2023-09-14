@@ -2,13 +2,14 @@ package com.cstudy.moduleapi.controller.question;
 
 import com.cstudy.moduleapi.application.question.MemberQuestionService;
 import com.cstudy.moduleapi.application.question.QuestionService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.question.CreateQuestionAndCategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.QuestionAnswerDto;
 import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
 import com.cstudy.modulecommon.dto.QuestionSearchCondition;
+import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +20,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @Tag(name = "문제 Question", description = "문제 생성 및 대량 데이터 Insert & 문제 페이징 및 정답 선택")
@@ -43,7 +46,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void createQuestionWithCategory(@Parameter(name = "CreateQuestionAndCategoryRequestDto", description = "문제 생성 Dto, {문제, 카테고리, List<선택>")
-                                           @RequestBody CreateQuestionAndCategoryRequestDto requestDto) {
+                                           @Valid @RequestBody CreateQuestionAndCategoryRequestDto requestDto) {
         questionService.createQuestionChoice(requestDto);
     }
 
@@ -52,7 +55,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void buildCreateQuestionWithCategory(@Parameter(name = "List<CreateQuestionAndCategoryRequestDto>", description = "대량 문제 생성을 위한 문제, 카테고리, 선택")
-                                                @RequestBody List<CreateQuestionAndCategoryRequestDto> createQuestionAndCategoryRequestDtos) {
+                                                @Valid @RequestBody List<CreateQuestionAndCategoryRequestDto> createQuestionAndCategoryRequestDtos) {
         questionService.recursiveCreateQuestionChoice(createQuestionAndCategoryRequestDtos);
     }
 
@@ -62,6 +65,9 @@ public class QuestionController {
     @PermitAll
     public QuestionResponseDto findQuestionPathId(@Parameter(name = "문제 아이디", description = "문제 아이디")
                                                   @PathVariable Long questionId) {
+        Optional.of(questionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(questionId));
         return questionService.findQuestionWithChoiceAndCategory(questionId);
     }
 
@@ -72,9 +78,12 @@ public class QuestionController {
     public QuestionAnswerDto choiceQuestion(@Parameter(name = "문제 아이디", description = "문제 아이디")
                                             @PathVariable Long questionId,
                                             @Parameter(name = "ChoiceAnswerRequestDto", description = "문제 번호, 시간")
-                                            @RequestBody ChoiceAnswerRequestDto choiceNumber,
+                                            @Valid @RequestBody ChoiceAnswerRequestDto choiceNumber,
                                             @Parameter(hidden = true)
                                             @IfLogin LoginUserDto loginUserDto) {
+        Optional.of(questionId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(questionId));
         questionService.choiceQuestion(loginUserDto, questionId, choiceNumber);
         return memberQuestionService.isCorrectAnswer(loginUserDto.getMemberId(), questionId, choiceNumber);
     }

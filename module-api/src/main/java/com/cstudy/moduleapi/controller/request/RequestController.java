@@ -1,11 +1,12 @@
 package com.cstudy.moduleapi.controller.request;
 
 import com.cstudy.moduleapi.application.request.RequestService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
 import com.cstudy.moduleapi.dto.request.RequestResponseDto;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
+import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
+import java.util.Optional;
 
 @Tag(name = "Request(게시판 API)", description = "게시판 관련 API(게시판 조회, 생성)")
 @RestController
@@ -36,7 +39,7 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM')")
     public void createRequest(@Parameter(name = "CreateRequestRequestDto", description = "title: 게시글 제목, description: 게시글 내용")
-                              @RequestBody CreateRequestRequestDto requestDto,
+                              @Valid @RequestBody CreateRequestRequestDto requestDto,
                               @Parameter(hidden = true)
                               @IfLogin LoginUserDto loginUser) {
         requestService.createRequest(requestDto, loginUser.getMemberId());
@@ -47,7 +50,7 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void updateFlag(@Parameter(description = "id: 게시글 id, flag: 승인-true, 대기-false")
-                           @RequestBody FlagRequestDto flagDto,
+                           @Valid @RequestBody FlagRequestDto flagDto,
                            @Parameter(hidden = true)
                            @IfLogin LoginUserDto loginUser) {
         if (loginUser.getRoles().contains("ROLE_ADMIN")) {
@@ -55,13 +58,16 @@ public class RequestController {
         }
     }
 
-    @Operation(summary = "게시판 글 조회", description = "게시글 id를 이용해 게시글을 조회 / PermitAll")
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PermitAll
+    @Operation(summary = "게시판 글 조회", description = "게시글 id를 이용해 게시글을 조회 / PermitAll")
+    @GetMapping("/{requestId}")
+    @ResponseStatus(HttpStatus.OK)
     public RequestResponseDto getRequest(@Parameter(description = "게시글 id", name = "requestId")
-                                         @PathVariable Long id) {
-        return requestService.getRequest(id);
+                                         @PathVariable Long requestId) {
+        Optional.of(requestId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(requestId));
+        return requestService.getRequest(requestId);
     }
 
     @Operation(summary = "내가 요청한 문제 조회", description = "내가 요청한 문제 조회 / ROLE_CUSTOM', 'ROLE_ADMIN")
@@ -89,20 +95,23 @@ public class RequestController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void updateRequest(@Parameter(description = "게시판 update dto", name = "UpdateRequestRequestDto")
-                              @RequestBody UpdateRequestRequestDto updateRequestRequestDto,
+                              @Valid @RequestBody UpdateRequestRequestDto updateRequestRequestDto,
                               @Parameter(hidden = true)
                               @IfLogin LoginUserDto loginUserDto) {
         requestService.updateRequest(updateRequestRequestDto, loginUserDto);
     }
 
     @Operation(summary = "게시판 삭제", description = "단일 게시판 삭제 / ROLE_CUSTOM', 'ROLE_ADMIN'")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{requestId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void deleteRequestById(@Parameter(description = "게시판 아이디", name = "단일 게시판 아이디")
-                                  @PathVariable Long id,
+                                  @PathVariable Long requestId,
                                   @Parameter(hidden = true)
                                   @IfLogin LoginUserDto loginUserDto) {
-        requestService.deleteTodoById(id, loginUserDto);
+        Optional.of(requestId)
+                .filter(id -> id >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(requestId));
+        requestService.deleteTodoById(requestId, loginUserDto);
     }
 }

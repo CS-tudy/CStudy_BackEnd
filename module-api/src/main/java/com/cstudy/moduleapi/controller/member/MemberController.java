@@ -5,7 +5,7 @@ import com.cstudy.moduleapi.application.geoIpAddress.GeoService;
 import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
-import com.cstudy.moduleapi.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.moduleapi.dto.refresh.RefreshTokenDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
@@ -77,7 +77,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void logout(@Parameter(name = "RefreshTokenDto", description = "refresh Token")
-                       @RequestBody RefreshTokenDto refreshTokenDto) {
+                       @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         String refreshToken = refreshTokenDto.getRefreshToken();
         log.info(String.format("Refresh Token:>>{%s}", refreshToken));
         refreshTokenService.deleteRefreshToken(refreshToken);
@@ -88,7 +88,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     @PermitAll
     public MemberLoginResponse refreshTokenWithAccessToken(@Parameter(name = "RefreshTokenDto", description = "refresh Token")
-                                                           @RequestBody RefreshTokenDto refreshTokenDto) {
+                                                           @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         log.info(String.format("Refresh Token:>>{%s}", refreshTokenDto));
         return refreshTokenService.AccessTokenWithRefreshToken(refreshTokenDto);
     }
@@ -132,7 +132,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void changePassword(@Parameter(name = "memberPasswordChangeRequest", description = "회원 이전 비밀번호, 새로운 비밀번호")
-                               @RequestBody MemberPasswordChangeRequest memberPasswordChangeRequest,
+                               @Valid @RequestBody MemberPasswordChangeRequest memberPasswordChangeRequest,
                                @Parameter(hidden = true) @IfLogin LoginUserDto loginUserDto) {
         memberService.changePassword(memberPasswordChangeRequest, loginUserDto.getMemberId());
     }
@@ -142,10 +142,8 @@ public class MemberController {
     @PermitAll
     @GetMapping("/email/send")
     @ResponseStatus(HttpStatus.OK)
-    public CompletableFuture<String> sendEmail(@Parameter(name = "emailRequest", description = "전송을 원하는 이메일 주소")
-                                               String to
-
-    ) throws MessagingException {
+    public CompletableFuture<String> sendEmail(@Parameter(name = "to", description = "전송을 원하는 이메일 주소")
+                                               String to) throws MessagingException {
         return memberService.sendEmail(to);
     }
 }

@@ -65,7 +65,7 @@ public class ExceptionControllerAdvice {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorResponse AccessDeniedException(AccessDeniedException e) {
         ErrorResponse response = ErrorResponse.builder()
@@ -94,6 +94,23 @@ public class ExceptionControllerAdvice {
                 .body(body).getBody();
     }
 
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PathvariableAbstractException.class)
+    public ErrorResponse PathvariableAbstractException(PathvariableAbstractException e) {
+        int statusCode = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .build();
+
+        body.addValidation("pathvariable", "id는 양수로 처리를 해야됩니다.");
+
+        return ResponseEntity.status(statusCode)
+                .body(body).getBody();
+    }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)

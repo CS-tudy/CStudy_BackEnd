@@ -22,6 +22,7 @@ import com.cstudy.modulecommon.repository.workbook.WorkbookQuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,10 +106,8 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional(readOnly = true)
     public WorkbookResponseDto getWorkbook(Long id) {
-
         Workbook workbook = workbookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundWorkbook(id));
-
         return WorkbookResponseDto.of(workbook);
     }
 
@@ -132,12 +131,10 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional
     public Long createWorkbook(CreateWorkbookRequestDto workbookDto) {
-
         Workbook workbook = Workbook.builder()
                 .title(workbookDto.getTitle())
                 .description(workbookDto.getDescription())
                 .build();
-
         workbookRepository.save(workbook);
         return workbook.getId();
     }
@@ -150,7 +147,6 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional
     public void addQuestion(WorkbookQuestionRequestDto requestDto) {
-
         Workbook workbook = workbookRepository.findById(requestDto.getWorkbookId())
                 .orElseThrow(() -> new NotFoundWorkbook(requestDto.getWorkbookId()));
 
@@ -204,10 +200,8 @@ public class WorkbookServiceImpl implements WorkbookService {
         for (QuestionIdRequestDto qId : requestDto.getQuestionIds()) {
             Question question = questionRepository.findById(qId.getId())
                     .orElseThrow(() -> new NotFoundQuestionWithChoicesAndCategoryById(qId.getId()));
-            WorkbookQuestion workbookQuestion = workbookQuestionRepository.findByWorkbookAndQuestion(
-                            workbook, question)
+            WorkbookQuestion workbookQuestion = workbookQuestionRepository.findByWorkbookAndQuestion(workbook, question)
                     .orElseThrow(NotFoundWorkbookQuestion::new);
-
             workbook.deleteQuestion(workbookQuestion);
             workbookQuestionRepository.delete(workbookQuestion);
         }

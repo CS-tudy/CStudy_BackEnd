@@ -7,6 +7,7 @@ import com.cstudy.moduleapi.dto.workbook.WorkbookQuestionRequestDto;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Workbook(문제집 API)", description = "문제집 관련 API(문제집 생성, 조회)")
 @RestController
@@ -54,6 +57,9 @@ public class WorkbookController {
     @PermitAll
     public WorkbookResponseDto getWorkbook(@Parameter(name = "id", description = "문제집 id")
                                            @PathVariable("id") Long id) {
+        Optional.of(id)
+                .filter(workbook -> workbook >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(id));
         return workbookService.getWorkbook(id);
     }
 
@@ -62,7 +68,12 @@ public class WorkbookController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void uploadFile(@Parameter(name = "문제집 업로드 이미지 파일", description = "MultipartFile 이미지 업로드 파일")
-                           @RequestParam(value = "file") MultipartFile file, @PathVariable Long workbookId) {
+                           @RequestParam(value = "file") MultipartFile file,
+                           @Parameter(name = "문제집 아이디", description = "workbookId")
+                           @PathVariable Long workbookId) {
+        Optional.of(workbookId)
+                .filter(workbook -> workbook >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(workbookId));
         workbookService.uploadFile(file, workbookId);
     }
 
@@ -82,6 +93,9 @@ public class WorkbookController {
                                                           @PageableDefault Pageable pageable,
                                                           @Parameter(name = "id", description = "문제집 id")
                                                           @PathVariable("id") Long id) {
+        Optional.of(id)
+                .filter(workbook -> workbook >= 0)
+                .orElseThrow(() -> new PositivePatriarchal(id));
         return workbookService.getQuestions(id, pageable);
     }
 
@@ -90,7 +104,7 @@ public class WorkbookController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void createWorkbook(@Parameter(description = "title: 문제집 제목, description: 문제집 내용")
-                               @RequestBody CreateWorkbookRequestDto workbookDto) {
+                               @Valid @RequestBody CreateWorkbookRequestDto workbookDto) {
         workbookService.createWorkbook(workbookDto);
     }
 
@@ -99,7 +113,7 @@ public class WorkbookController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void addQuestion(@Parameter(description = "workbookId: 문제집 id, questionIds.id: 삭제할 문제 번호")
-                            @RequestBody WorkbookQuestionRequestDto requestDto) {
+                            @Valid @RequestBody WorkbookQuestionRequestDto requestDto) {
         workbookService.addQuestion(requestDto);
     }
 
@@ -108,7 +122,7 @@ public class WorkbookController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public void updateWorkbook(@Parameter(description = "id: 문제집 id, title: 문제집 제목, description: 문제집 내용")
-                               @RequestBody UpdateWorkbookRequestDto workbookDto) {
+                               @Valid @RequestBody UpdateWorkbookRequestDto workbookDto) {
         workbookService.updateWorkbook(workbookDto);
     }
 
@@ -117,7 +131,7 @@ public class WorkbookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void deleteQuestion(@Parameter(description = "workbookId: 문제집 id, questionIds.id: 삭제할 문제 번호")
-                               @RequestBody WorkbookQuestionRequestDto requestDto) {
+                               @Valid @RequestBody WorkbookQuestionRequestDto requestDto) {
         workbookService.deleteQuestion(requestDto);
     }
 

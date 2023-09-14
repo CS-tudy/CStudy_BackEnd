@@ -1,5 +1,6 @@
 package com.cstudy.moduleapi;
 
+import com.cstudy.modulecommon.error.enums.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,7 @@ public class ApiResponse<T> {
     private int status;
     private T body;
 
+    public static <T> ApiResponse<T> success(int statusCode, T data) {
+        return new ApiResponse<>(statusCode, data);
+    }
 }
