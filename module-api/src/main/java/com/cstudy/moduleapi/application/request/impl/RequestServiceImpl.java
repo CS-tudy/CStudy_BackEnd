@@ -1,5 +1,6 @@
 package com.cstudy.moduleapi.application.request.impl;
 
+import com.cstudy.moduleapi.aop.AuthCheck;
 import com.cstudy.moduleapi.application.request.RequestService;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
@@ -124,12 +125,14 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @AuthCheck
     @Transactional
     public void deleteTodoById(Long id, LoginUserDto loginUserDto) {
         requestRepository.deleteById(id);
     }
 
     @Override
+    @AuthCheck
     @Transactional
     public void updateRequest(UpdateRequestRequestDto updateRequestRequestDto, LoginUserDto loginUserDto) {
         requestRepository.findById(updateRequestRequestDto.getId())
