@@ -24,8 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 public abstract class ControllerTestBase {
     @Autowired
     protected MockMvc mockMvc;
-
-
     @MockBean
     protected RequestService requestService;
 

@@ -4,6 +4,10 @@ public enum  MemberTestEnum {
     VALID_EMAIL("test1234@test.com"),
     VALID_PASSWORD("test1234!"),
     VALID_NAME("김무건"),
+    CUSTOM_EMAIL("CUSTOM1234@CUSTOM.COM"),
+    CUSTOM_NAME("CUSTOM"),
+    ADMIN_EMAIL("admin@admin.com"),
+    ADMIN_PASSWORD("admin1234!"),
     INVALID_EMAIL("error@error.com"),
     INVALID_PASSWORD("error1234!"),
     INVALID_NAME("실패");
