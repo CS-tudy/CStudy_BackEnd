@@ -108,6 +108,33 @@
 
 </p><br>
 
+## 🖼️ 이미지 업로드
+```mermaid
+sequenceDiagram
+    participant 사용자 as 사용자 
+    participant Client as 클라이언트
+    participant Server as 서버
+    participant S3 as AWS S3
+    
+    사용자->>Client: 회원 이미지 업로드 클릭
+    Client->>Server: 이미지 업로드 요청
+    Server->>Server: 이미지 파일 크기 확인
+    Server-->>Client: 이미지 파일 크기 확인 결과 (성공 또는 실패)
+    
+    alt 파일 크기 확인 성공
+        Server->>Server: 이미지 압축
+        Server->>S3: 압축된 이미지 업로드
+        S3-->>Server: 업로드 성공 메시지
+        Server->>S3: 압축된 이미지 다운로드 요청
+        S3-->>Server: 압축된 이미지 다운로드
+        Server->>Server: 이미지 디코딩
+        Server-->>Client: 이미지 전달
+        Client-->>사용자: 이미지 성공 처리
+    else 파일 크기 확인 실패
+        Server-->>Client: 이미지 업로드 실패 메시지
+    end
+
+```
 
 <br>
 
