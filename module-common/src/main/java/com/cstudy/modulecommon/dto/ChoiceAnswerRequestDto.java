@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 
 
 @Data
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @Builder
 public class ChoiceAnswerRequestDto {
-    @NotEmpty(message = "선택 번호는 필수입니다.")
+    @Positive(message = "번호를 입력하세요.")
     private int choiceNumber;
 
     private Long time;

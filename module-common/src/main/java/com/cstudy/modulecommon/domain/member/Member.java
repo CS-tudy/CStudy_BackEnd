@@ -28,7 +28,7 @@ import java.util.Set;
 @Table(name = "MEMBER", uniqueConstraints = {
 //        @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
         @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
-        @UniqueConstraint(name = "name", columnNames = {"name"}),
+//        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
 public class Member extends BaseEntity {
 
@@ -49,8 +49,6 @@ public class Member extends BaseEntity {
     private String name;
 
     private double rankingPoint = 0L;
-
-    private String picture;
 
     private String memberIpAddress;
 
@@ -127,10 +125,8 @@ public class Member extends BaseEntity {
         this.roles = roles;
     }
 
-    public Member update(String name, String picture) {
+    public Member update(String name) {
         this.name = name;
-        this.picture = picture;
-
         return this;
     }
 

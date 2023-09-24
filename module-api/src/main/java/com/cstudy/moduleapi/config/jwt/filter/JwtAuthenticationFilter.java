@@ -38,16 +38,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token)) {
                 getAuthentication(token);
             } else {
-                extracted(request, JwtExceptionCode.NOT_FOUND_TOKEN, "Not found Token // token : {}", token, "throw new not found token exception");
+                handleJwtException(request, JwtExceptionCode.NOT_FOUND_TOKEN, "Not found Token // token : {}", token, "throw new not found token exception");
             }
         } catch (NullPointerException | IllegalStateException e) {
-            extracted(request, JwtExceptionCode.NOT_FOUND_TOKEN, "Not found Token // token : {}", token, "throw new not found token exception");
+            handleJwtException(request, JwtExceptionCode.NOT_FOUND_TOKEN, "Not found Token // token : {}", token, "throw new not found token exception");
         } catch (SecurityException | MalformedJwtException e) {//JWT 토큰의 서명이나 암호화와 관련된 오류입니다. -> 시그니처 오류
-            extracted(request, JwtExceptionCode.INVALID_TOKEN, "Invalid Token // token : {}", token, "throw new invalid token exception");
+            handleJwtException(request, JwtExceptionCode.INVALID_TOKEN, "Invalid Token // token : {}", token, "throw new invalid token exception");
         } catch (ExpiredJwtException e) {//JWT 토큰의 만료 시간이 지났을 때 발생하는 오류입니다.
-            extracted(request, JwtExceptionCode.EXPIRED_TOKEN, "EXPIRED Token // token : {}", token, "throw new expired token exception");
+            handleJwtException(request, JwtExceptionCode.EXPIRED_TOKEN, "EXPIRED Token // token : {}", token, "throw new expired token exception");
         } catch (UnsupportedJwtException e) {//지원되지 않는 JWT 토큰 형식이나 구조를 사용했을 때 발생하는 오류입니다.
-            extracted(request, JwtExceptionCode.UNSUPPORTED_TOKEN, "Unsupported Token // token : {}", token, "throw new unsupported token exception");
+            handleJwtException(request, JwtExceptionCode.UNSUPPORTED_TOKEN, "Unsupported Token // token : {}", token, "throw new unsupported token exception");
         } catch (Exception e) {
             log.error("JwtFilter - doFilterInternal() 오류 발생");
             log.error("token : {}", token);
@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private static void extracted(HttpServletRequest request, JwtExceptionCode notFoundToken, String format, String token, String msg) {
+    private static void handleJwtException(HttpServletRequest request, JwtExceptionCode notFoundToken, String format, String token, String msg) {
         request.setAttribute("exception", notFoundToken.getCode());
         log.error(format, token);
         log.error("Set Request Exception Code : {}", request.getAttribute("exception"));

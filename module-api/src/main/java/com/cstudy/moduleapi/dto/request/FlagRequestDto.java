@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FlagRequestDto {
-
     private Long id;
     private boolean flag;
 }

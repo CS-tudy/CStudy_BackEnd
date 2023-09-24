@@ -5,21 +5,19 @@ import com.cstudy.moduleapi.application.request.RequestService;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
 import com.cstudy.moduleapi.dto.request.RequestResponseDto;
+import com.cstudy.modulecommon.domain.member.Member;
+import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.error.request.NotFoundRequest;
-import com.cstudy.modulecommon.util.LoginUserDto;
-import com.cstudy.modulecommon.domain.member.Member;
-import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.request.RequestRepository;
+import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,8 +26,10 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final MemberRepository memberRepository;
 
-    public RequestServiceImpl(RequestRepository requestRepository,
-                              MemberRepository memberRepository) {
+    public RequestServiceImpl(
+            RequestRepository requestRepository,
+            MemberRepository memberRepository
+    ) {
         this.requestRepository = requestRepository;
         this.memberRepository = memberRepository;
     }
@@ -114,14 +114,9 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public void updateFlag(FlagRequestDto flagDto) {
-        Optional.of(flagDto)
-                .filter(dto -> dto.getId() != 1)
-                .ifPresent(dto -> {
-                    throw new RuntimeException("권한이 일치하지 않습니다.");
-                });
-        Request request = requestRepository.findById(flagDto.getId())
-                .orElseThrow(() -> new NotFoundRequest(flagDto.getId()));
-        request.updateFlag(flagDto.isFlag());
+        requestRepository.findById(flagDto.getId())
+                .orElseThrow(() -> new NotFoundRequest(flagDto.getId()))
+                .updateFlag(flagDto.isFlag());
     }
 
     @Override

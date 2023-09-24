@@ -71,8 +71,8 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 UPDATE", description = "공지사항 수정 / ROLE_ADMIN")
-    @PutMapping("/{noticeId}")
-    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/{noticeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void updateNotice(@Parameter(name = "noticeId", description = "공지사항 아이디")
                              @PathVariable Long noticeId,

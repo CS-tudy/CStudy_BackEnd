@@ -1,6 +1,5 @@
 package com.cstudy.moduleapi;
 
-import com.cstudy.modulecommon.error.enums.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

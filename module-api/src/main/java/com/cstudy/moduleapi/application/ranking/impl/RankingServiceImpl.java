@@ -34,9 +34,6 @@ public class RankingServiceImpl implements RankingService {
 
         List<Member> memberList = memberRepository.findAllWithQuestions();
 
-        Map<Long, Long> memberSolveTimeMap = memberList.stream()
-                .collect(Collectors.toMap(Member::getId, this::calculateSolveTime));
-
         ZSetOperations<String, String> stringStringZSetOperations = redisTemplate.opsForZSet();
 
         memberList.forEach(member -> {
