@@ -26,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("local")
+//@ActiveProfiles("local")
 public abstract class ServiceTestBase {
     @Autowired
     protected RequestService requestService;

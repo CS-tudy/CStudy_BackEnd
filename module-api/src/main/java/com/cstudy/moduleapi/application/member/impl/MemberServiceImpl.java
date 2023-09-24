@@ -107,6 +107,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+    /**
+     * 테스트 코드를 작성하면서 호원가입에 관한에서 중복을 막기 위한 로직의 불편함으로 새롭게 작성
+     * 물론 mock을 통해서 문제를 해결할 수 있지만 관련 mock을 작성하기 너무 많기 때문에 JUnit을 사용하는 classic 방식에서
+     * 이 문제를 해결할 수 있는 방식을 찾아보는게 좋겠음
+     */
     @Override
     @Transactional
     public MemberSignupResponse signUpForTest(MemberSignupRequest request) {
@@ -114,12 +119,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-
     /**
-     * Returns login member with LoginRequest
-     *
-     * @param request 회원 로그인 Request Dto
-     * @return 로그인 성공하면 회원 아이디, JWT(Access, Refresh Token)을 리턴을 합니다.
+     * 회원 로그인을 처리한다. 이때 비밀번호를 일치하는지 확인하고 만약에 일치하지 않으면 exception이 발생한다.
      */
     @Override
     @Transactional
@@ -136,10 +137,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * oauthSignUp
      *
-     * @param email 회원 이름
-     * @param name  회원 이름
+     * @param email
+     * @param name
+     * @return
      */
     @Override
     @Transactional
@@ -171,6 +172,9 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new NotFoundMemberEmail(email)));
     }
 
+    /**
+     * 마이페이지를 조회한다. 이때 로그인한 회원의 id를 기반하여 조회를 한다.
+     */
     @Override
     @Transactional(readOnly = true)
     public MyPageResponseDto getMyPage(Long id) {
@@ -178,6 +182,11 @@ public class MemberServiceImpl implements MemberService {
         return MyPageResponseDto.of(member);
     }
 
+    /**
+     * 비밀번호를 변경한다.
+     * @param request
+     * @param id
+     */
     @Override
     @Transactional
     public void changePassword(MemberPasswordChangeRequest request, Long id) {

@@ -216,6 +216,15 @@ public class QuestionServiceImpl implements QuestionService {
         log.warn("정답 info {}",choiceAnswerNumber);
 
 
+        /**
+         * 현재 MySQL 부분에서 문제에 대한 정답 및 오답을 처리한다.
+         * 만약에 문제가 성공이면 MEMBER_QUESTION 테이블에 SUCCESS 처리를 하며
+         * 이후 만약에 실패가 발생되면 FAIL을 처리를 한다.
+         * -> 현재 이 부분을 MongoDB로 분리를 시킬려고 한다.
+         * -> 현재 테스트 코드를 통해서 사이드 이펙트를 체크하면 다음과 같다.
+         * 1. 오답노트
+         * 2. 전체 문제 페이징 부분에서 STATUS 부분을 추가적으로 작성
+         */
         questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
                 .orElseThrow(() -> new NotFoundQuestionId(questionId)).getChoices().stream()
                 .filter(Choice::isAnswer)
@@ -235,6 +244,9 @@ public class QuestionServiceImpl implements QuestionService {
                     }
                 });
 
+        /**
+         * MONGODB 부분에서 문제에 대한 정답 및 오답을 처리한다.
+         */
         questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
                 .orElseThrow(() -> new NotFoundQuestionId(questionId)).getChoices().stream()
                 .filter(Choice::isAnswer)
@@ -257,6 +269,13 @@ public class QuestionServiceImpl implements QuestionService {
                     }
 
                 });
+
+        /**
+         * 분산환경에서 REDIS 캐싱을 맞출려면 아마도 동기화 문제와 캐싱 오버헤드가 발생한다.
+         * 이를 해결하기 위해서 현재는 PUBSUB으로 문제를 해결
+
+         TODO : 이후 이 부분을 캐싱 오버헤드를 생각하면 WRITE BACK 전략으로 변경을 하거나 SSE 방식으로 변경을 생각을 해보자
+         */
         redisPublisher.publish(ChannelTopic.of(RANKING_INVALIDATION), RANKING);
     }
 

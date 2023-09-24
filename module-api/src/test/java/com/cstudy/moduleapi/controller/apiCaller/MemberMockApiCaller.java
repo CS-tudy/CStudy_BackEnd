@@ -2,6 +2,7 @@ package com.cstudy.moduleapi.controller.apiCaller;
 
 import com.cstudy.moduleapi.ApiResponse;
 import com.cstudy.moduleapi.config.MockApiCaller;
+import com.cstudy.moduleapi.dto.member.DuplicateResponseDto;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
@@ -175,5 +176,17 @@ public class MemberMockApiCaller extends MockApiCaller {
                 .build();
 
         return new ApiResponse<>(response.getStatus(), errorResponse);
+    }
+
+    public ApiResponse<DuplicateResponseDto> duplicateWithparameter() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/api/email")
+                .param("email")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        return new ApiResponse<>(mockMvc.perform(builder)
+                .andReturn()
+                .getResponse().getStatus(), DuplicateResponseDto.builder()
+                .verify("success")
+                .build());
     }
 }

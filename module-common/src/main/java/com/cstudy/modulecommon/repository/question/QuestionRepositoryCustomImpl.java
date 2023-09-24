@@ -15,9 +15,11 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
@@ -52,13 +54,13 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                                 question.title.as("questionTitle"),
                                 category.categoryTitle.as("categoryTitle"),
                                 divisionStatusAboutMemberId(loginUserDto)
-                        )).from(question).distinct()
+                        )).from(question)
+                .distinct()
                 .leftJoin(question.category, category)
                 .leftJoin(question.questions, memberQuestion)
                 .leftJoin(memberQuestion.member, member)
                 .where(
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
-                        categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
                         statusEq(questionSearchCondition.getStatus()),
                         question.category.id.eq(category.id)
@@ -67,19 +69,18 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Question> countQuery = queryFactory
-                .selectFrom(question)
-                .leftJoin(question.category, category)
-                .leftJoin(question.questions, memberQuestion)
-                .leftJoin(memberQuestion.member, member)
-                .where(
-                        questionTitleEq(questionSearchCondition.getQuestionTitle()),
-                        categoryTitleEq(questionSearchCondition.getCategoryTitle()),
-                        memberIdEq(questionSearchCondition.getMemberId()),
-                        question.category.id.eq(category.id)
-                );
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+        return new PageImpl<>(content, pageable, content.size());
     }
+
+
+    @Override
+    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
+        return queryFactory
+                .select(Wildcard.count)
+                .from(member)
+                .fetch().get(0);
+    }
+
 
     private static NumberExpression<Integer> divisionStatusAboutMemberId(LoginUserDto loginUserDto) {
         return Expressions.cases()

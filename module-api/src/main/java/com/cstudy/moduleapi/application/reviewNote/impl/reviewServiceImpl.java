@@ -139,6 +139,7 @@ public class reviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewUserResponseDto findMongoAboutReviewNote(LoginUserDto loginUserDto) {
 
         Member member = memberRepository.findById(loginUserDto.getMemberId())

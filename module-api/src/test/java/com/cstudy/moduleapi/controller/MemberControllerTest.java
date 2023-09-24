@@ -2,6 +2,7 @@ package com.cstudy.moduleapi.controller;
 
 import com.cstudy.moduleapi.ApiResponse;
 import com.cstudy.moduleapi.config.ControllerTest;
+import com.cstudy.moduleapi.dto.member.DuplicateResponseDto;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
@@ -9,7 +10,6 @@ import com.cstudy.moduleapi.dto.refresh.RefreshTokenDto;
 import com.cstudy.moduleapi.enums.MemberTestEnum;
 import com.cstudy.moduleapi.exception.ErrorResponse;
 import org.junit.jupiter.api.*;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -234,6 +234,21 @@ class MemberControllerTest extends ControllerTest {
             );
         }
 
+    }
+    
+    
+    @DisplayName("전략패턴으로 email , name 중복체크")
+    @Nested
+    class duplicateSignup {
+        @Test
+        public void 이메일_중복검사_중복된_이메일이_존재하지_않습니다() throws Exception{
+            //given
+        
+            //when
+            ApiResponse<DuplicateResponseDto> duplicateResponseDtoApiResponse = memberMockApiCaller.duplicateWithparameter();
+            //Then
+            //Assertions.assertThat().isEqualTo();
+        }
     }
 
 }
