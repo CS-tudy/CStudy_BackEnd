@@ -25,10 +25,11 @@ public abstract class MockApiCaller {
         this.objectMapper = objectMapper;
     }
 
-    public ApiResponse<ErrorResponse> sendPostRequestAndParseErrorResponse(String url, Object request) throws Exception {
+    public ApiResponse<ErrorResponse> sendPostRequest_WithAuthorization_ParseErrorResponse(String url, Object request) throws Exception {
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(url)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + ADMIN_USER)
                 .content(objectMapper.writeValueAsString(request));
 
         MockHttpServletResponse response = mockMvc.perform(builder)

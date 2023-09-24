@@ -1,14 +1,5 @@
 package com.cstudy.modulecommon.repository.question;
 
-import com.cstudy.modulecommon.domain.choice.QChoice;
-import com.cstudy.modulecommon.domain.competition.QCompetition;
-import com.cstudy.modulecommon.domain.member.QMember;
-import com.cstudy.modulecommon.domain.question.QCategory;
-import com.cstudy.modulecommon.domain.question.QMemberQuestion;
-import com.cstudy.modulecommon.domain.question.QQuestion;
-import com.cstudy.modulecommon.domain.question.Question;
-import com.cstudy.modulecommon.domain.workbook.QWorkbook;
-import com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion;
 import com.cstudy.modulecommon.dto.*;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import com.querydsl.core.types.Projections;
@@ -16,24 +7,22 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.Wildcard;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static com.cstudy.modulecommon.domain.choice.QChoice.*;
-import static com.cstudy.modulecommon.domain.competition.QCompetition.*;
-import static com.cstudy.modulecommon.domain.member.QMember.*;
+import static com.cstudy.modulecommon.domain.choice.QChoice.choice;
+import static com.cstudy.modulecommon.domain.competition.QCompetition.competition;
+import static com.cstudy.modulecommon.domain.member.QMember.member;
 import static com.cstudy.modulecommon.domain.question.QCategory.category;
-import static com.cstudy.modulecommon.domain.question.QMemberQuestion.*;
-import static com.cstudy.modulecommon.domain.question.QQuestion.*;
-import static com.cstudy.modulecommon.domain.workbook.QWorkbook.*;
-import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.*;
+import static com.cstudy.modulecommon.domain.question.QMemberQuestion.memberQuestion;
+import static com.cstudy.modulecommon.domain.question.QQuestion.question;
+import static com.cstudy.modulecommon.domain.workbook.QWorkbook.workbook;
+import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.workbookQuestion;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.types.Projections.list;
 
