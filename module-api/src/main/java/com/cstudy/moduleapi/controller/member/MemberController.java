@@ -94,7 +94,7 @@ public class MemberController {
     }
 
     @Operation(summary = "S3 파일 업로드", description = "AWS S3 버켓에 IAM 파일 업로드 /ROLE_CUSTOM', 'ROLE_ADMIN")
-    @GetMapping("/upload")
+    @PostMapping("/upload")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void upload(@Parameter(name = "multipartFileList", description = "Multi part file")
@@ -128,8 +128,8 @@ public class MemberController {
     }
 
     @Operation(summary = "비밀번호 수정", description = "비밀번호 수정 / ROLE_CUSTOM', 'ROLE_ADMIN")
-    @PutMapping("/member")
-    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/member")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void changePassword(@Parameter(name = "memberPasswordChangeRequest", description = "회원 이전 비밀번호, 새로운 비밀번호")
                                @Valid @RequestBody MemberPasswordChangeRequest memberPasswordChangeRequest,

@@ -118,9 +118,9 @@ public class WorkbookController {
     }
 
     @Operation(summary = "문제집 정보 수정", description = "문제집 이름과 설명을 수정합니다. / ROLE_ADMIN")
-    @PutMapping
+    @PatchMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateWorkbook(@Parameter(description = "id: 문제집 id, title: 문제집 제목, description: 문제집 내용")
                                @Valid @RequestBody UpdateWorkbookRequestDto workbookDto) {
         workbookService.updateWorkbook(workbookDto);
