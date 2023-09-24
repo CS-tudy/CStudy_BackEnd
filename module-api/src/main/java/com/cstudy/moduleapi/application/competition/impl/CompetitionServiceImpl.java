@@ -5,12 +5,12 @@ import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
 import com.cstudy.moduleapi.application.workbook.WorkbookService;
 import com.cstudy.moduleapi.dto.competition.*;
 import com.cstudy.moduleapi.dto.workbook.WorkbookQuestionRequestDto;
+import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.dto.CompetitionQuestionDto;
 import com.cstudy.modulecommon.error.competition.CompetitionStartException;
 import com.cstudy.modulecommon.error.competition.NotFoundCompetitionId;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import com.cstudy.modulecommon.domain.competition.Competition;
-import com.cstudy.modulecommon.domain.competition.MemberCompetition;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
 import com.cstudy.modulecommon.repository.competition.CompetitionRepository;
 import com.cstudy.modulecommon.repository.competition.MemberCompetitionRepository;
@@ -129,15 +129,15 @@ public class CompetitionServiceImpl implements CompetitionService {
     public Page<CompetitionRankingResponseDto> getCompetitionRanking(Long competitionId, Pageable pageable) {
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
-        Page<MemberCompetition> memberRanking = memberCompetitionRepository.findByCompetition(competition, pageable);
 
-        return memberRanking.map(CompetitionRankingResponseDto::of);
+        return memberCompetitionRepository.findByCompetition(competition, pageable)
+                .map(CompetitionRankingResponseDto::of);
     }
 
     @Override
     public List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) {
 
-        if(!loginUserDto.getRoles().contains("ROLE_ADMIN")) {
+        if(!loginUserDto.getRoles().contains(RoleEnum.ADMIN.getRoleName())) {
             Competition competition = competitionRepository.findById(competitionId)
                     .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
 
@@ -173,6 +173,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     @Override
+    @Transactional
     public void checkCompetitionTime(Long competitionId) {
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(CompetitionStartException::new);

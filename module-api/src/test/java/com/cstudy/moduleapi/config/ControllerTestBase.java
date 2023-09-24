@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
-@ActiveProfiles("local")
+//@ActiveProfiles("local")
 @AutoConfigureMockMvc
 public abstract class ControllerTestBase {
     @Autowired

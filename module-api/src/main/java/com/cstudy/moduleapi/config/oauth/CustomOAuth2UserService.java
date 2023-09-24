@@ -4,9 +4,10 @@ import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.moduleapi.config.security.auth.OAuthAttributes;
 import com.cstudy.modulecommon.domain.member.Member;
+import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
-import lombok.RequiredArgsConstructor;
+import com.cstudy.modulecommon.repository.role.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,17 +17,28 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@Transactional
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenizer jwtTokenizer;
+    private final RoleRepository roleRepository;
+
+    public CustomOAuth2UserService(MemberRepository memberRepository, RefreshTokenService refreshTokenService, JwtTokenizer jwtTokenizer, RoleRepository roleRepository) {
+        this.memberRepository = memberRepository;
+        this.refreshTokenService = refreshTokenService;
+        this.jwtTokenizer = jwtTokenizer;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -41,16 +53,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         Member member = saveOrUpdate(attributes);
 
-
-        log.info("getEmail : {}", member.getEmail());
-        log.info("memberId : {}", member.getId());
-
-
-        String refreshToken = jwtTokenizer.createRefreshToken(member.getId(), member.getEmail(), List.of(RoleEnum.CUSTOM.getRoleName()));
-
-        log.info("refresh token: {} " , refreshToken);
-
-        refreshTokenService.addRefreshToken(refreshToken);
+        refreshTokenService.addRefreshToken(jwtTokenizer
+                .createRefreshToken(member.getId(), member.getEmail(), List.of(RoleEnum.CUSTOM.getRoleName())));
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(RoleEnum.CUSTOM.getRoleName())),
@@ -60,10 +64,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
     private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member member = memberRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
-                .orElse(attributes.toEntity());
+        Member member = Member.builder()
+                .email(attributes.getEmail())
+                .name(attributes.getName())
+                .roles(new HashSet<>())
+                .build();
 
+        Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());
+        userRole.ifPresent(member::changeRole);
         return memberRepository.save(member);
     }
+
 }

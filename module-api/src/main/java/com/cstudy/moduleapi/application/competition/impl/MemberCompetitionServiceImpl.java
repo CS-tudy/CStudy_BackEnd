@@ -33,9 +33,11 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
     @Transactional
     public void joinCompetition(LoginUserDto loginUserDto, Long competitionId) {
 
-        if (loginUserDto.getMemberId() != 1L) {
-            preventionDuplicateParticipation(loginUserDto, competitionId);
-        }
+        assert loginUserDto != null;
+
+        Optional.of(loginUserDto)
+                .filter(dto -> dto.getMemberId() != 1L)
+                .ifPresent(dto -> preventionDuplicateParticipation(dto, competitionId));
 
 
         Member member = memberRepository.findByIdForUpdateOptimistic(loginUserDto.getMemberId())
@@ -55,6 +57,7 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
     }
 
     @Override
+    @Transactional
     public int getJoinMemberCount(Long competitionId) {
         List<MemberCompetition> memberCompetitions =
                 memberCompetitionRepository.findAllWithMemberAndCompetition(competitionId);
@@ -62,11 +65,13 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
     }
 
     @Override
+    @Transactional
     public MyCompetitionRankingDto myRanking(Long memberId, Long competitionId) {
 
         List<Long> finishMember = memberCompetitionRepository
                 .findFinishMember(competitionId);
         Integer myRank = null;
+
         for (int i = 0; i < finishMember.size(); i++) {
             if (Objects.equals(finishMember.get(i), memberId)) {
                 myRank = i + 1;

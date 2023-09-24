@@ -134,6 +134,7 @@ public class SecurityConfig {
                 //ReviewNoteController
                 .antMatchers(HttpMethod.GET, "/api/review").authenticated()
 
+
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling()
@@ -147,12 +148,11 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .and()
                 .oauth2Login()
-                .successHandler(successHandler)
-                .failureHandler(failureHandler)
                 .userInfoEndpoint()
-                .userService(customOAuth2UserService);
-
-
+                .userService(customOAuth2UserService)
+                .and()
+                .successHandler(successHandler)
+                .failureHandler(failureHandler);
 
         return http.build();
     }

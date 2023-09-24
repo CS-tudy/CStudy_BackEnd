@@ -46,8 +46,8 @@ public class RequestController {
     }
 
     @Operation(summary = "게시글 상태 수정", description = "게시판 상태를 대기에서 승인으로 변경. / ROLE_ADMIN ")
-    @PutMapping("/approve")
-    @ResponseStatus(HttpStatus.CREATED)
+    @PatchMapping("/approve")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void updateFlag(@Parameter(description = "id: 게시글 id, flag: 승인-true, 대기-false")
                            @Valid @RequestBody FlagRequestDto flagDto,
@@ -94,7 +94,7 @@ public class RequestController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
-    public void updateRequest(@Parameter(description = "게시판 update dto", name = "UpdateRequestRequestDto")
+    public void updateRequest(@Parameter(description = "updateRequestRequestDto", name = "게시판 update dto")
                               @Valid @RequestBody UpdateRequestRequestDto updateRequestRequestDto,
                               @Parameter(hidden = true)
                               @IfLogin LoginUserDto loginUserDto) {
