@@ -1,6 +1,9 @@
 package com.cstudy.moduleapi.config;
 
+import com.cstudy.moduleapi.application.member.DuplicateServiceFinder;
+import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
+import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.moduleapi.controller.apiCaller.MemberMockApiCaller;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
@@ -38,6 +41,15 @@ public abstract class ControllerTest {
 
     @MockBean
     protected MemberService memberService;
+
+    @MockBean
+    protected DuplicateServiceFinder duplicateServiceFinder;
+
+    @MockBean
+    protected RefreshTokenService refreshTokenService;
+
+    @MockBean
+    protected FileService fileService;
 
     protected MemberMockApiCaller memberMockApiCaller;
 

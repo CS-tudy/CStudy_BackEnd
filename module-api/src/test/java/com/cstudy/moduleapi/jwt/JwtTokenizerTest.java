@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.argumentResolver;
+package com.cstudy.moduleapi.jwt;
 
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
