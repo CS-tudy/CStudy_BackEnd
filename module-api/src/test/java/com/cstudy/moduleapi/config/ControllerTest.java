@@ -1,10 +1,12 @@
 package com.cstudy.moduleapi.config;
 
+import com.cstudy.moduleapi.application.comment.CommentService;
 import com.cstudy.moduleapi.application.member.DuplicateServiceFinder;
 import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.controller.apiCaller.CommentMockApiCaller;
 import com.cstudy.moduleapi.controller.apiCaller.MemberMockApiCaller;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -51,7 +54,11 @@ public abstract class ControllerTest {
     @MockBean
     protected FileService fileService;
 
+    @MockBean
+    protected CommentService commentService;
+
     protected MemberMockApiCaller memberMockApiCaller;
+    protected CommentMockApiCaller commentMockApiCaller;
 
     public static String CUSTOM_USER = null;
     public static String ADMIN_USER = null;
@@ -60,7 +67,7 @@ public abstract class ControllerTest {
 
     protected void setup() throws Exception {
         memberMockApiCaller = new MemberMockApiCaller(mockMvc, objectMapper);
-
+        commentMockApiCaller = new CommentMockApiCaller(mockMvc, objectMapper);
 
         CUSTOM_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.CUSTOM_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
         ADMIN_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.ADMIN_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));

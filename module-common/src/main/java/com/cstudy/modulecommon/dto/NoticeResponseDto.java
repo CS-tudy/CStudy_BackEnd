@@ -1,6 +1,5 @@
 package com.cstudy.modulecommon.dto;
 
-import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.notice.Notice;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
@@ -19,7 +18,6 @@ public class NoticeResponseDto {
     private LocalDateTime createdDate;
 
     @QueryProjection
-
     public NoticeResponseDto(Long id, String title, String content, LocalDateTime createdDate) {
         this.id = id;
         this.title = title;
