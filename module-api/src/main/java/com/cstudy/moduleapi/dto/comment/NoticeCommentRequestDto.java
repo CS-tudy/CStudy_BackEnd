@@ -23,6 +23,7 @@ public class NoticeCommentRequestDto {
     private Long noticeId;
 
     @Nullable
+    @Positive(message = "parentCommentId는 양수여야 합니다.")
     @Schema(description = "부모 댓글 ID")
     private Long parentCommentId;
 

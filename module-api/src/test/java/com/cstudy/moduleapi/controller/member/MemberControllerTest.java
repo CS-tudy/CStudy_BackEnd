@@ -1,4 +1,4 @@
-package com.cstudy.moduleapi.controller;
+package com.cstudy.moduleapi.controller.member;
 
 import com.cstudy.moduleapi.ApiResponse;
 import com.cstudy.moduleapi.config.ControllerTest;
@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
+//26
 class MemberControllerTest extends ControllerTest {
 
     @BeforeEach
@@ -58,7 +59,7 @@ class MemberControllerTest extends ControllerTest {
                     .password(MemberTestEnum.VALID_PASSWORD.getMessage())
                     .build();
             //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequestAndParseErrorResponse(url, request);
+            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequest_WithAuthorization_ParseErrorResponse(url, request);
 
             //Then
             assertAll(
@@ -79,7 +80,7 @@ class MemberControllerTest extends ControllerTest {
                     .password(MemberTestEnum.VALID_PASSWORD.getMessage())
                     .build();
             //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequestAndParseErrorResponse(url, request);
+            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequest_WithAuthorization_ParseErrorResponse(url, request);
 
             //Then
             assertAll(
@@ -100,7 +101,7 @@ class MemberControllerTest extends ControllerTest {
                     .name(MemberTestEnum.VALID_NAME.getMessage())
                     .build();
             //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequestAndParseErrorResponse(url, request);
+            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequest_WithAuthorization_ParseErrorResponse(url, request);
 
             //Then
             assertAll(
@@ -151,7 +152,7 @@ class MemberControllerTest extends ControllerTest {
                     .password(MemberTestEnum.VALID_PASSWORD.getMessage())
                     .build();
             //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequestAndParseErrorResponse(url, request);
+            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequest_WithAuthorization_ParseErrorResponse(url, request);
 
             //Then
             assertAll(
@@ -170,7 +171,7 @@ class MemberControllerTest extends ControllerTest {
                     .email(MemberTestEnum.VALID_EMAIL.getMessage())
                     .build();
             //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequestAndParseErrorResponse(url, request);
+            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequest_WithAuthorization_ParseErrorResponse(url, request);
 
             //Then
             assertAll(
@@ -395,7 +396,7 @@ class MemberControllerTest extends ControllerTest {
             String url = "/api/member/refreshToken";
             RefreshTokenDto refreshTokenDto = RefreshTokenDto.builder().build();
             //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequestAndParseErrorResponse(url, refreshTokenDto);
+            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPostRequest_WithAuthorization_ParseErrorResponse(url, refreshTokenDto);
             //Then
             assertAll(
                     () -> assertThat(response.getStatus()).isEqualTo(400),
