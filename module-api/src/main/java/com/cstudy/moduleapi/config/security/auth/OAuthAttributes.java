@@ -76,7 +76,6 @@ public class OAuthAttributes {
         return Member.builder()
                 .name(name)
                 .email(email)
-                .picture(picture)
                 .build();
     }
 }
