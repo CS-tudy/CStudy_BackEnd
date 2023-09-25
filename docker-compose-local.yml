@@ -21,7 +21,6 @@ services:
       - ./infra/database/config:/etc/mysql/conf.d
     ports:
       - "3306:3306"
-
   cstudy-mongodb:
     container_name: study-mongodb
     build:

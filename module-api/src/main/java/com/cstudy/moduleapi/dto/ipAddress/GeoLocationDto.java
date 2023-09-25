@@ -14,12 +14,7 @@ import java.net.UnknownHostException;
 @Builder
 @AllArgsConstructor
 public class GeoLocationDto {
-    private String subdivisionName;
-    private String cityName;
-    private String continentName;
-    private String countryName;
-    private String countryIsoCode;
-    private String hostAddress;
+    private String ipAddress;
 
     public static InetAddress getIpAddress() {
         HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();

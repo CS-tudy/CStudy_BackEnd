@@ -1,7 +1,6 @@
 package com.cstudy.moduleapi.controller.member;
 
 
-import com.cstudy.moduleapi.application.geoIpAddress.GeoService;
 import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
@@ -35,18 +34,18 @@ public class MemberController {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
     private final FileService fileService;
-    private final GeoService geoService;
+//    private final GeoService geoService;
 
     public MemberController(
             MemberService memberService,
             RefreshTokenService refreshTokenService,
-            FileService fileService,
-            GeoService geoService
+            FileService fileService
+//            GeoService geoService
     ) {
         this.memberService = memberService;
         this.refreshTokenService = refreshTokenService;
         this.fileService = fileService;
-        this.geoService = geoService;
+//        this.geoService = geoService;
     }
 
     @Operation(summary = "회원가입", description = "Email, Password, Name을 이용하여 회원가입을 합니다. / @PermitAll")
