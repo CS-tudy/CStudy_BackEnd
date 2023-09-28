@@ -25,6 +25,10 @@ public class NoticeResponseDto {
         this.createdDate = createdDate;
     }
 
+    public static NoticeResponseDto createNoticeResponse(Long id, String title, String content, LocalDateTime localDateTime) {
+        return new NoticeResponseDto(id, title, content, localDateTime);
+    }
+
     public static NoticeResponseDto of(Notice notice) {
         return NoticeResponseDto.builder()
                 .id(notice.getId())

@@ -1,6 +1,5 @@
 package com.cstudy.moduleapi.aop;
 
-import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
 import com.cstudy.modulecommon.error.request.NotMathRequestAuthCheckAop;
 import com.cstudy.modulecommon.repository.member.MemberRepository;

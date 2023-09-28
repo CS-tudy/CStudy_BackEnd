@@ -44,15 +44,17 @@ public class Comment extends BaseEntity {
 
     /********************************* 빌더 *********************************/
 
+
+
     @Builder
-    public Comment(Long id, Member member, Long parentCommentId, Set<Comment> childComments, Notice notice) {
+    public Comment(Long id, String content, Long parentCommentId, Member member, Set<Comment> childComments, Notice notice) {
         this.id = id;
-        this.member = member;
+        this.content = content;
         this.parentCommentId = parentCommentId;
+        this.member = member;
         this.childComments = childComments;
         this.notice = notice;
     }
-
 
     public Comment(Notice notice, Member member, Long parentCommentId, String content) {
         this.notice = notice;
