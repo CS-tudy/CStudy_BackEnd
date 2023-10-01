@@ -161,6 +161,7 @@ class CompetitionServiceImplTest extends ServiceTestBase {
         }
     }
 
+    //todo : 점수 테스트 코드 수정하기
     @Nested
     @DisplayName("점수")
     public class score {
@@ -174,6 +175,7 @@ class CompetitionServiceImplTest extends ServiceTestBase {
                 Question question = Question.builder()
                         .title("문제 제목" + i)
                         .description("문제 내용" + i)
+                        .explain("정답 설명"+i)
                         .build();
                 questionRepository.save(question);
                 for (int j = 1; j <= 4; j++) {

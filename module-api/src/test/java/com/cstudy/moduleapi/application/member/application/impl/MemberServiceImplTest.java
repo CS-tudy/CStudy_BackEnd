@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,16 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class MemberServiceImplTest extends ServiceTestBase {
 
 
     private static final String VALID_EMAIL = "test1234@email.com";
     private static final String VALID_PASSWORD = "password1234!";
 
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @DisplayName("회원가입")
     @Nested
@@ -79,16 +77,9 @@ class MemberServiceImplTest extends ServiceTestBase {
         @DisplayName("회원가입 - 이메일 중복")
         public void duplicationEmailWithInValidParameter() throws Exception {
             //given
-            Member member = Member.builder()
-                    .email(VALID_EMAIL)
-                    .password(VALID_PASSWORD)
-                    .build();
-
-            memberRepository.save(member);
-
             MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
-                    .email(VALID_EMAIL)
-                    .password(VALID_PASSWORD)
+                    .email("admin@admin.com")
+                    .password("admin1234!")
                     .name("김무건")
                     .build();
 

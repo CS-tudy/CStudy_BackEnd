@@ -211,7 +211,7 @@ public class MemberMockApiCaller extends MockApiCaller {
     }
 
     public ApiResponse<MyPageResponseDto> getMyPage() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/member/member")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/member")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + ADMIN_USER);
 
@@ -235,7 +235,7 @@ public class MemberMockApiCaller extends MockApiCaller {
 
 
     public ApiResponse<String> changePasword(MemberPasswordChangeRequest request) throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/api/member/member")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/api/member")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .header("Authorization", "Bearer " + ADMIN_USER);
