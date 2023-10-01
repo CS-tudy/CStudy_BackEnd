@@ -118,7 +118,7 @@ public class MemberController {
     }
 
     @Operation(summary = "마이페이지", description = "마이페이지 / ROLE_CUSTOM', 'ROLE_ADMIN")
-    @GetMapping("/member")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public MyPageResponseDto myPage(@Parameter(hidden = true)
@@ -127,7 +127,7 @@ public class MemberController {
     }
 
     @Operation(summary = "비밀번호 수정", description = "비밀번호 수정 / ROLE_CUSTOM', 'ROLE_ADMIN")
-    @PatchMapping("/member")
+    @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void changePassword(@Parameter(name = "memberPasswordChangeRequest", description = "회원 이전 비밀번호, 새로운 비밀번호")

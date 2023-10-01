@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Table(name = "Competition", uniqueConstraints = {
-        @UniqueConstraint(name = "competitionTitle", columnNames = {"competitionTitle"})
+//        @UniqueConstraint(name = "competitionTitle", columnNames = {"competitionTitle"})
 })
 public class Competition {
 
@@ -32,10 +32,8 @@ public class Competition {
     @Column(nullable = false)
     private int participants;
 
-    @Column(nullable = false)
     private LocalDateTime competitionStart;
 
-    @Column(nullable = false)
     private LocalDateTime competitionEnd;
 
     /********************************* 동시성 버전 *********************************/

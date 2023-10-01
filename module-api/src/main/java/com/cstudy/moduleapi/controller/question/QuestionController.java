@@ -56,7 +56,7 @@ public class QuestionController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void buildCreateQuestionWithCategory(@Parameter(name = "List<CreateQuestionAndCategoryRequestDto>", description = "대량 문제 생성을 위한 문제, 카테고리, 선택")
                                                 @Valid @RequestBody List<CreateQuestionAndCategoryRequestDto> createQuestionAndCategoryRequestDtos) {
-        questionService.recursiveCreateQuestionChoice(createQuestionAndCategoryRequestDtos);
+        questionService.bulkCreateQuestionChoice(createQuestionAndCategoryRequestDtos);
     }
 
     @Operation(summary = "단일 문제 탐색하기", description = "문제 아이디를 받아서 단일 문제 탐색하기 / PermitAll")
@@ -100,6 +100,8 @@ public class QuestionController {
                                                                                                         @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                                                         @Parameter(hidden = true)
                                                                                                         @IfLogin LoginUserDto loginUserDto) {
+
+
         return questionService.questionPageWithCategory(searchCondition, page, size, loginUserDto);
     }
 

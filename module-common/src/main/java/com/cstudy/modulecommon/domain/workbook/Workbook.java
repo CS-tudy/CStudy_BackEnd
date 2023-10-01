@@ -18,8 +18,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "Workbook", uniqueConstraints = {
-        @UniqueConstraint(name = "Workbook_title", columnNames = {"title"}),
-        @UniqueConstraint(name = "Workbook_description", columnNames = {"description"})
+//        @UniqueConstraint(name = "Workbook_title", columnNames = {"title"}),
+//        @UniqueConstraint(name = "Workbook_description", columnNames = {"description"})
 })
 @Builder
 @AllArgsConstructor

@@ -111,7 +111,7 @@ public class QuestionServiceImpl implements QuestionService {
      */
     @Override
     @Transactional
-    public void recursiveCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos) {
+    public void bulkCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos) {
         String questionSql = "" +
                 "INSERT INTO question" +
                 " (category_id," +

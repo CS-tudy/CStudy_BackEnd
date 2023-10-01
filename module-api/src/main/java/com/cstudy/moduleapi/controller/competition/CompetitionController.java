@@ -117,7 +117,7 @@ public class CompetitionController {
 
 
     @Operation(summary = "대회 문제 추가", description = "대회 문제 추가 / ROLE_ADMIN")
-    @PostMapping("/questions/add")
+    @PostMapping("/questions")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void addCompetitionQuestion(@Parameter(name = "CompetitionQuestionRequestDto", description = "대회 문제 추가 정보")
@@ -127,7 +127,7 @@ public class CompetitionController {
 
 
     @Operation(summary = "대회 문제 삭제", description = "대회 문제 삭제 / ROLE_ADMIN")
-    @DeleteMapping("/questions/delete")
+    @DeleteMapping("/questions")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void deleteCompetitionQuestion(@Parameter(name = "CompetitionQuestionRequestDto", description = "대회 문제 삭제 정보")

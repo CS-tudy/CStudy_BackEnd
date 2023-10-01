@@ -114,87 +114,87 @@ public class Initializer {
                 categoryRepository.save(DB);
             }
 
-            Member member = memberRepository.findById(1L)
-                    .orElseThrow();
-            Member custom = memberRepository.findById(2L)
-                    .orElseThrow();
-
-            if (noticeRepository.count() == 0) {
-                for (int i = 0; i < 20; i++) {
-                    Notice notice=Notice.builder()
-                            .title("제목"+i)
-                            .content("내용"+i)
-                            .member(member)
-                            .build();
-                    noticeRepository.save(notice);
-                }
-            }
-
-            if (requestRepository.count() == 0) {
-                for (int i = 0; i < 20; i++) {
-                    Request request = Request.builder()
-                            .title("제목"+i)
-                            .description("설명"+i)
-                            .member(custom)
-                            .build();
-
-                    requestRepository.save(request);
-                }
-            }
-
-            Notice notice = noticeRepository.findById(1L)
-                    .orElseThrow();
-            if (commentRepository.count() == 0) {
-                Comment comment = Comment.builder()
-                        .content("1번댓글")
-                        .notice(notice)
-                        .member(custom)
-                        .build();
-
-                commentRepository.save(comment);
-            }
-
-            if (commentRepository.count() == 1) {
-                Comment child1 = Comment.builder()
-                        .content("2번댓글")
-                        .parentCommentId(1L)
-                        .notice(notice)
-                        .member(member)
-                        .build();
-
-                Comment child2 = Comment.builder()
-                        .content("3번댓글")
-                        .parentCommentId(1L)
-                        .notice(notice)
-                        .member(member)
-                        .build();
-
-                Comment child3 = Comment.builder()
-                        .content("4번댓글")
-                        .parentCommentId(1L)
-                        .notice(notice)
-                        .member(member)
-                        .build();
-
-                Comment child4 = Comment.builder()
-                        .content("5번댓글")
-                        .parentCommentId(3L)
-                        .notice(notice)
-                        .member(custom)
-                        .build();
-
-                Comment child5 = Comment.builder()
-                        .content("6번댓글")
-                        .parentCommentId(3L)
-                        .notice(notice)
-                        .member(custom)
-                        .build();
-                commentRepository.save(child1);
-                commentRepository.save(child2);
-                commentRepository.save(child3);
-                commentRepository.save(child4);
-                commentRepository.save(child5);
-            }
+//            Member member = memberRepository.findById(1L)
+//                    .orElseThrow();
+//            Member custom = memberRepository.findById(2L)
+//                    .orElseThrow();
+//
+//            if (noticeRepository.count() == 0) {
+//                for (int i = 0; i < 20; i++) {
+//                    Notice notice=Notice.builder()
+//                            .title("제목"+i)
+//                            .content("내용"+i)
+//                            .member(member)
+//                            .build();
+//                    noticeRepository.save(notice);
+//                }
+//            }
+//
+//            if (requestRepository.count() == 0) {
+//                for (int i = 0; i < 20; i++) {
+//                    Request request = Request.builder()
+//                            .title("제목"+i)
+//                            .description("설명"+i)
+//                            .member(custom)
+//                            .build();
+//
+//                    requestRepository.save(request);
+//                }
+//            }
+//
+//            Notice notice = noticeRepository.findById(1L)
+//                    .orElseThrow();
+//            if (commentRepository.count() == 0) {
+//                Comment comment = Comment.builder()
+//                        .content("1번댓글")
+//                        .notice(notice)
+//                        .member(custom)
+//                        .build();
+//
+//                commentRepository.save(comment);
+//            }
+//
+//            if (commentRepository.count() == 1) {
+//                Comment child1 = Comment.builder()
+//                        .content("2번댓글")
+//                        .parentCommentId(1L)
+//                        .notice(notice)
+//                        .member(member)
+//                        .build();
+//
+//                Comment child2 = Comment.builder()
+//                        .content("3번댓글")
+//                        .parentCommentId(1L)
+//                        .notice(notice)
+//                        .member(member)
+//                        .build();
+//
+//                Comment child3 = Comment.builder()
+//                        .content("4번댓글")
+//                        .parentCommentId(1L)
+//                        .notice(notice)
+//                        .member(member)
+//                        .build();
+//
+//                Comment child4 = Comment.builder()
+//                        .content("5번댓글")
+//                        .parentCommentId(3L)
+//                        .notice(notice)
+//                        .member(custom)
+//                        .build();
+//
+//                Comment child5 = Comment.builder()
+//                        .content("6번댓글")
+//                        .parentCommentId(3L)
+//                        .notice(notice)
+//                        .member(custom)
+//                        .build();
+//                commentRepository.save(child1);
+//                commentRepository.save(child2);
+//                commentRepository.save(child3);
+//                commentRepository.save(child4);
+//                commentRepository.save(child5);
+//            }
         };
     }
 }
