@@ -48,8 +48,6 @@ dependencies {
     //valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    //H2
-    runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {

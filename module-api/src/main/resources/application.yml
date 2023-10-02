@@ -9,9 +9,9 @@ spring:
       max-request-size: 10MB
   data:
     mongodb:
-      uri: ${MONGO_URL}
+      uri: "mongodb://Mugeon:1234@43.201.219.22:27017/CStudy"
   redis:
-    host: ${REDIS_HOST}
+    host: 43.201.219.22
     port: 6379
   session:
     timeout: 600
@@ -21,9 +21,9 @@ spring:
       namespace: spring:session
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWD}
+    url: jdbc:mysql://localhost:3306/CStudy?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
     hikari:
       connectionTimeout: 30000
       maximumPoolSize: 20
@@ -40,8 +40,8 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWD}
+    username: cstudy1234@naver.com
+    password: cstudy1234!
     properties:
       mail:
         smtp:
@@ -54,18 +54,18 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_SECRET}
+            client-id: 105704828821-2vf7ui58dkt0dlr4e1n1dsmsqbvogg02.apps.googleusercontent.com
+            client-secret: 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
             scope: profile,email
           naver:
-            client-id: ${NAVER_CLIENT_ID}
-            client-secret: ${NAVER_SECRET}
+            client-id: FFL4eXeGmyxGM1ZmchEY
+            client-secret: TfpHeoDWEa
             redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             authorization-grant-type: authorization_code
             scope: name,email,profile_image
             client-name: Naver
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
+            client-id: a3d6495c7a1eef1cd1850730e928e704
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
@@ -95,18 +95,18 @@ server:
   port: 8080
 
 jwt:
-  secretKey: ${JWT_SECRET_KEY}
-  refreshKey: ${JWT_REFRESH_KEY}
+  secretKey: "0123456789012345678901234567890123456789"
+  refreshKey: "0123456789012345678901234567890123456789"
 
 cloud:
   aws:
     credentials:
-      accessKey: ${CLOUD_ACCESS_KEY}
-      secretKey: ${CLOUD_SECRET_KEY}
+      accessKey: "AKIATRTDCFAC5EBYZRE5"
+      secretKey: "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"
     s3:
-      bucket: ${BUCKET}
+      bucket: j4j-test-bucket
     region:
-      static: ${REGION}
+      static: ap-northeast-2
     stack:
       auto: false
 
