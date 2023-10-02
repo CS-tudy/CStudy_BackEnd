@@ -11,8 +11,6 @@
 - 기존에 팀 프로젝트를 진행을 하면서 같이 개발을 진행을 하던 팀원이 취업을 하여 실제 서비스를 만들기 위해 프로젝트를 고도화를 진행을 했습니다. 이전에 진행한 프로젝트 [1차 개발 프로젝트](https://github.com/CStudyTeam)
 
 
-- [⭐️ 팀 노션](https://sunny-radiator-7f3.notion.site/CStudy-5da03f7b12d5477eae1e35caacd04615?pvs=4) | ~~[📝 배포 사이트 ](https://dbsyacmkozvg1.cloudfront.net/)~~
-
 <br/>
 
 ## 🥕프로젝트 백엔드 의사결정 및 이슈
