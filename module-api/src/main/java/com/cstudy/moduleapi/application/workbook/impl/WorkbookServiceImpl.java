@@ -1,7 +1,6 @@
 package com.cstudy.moduleapi.application.workbook.impl;
 
 import com.cstudy.moduleapi.application.workbook.WorkbookService;
-import com.cstudy.moduleapi.config.s3.AwsS3Util;
 import com.cstudy.moduleapi.dto.workbook.CreateWorkbookRequestDto;
 import com.cstudy.moduleapi.dto.workbook.QuestionIdRequestDto;
 import com.cstudy.moduleapi.dto.workbook.WorkbookIdWithImagePath;
@@ -22,7 +21,6 @@ import com.cstudy.modulecommon.repository.workbook.WorkbookQuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,20 +37,20 @@ public class WorkbookServiceImpl implements WorkbookService {
     private final WorkbookQuestionRepository workbookQuestionRepository;
     private final QuestionRepository questionRepository;
     private final FileRepository fileRepository;
-    private final AwsS3Util awsS3Util;
+//    private final AwsS3Util awsS3Util;
 
     public WorkbookServiceImpl(
             WorkbookRepository workbookRepository,
             WorkbookQuestionRepository workbookQuestionRepository,
             QuestionRepository questionRepository,
-            FileRepository fileRepository,
-            AwsS3Util awsS3Util
+            FileRepository fileRepository
+//            ,AwsS3Util awsS3Util
     ) {
         this.workbookRepository = workbookRepository;
         this.workbookQuestionRepository = workbookQuestionRepository;
         this.questionRepository = questionRepository;
         this.fileRepository = fileRepository;
-        this.awsS3Util = awsS3Util;
+//        this.awsS3Util = awsS3Util;
     }
 
     /**
@@ -217,15 +215,15 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Transactional
     public void uploadFile(MultipartFile file, Long workbookId) {
 
-        String uploadFileName = awsS3Util.uploadFile(file);
+//        String uploadFileName = awsS3Util.uploadFile(file);
 
-        log.info("Uploading file : {} ", uploadFileName);
+//        log.info("Uploading file : {} ", uploadFileName);
 
         Workbook workbook = workbookRepository.findById(workbookId)
                 .orElseThrow(() -> new NotFoundWorkbook(workbookId));
 
         File fileName = File.builder()
-                .fileName(uploadFileName)
+//                .fileName(uploadFileName)
                 .workbook(workbook)
                 .build();
 
