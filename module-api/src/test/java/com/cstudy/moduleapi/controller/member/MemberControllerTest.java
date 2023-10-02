@@ -529,16 +529,16 @@ class MemberControllerTest extends ControllerTest {
         }
 
         @Test
-        public void 관리자_비밀번호_변경_401() throws Exception {
+        public void 관리자_비밀번호_변경_403() throws Exception {
             //given
-            String url = "/api/member/member";
+            String url = "/api/member";
             //when
             ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPatchRequest_WithNoAuthorization_ExpectErrorResponse(url, null);
             //Then
             assertAll(
-                    () -> assertThat(response.getStatus()).isEqualTo(401),
+                    () -> assertThat(response.getStatus()).isEqualTo(403),
 
-                    () -> assertThat(response.getBody().getCode()).isEqualTo("401"),
+                    () -> assertThat(response.getBody().getCode()).isEqualTo("403"),
                     () -> assertThat(response.getBody().getMessage()).isEqualTo("Headers에 토큰 형식의 값 찾을 수 없음")
             );
         }

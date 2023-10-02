@@ -13,7 +13,7 @@ import java.util.List;
 public interface QuestionService {
     void createQuestionChoice(CreateQuestionAndCategoryRequestDto createChoicesAboutQuestionDto);
 
-    void recursiveCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos);
+    void bulkCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos);
 
     QuestionResponseDto findQuestionWithChoiceAndCategory(Long questionId);
 

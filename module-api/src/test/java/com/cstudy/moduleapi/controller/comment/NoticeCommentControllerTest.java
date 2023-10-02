@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
+//10
 class NoticeCommentControllerTest extends ControllerTest {
 
     private static final String URL = "/api/comment";
@@ -143,12 +144,23 @@ class NoticeCommentControllerTest extends ControllerTest {
                     .memberId(4L)
                     .build();
 
+            NoticeCommentResponse child3 = NoticeCommentResponse.builder()
+                    .id(5L)
+                    .author("양세찬")
+                    .content("5번 댓글")
+                    .parentCommentId(2L)
+                    .memberId(5L)
+                    .build();
+
             List<NoticeCommentResponse> responses = List.of(parent1, parent2);
 
-            List<NoticeCommentResponse> responses2 = List.of(parent1, parent2, child1,child2);
+            List<NoticeCommentResponse> responses2 = List.of(parent1, parent2, child1, child2);
+
+            List<NoticeCommentResponse> responses3 = List.of(parent1, parent2, child1, child2, child3);
 
             given(commentService.getCommentsForNotice(eq(1L))).willReturn(responses);
             given(commentService.getCommentsForNotice(eq(2L))).willReturn(responses2);
+            given(commentService.getCommentsForNotice(eq(3L))).willReturn(responses3);
         }
 
 
@@ -182,26 +194,110 @@ class NoticeCommentControllerTest extends ControllerTest {
             //Then
             List<NoticeCommentResponse> commentList = response.getBody();
 
-            assertThat(commentList.get(0).getMemberId()).isEqualTo(1L);
-            assertThat(commentList.get(0).getAuthor()).isEqualTo("김종국");
-            assertThat(commentList.get(0).getContent()).isEqualTo("1번 댓글");
+            assertAll(
+                    () -> assertThat(commentList.get(0).getMemberId()).isEqualTo(1L),
+                    () -> assertThat(commentList.get(0).getAuthor()).isEqualTo("김종국"),
+                    () -> assertThat(commentList.get(0).getContent()).isEqualTo("1번 댓글"),
 
+                    () -> assertThat(commentList.get(1).getMemberId()).isEqualTo(2L),
+                    () -> assertThat(commentList.get(1).getAuthor()).isEqualTo("유재석"),
+                    () -> assertThat(commentList.get(1).getParentCommentId()).isNull(),
+                    () -> assertThat(commentList.get(1).getContent()).isEqualTo("2번 댓글"),
 
-            assertThat(commentList.get(1).getMemberId()).isEqualTo(2L);
-            assertThat(commentList.get(1).getAuthor()).isEqualTo("유재석");
-            assertThat(commentList.get(1).getParentCommentId()).isNull();
-            assertThat(commentList.get(1).getContent()).isEqualTo("2번 댓글");
+                    () -> assertThat(commentList.get(2).getMemberId()).isEqualTo(3L),
+                    () -> assertThat(commentList.get(2).getAuthor()).isEqualTo("하하"),
+                    () -> assertThat(commentList.get(2).getParentCommentId()).isEqualTo(1L),
+                    () -> assertThat(commentList.get(2).getContent()).isEqualTo("3번 댓글"),
 
-            assertThat(commentList.get(2).getMemberId()).isEqualTo(3L);
-            assertThat(commentList.get(2).getAuthor()).isEqualTo("하하");
-            assertThat(commentList.get(2).getParentCommentId()).isEqualTo(1L);
-            assertThat(commentList.get(2).getContent()).isEqualTo("3번 댓글");
+                    () -> assertThat(commentList.get(3).getMemberId()).isEqualTo(4L),
+                    () -> assertThat(commentList.get(3).getAuthor()).isEqualTo("송지효"),
+                    () -> assertThat(commentList.get(3).getParentCommentId()).isEqualTo(3L),
+                    () -> assertThat(commentList.get(3).getContent()).isEqualTo("4번 댓글")
+            );
 
-            assertThat(commentList.get(3).getMemberId()).isEqualTo(4L);
-            assertThat(commentList.get(3).getAuthor()).isEqualTo("송지효");
-            assertThat(commentList.get(3).getParentCommentId()).isEqualTo(3L);
-            assertThat(commentList.get(3).getContent()).isEqualTo("4번 댓글");
         }
 
+        @Test
+        public void 여러_댓글_부모_댓글에_자식을_추가하기_조회하기_200() throws Exception {
+            //given
+            Long id = 3L;
+
+            //when
+            ApiResponse<List<NoticeCommentResponse>> response = commentMockApiCaller.getCommentsForNotice(id);
+
+            //Then
+            List<NoticeCommentResponse> commentList = response.getBody();
+
+            //Then
+            assertAll(
+                    () -> assertThat(commentList.get(0).getMemberId()).isEqualTo(1L),
+                    () -> assertThat(commentList.get(0).getAuthor()).isEqualTo("김종국"),
+                    () -> assertThat(commentList.get(0).getContent()).isEqualTo("1번 댓글"),
+
+                    () -> assertThat(commentList.get(1).getMemberId()).isEqualTo(2L),
+                    () -> assertThat(commentList.get(1).getAuthor()).isEqualTo("유재석"),
+                    () -> assertThat(commentList.get(1).getParentCommentId()).isNull(),
+                    () -> assertThat(commentList.get(1).getContent()).isEqualTo("2번 댓글"),
+
+                    () -> assertThat(commentList.get(2).getMemberId()).isEqualTo(3L),
+                    () -> assertThat(commentList.get(2).getAuthor()).isEqualTo("하하"),
+                    () -> assertThat(commentList.get(2).getParentCommentId()).isEqualTo(1L),
+                    () -> assertThat(commentList.get(2).getContent()).isEqualTo("3번 댓글"),
+
+                    () -> assertThat(commentList.get(3).getMemberId()).isEqualTo(4L),
+                    () -> assertThat(commentList.get(3).getAuthor()).isEqualTo("송지효"),
+                    () -> assertThat(commentList.get(3).getParentCommentId()).isEqualTo(3L),
+                    () -> assertThat(commentList.get(3).getContent()).isEqualTo("4번 댓글"),
+
+                    () -> assertThat(commentList.get(4).getMemberId()).isEqualTo(5L),
+                    () -> assertThat(commentList.get(4).getAuthor()).isEqualTo("양세찬"),
+                    () -> assertThat(commentList.get(4).getParentCommentId()).isEqualTo(2L),
+                    () -> assertThat(commentList.get(4).getContent()).isEqualTo("5번 댓글")
+            );
+        }
+
+    }
+
+    @DisplayName("/api/comment/{commentId}")
+    @Nested
+    class deletedComment {
+        @Test
+        public void 계층형_댓글_삭제_성공_204() throws Exception{
+            //given
+            Long commentId = 1L;
+            //when
+            ApiResponse<String> response = commentMockApiCaller.deleteComment(commentId);
+            //Then
+            assertThat(response.getStatus()).isEqualTo(204);
+        }
+
+        @Test
+        public void 계층형_댓글_삭제_실패_Token없음_401() throws Exception{
+            //given
+            String url = "/api/comment/{path}";
+            //when
+            ApiResponse<ErrorResponse> response = commentMockApiCaller.sendDeleteRequest_WithNoAuthorization_ExpectErrorResponse(url, null, -1L);
+            //Then
+            assertAll(
+                    ()->assertThat(response.getStatus()).isEqualTo(401),
+                    ()->assertThat(response.getBody().getCode()).isEqualTo("401"),
+                    ()->assertThat(response.getBody().getMessage()).isEqualTo("Headers에 토큰 형식의 값 찾을 수 없음")
+            );
+        }
+
+        @Test
+        public void 계층형_댓글_삭제_실패_pathvariable_음수() throws Exception{
+            //given
+            String url = "/api/comment/{path}";
+            Long path = -1L;
+            //when
+            ApiResponse<ErrorResponse> response = commentMockApiCaller.sendDeleteRequest_ExpectErrorResponse(url, null, path);
+            //Then
+            assertAll(
+                    ()->assertThat(response.getStatus()).isEqualTo(400),
+                    ()->assertThat(response.getBody().getCode()).isEqualTo("8500"),
+                    ()->assertThat(response.getBody().getMessage()).isEqualTo("pathvariable은 양수로 처리를 해야됩니다.-1")
+            );
+        }
     }
 }

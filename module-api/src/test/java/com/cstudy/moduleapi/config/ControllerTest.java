@@ -1,13 +1,16 @@
 package com.cstudy.moduleapi.config;
 
+import com.cstudy.moduleapi.apiCaller.*;
 import com.cstudy.moduleapi.application.comment.CommentService;
 import com.cstudy.moduleapi.application.member.DuplicateServiceFinder;
 import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
+import com.cstudy.moduleapi.application.notice.NoticeService;
+import com.cstudy.moduleapi.application.question.MemberQuestionService;
+import com.cstudy.moduleapi.application.question.QuestionService;
+import com.cstudy.moduleapi.application.ranking.impl.RankingServiceImpl;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
-import com.cstudy.moduleapi.controller.apiCaller.CommentMockApiCaller;
-import com.cstudy.moduleapi.controller.apiCaller.MemberMockApiCaller;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
 import com.cstudy.moduleapi.enums.MemberTestEnum;
@@ -24,7 +27,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,8 +59,24 @@ public abstract class ControllerTest {
     @MockBean
     protected CommentService commentService;
 
+    @MockBean
+    protected NoticeService noticeService;
+
+    @MockBean
+    protected RankingServiceImpl rankingService;
+
+    @MockBean
+    protected QuestionService questionService;
+
+    @MockBean
+    protected MemberQuestionService memberQuestionService;
+
+
     protected MemberMockApiCaller memberMockApiCaller;
     protected CommentMockApiCaller commentMockApiCaller;
+    protected NoticeMockApiCaller noticeMockApiCaller;
+    protected RankingMockApiCaller rankingMockApiCaller;
+    protected QuestionMockApiCaller questionMockApiCaller;
 
     public static String CUSTOM_USER = null;
     public static String ADMIN_USER = null;
@@ -68,6 +86,9 @@ public abstract class ControllerTest {
     protected void setup() throws Exception {
         memberMockApiCaller = new MemberMockApiCaller(mockMvc, objectMapper);
         commentMockApiCaller = new CommentMockApiCaller(mockMvc, objectMapper);
+        noticeMockApiCaller = new NoticeMockApiCaller(mockMvc, objectMapper);
+        rankingMockApiCaller = new RankingMockApiCaller(mockMvc, objectMapper);
+        questionMockApiCaller = new QuestionMockApiCaller(mockMvc, objectMapper);
 
         CUSTOM_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.CUSTOM_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
         ADMIN_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.ADMIN_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 
@@ -18,9 +19,15 @@ import java.util.List;
 @Builder
 public class CreateQuestionAndCategoryRequestDto {
 
-//    @NotEmpty(message = "createQuestionRequestDto 필드는 필수입니다.")
+    @Valid
+    @NotNull(message = "문제 createQuestionRequestDto를 입력하세요")
     private CreateQuestionRequestDto createQuestionRequestDto;
-//    @NotEmpty(message = "categoryRequestDto 필드는 필수입니다.")
+
+    @Valid
+    @NotNull(message = "categoryRequestDto를 입력하세요")
     private CategoryRequestDto categoryRequestDto;
+
+    @NotNull(message = "createChoicesAboutQuestionDto를 4개를 입력하세요.")
+    @Size(min = 4, max = 4, message = "선택지는 정확히 4개여야 합니다.")
     private List<CreateChoicesAboutQuestionDto> createChoicesAboutQuestionDto;
 }
