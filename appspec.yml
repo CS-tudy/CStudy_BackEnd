@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/devProject
+    destination: /home/ubuntu/CStudy
     overwrite: yes
 
 permissions:
