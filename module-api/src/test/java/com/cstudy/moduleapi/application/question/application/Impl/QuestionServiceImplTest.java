@@ -86,11 +86,11 @@ class QuestionServiceImplTest extends ServiceTestBase {
         requestDtos.add(createQuestionAndCategoryRequestDto);
 
         // When
-        questionService.recursiveCreateQuestionChoice(requestDtos);
+        questionService.bulkCreateQuestionChoice(requestDtos);
 
         // Then
         List<Question> questions = questionRepository.findAll();
-        assertThat(questions).hasSize(1);
+        assertThat(questions).hasSize(4);
 
         Question question = questions.get(0);
         assertThat(question.getTitle()).isEqualTo("문제 제목");
