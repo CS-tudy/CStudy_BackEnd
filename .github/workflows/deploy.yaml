@@ -6,10 +6,10 @@ on:
       - main
 
 env:
-  S3_BUCKET_NAME: s3-mugeon
-  RESOURCE_PATH: ./src/main/resources/application.yml
-  CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-MUGEON
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
+  S3_BUCKET_NAME: s3-cstudy
+  RESOURCE_PATH: ./module-api/src/main/resources/application.yml
+  CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-CSTUDY
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-CSTUDY-GROUP
 
 jobs:
   build:
@@ -31,9 +31,33 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-          spring.datasource.url: ${{ secrets.URL }}
-          spring.datasource.username: ${{ secrets.USERNAME }}
-          spring.datasource.password: ${{ secrets.PASSWORD }}
+          spring.data.mongodb.uri: ${{ secrets.MONGODB_URL }}
+          spring.redis.host: ${{ secrets.REDIS_HOST }}
+
+          spring.datasource.url: ${{ secrets.MYSQL_URL }}
+          spring.datasource.username: ${{ secrets.MYSQL_USERNAME }}
+          spring.datasource.password: ${{ secrets.MYSQL_PASSWD }}
+
+          spring.mail.username: ${{ secrets.MAIL_USERNAME }}
+          spring.mail.password: ${{ secrets.MAIL_PASSWORD }}
+
+
+          spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.GOOGLE_SECRET }}
+
+          spring.security.oauth2.client.registration.naver.client-id: ${{ secrets.NAVER_CLIENT_ID }}
+          spring.security.oauth2.client.registration.naver.client-secret: ${{ secrets.NAVER_SECRET }}
+
+          spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }}
+
+          jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
+          jwt.refreshKey: ${{ secrets.JWT_REFRESH_KEY }}
+
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_CREDENTIALS_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_CREDENTIALS_SECRET_KEY }}
+
+          cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET }}
+          cloud.aws.region.static: ${{ secrets.AWS_REGION }}
 
 
       - name: Grant execute permission for gradlew
