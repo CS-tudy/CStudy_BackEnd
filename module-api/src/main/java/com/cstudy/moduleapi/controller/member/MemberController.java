@@ -1,7 +1,6 @@
 package com.cstudy.moduleapi.controller.member;
 
 
-import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
@@ -33,18 +32,18 @@ public class MemberController {
 
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
-    private final FileService fileService;
+//    private final FileService fileService;
 //    private final GeoService geoService;
 
     public MemberController(
             MemberService memberService,
-            RefreshTokenService refreshTokenService,
-            FileService fileService
+            RefreshTokenService refreshTokenService
+//            , FileService fileService
 //            GeoService geoService
     ) {
         this.memberService = memberService;
         this.refreshTokenService = refreshTokenService;
-        this.fileService = fileService;
+//        this.fileService = fileService;
 //        this.geoService = geoService;
     }
 
@@ -92,30 +91,30 @@ public class MemberController {
         return refreshTokenService.AccessTokenWithRefreshToken(refreshTokenDto);
     }
 
-    @Operation(summary = "S3 파일 업로드", description = "AWS S3 버켓에 IAM 파일 업로드 /ROLE_CUSTOM', 'ROLE_ADMIN")
-    @PostMapping("/upload")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
-    public void upload(@Parameter(name = "multipartFileList", description = "Multi part file")
-                       @RequestParam("files") MultipartFile multipartFile,
-                       @Parameter(hidden = true)
-                       @IfLogin LoginUserDto loginUserDto) {
-        fileService.uploadFiles(multipartFile, loginUserDto);
-    }
+//    @Operation(summary = "S3 파일 업로드", description = "AWS S3 버켓에 IAM 파일 업로드 /ROLE_CUSTOM', 'ROLE_ADMIN")
+//    @PostMapping("/upload")
+//    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
+//    public void upload(@Parameter(name = "multipartFileList", description = "Multi part file")
+//                       @RequestParam("files") MultipartFile multipartFile,
+//                       @Parameter(hidden = true)
+//                       @IfLogin LoginUserDto loginUserDto) {
+//        fileService.uploadFiles(multipartFile, loginUserDto);
+//    }
 
 
-    @Operation(summary = "S3 버켓에서 사진 가져오기", description = "버켓을 기준으로 업로드 회원 사진 가져오기 / ROLE_CUSTOM', 'ROLE_ADMIN")
-    @GetMapping("/download")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
-    public ResponseEntity<byte[]> downloadFile(@Parameter(hidden = true)
-                                               @IfLogin LoginUserDto loginUserDto) {
-        byte[] imageBytes = fileService.getImageBytes(loginUserDto);
-        // 이미지 데이터를 반환
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageBytes);
-    }
+//    @Operation(summary = "S3 버켓에서 사진 가져오기", description = "버켓을 기준으로 업로드 회원 사진 가져오기 / ROLE_CUSTOM', 'ROLE_ADMIN")
+//    @GetMapping("/download")
+//    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
+//    public ResponseEntity<byte[]> downloadFile(@Parameter(hidden = true)
+//                                               @IfLogin LoginUserDto loginUserDto) {
+//        byte[] imageBytes = fileService.getImageBytes(loginUserDto);
+//        // 이미지 데이터를 반환
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.IMAGE_JPEG)
+//                .body(imageBytes);
+//    }
 
     @Operation(summary = "마이페이지", description = "마이페이지 / ROLE_CUSTOM', 'ROLE_ADMIN")
     @GetMapping
