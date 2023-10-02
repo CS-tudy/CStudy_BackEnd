@@ -46,12 +46,13 @@ public class reviewServiceImpl implements ReviewService {
 
         Objects.requireNonNull(userName, "유저 이름이 Null 입니다.");
 
-
-        userRepository.save(ReviewUser.builder()
+        ReviewUser reviewUser = ReviewUser.builder()
                 .userName(userName)
                 .successQuestion(new LinkedList<>())
                 .failQuestion(new LinkedList<>())
-                .build());
+                .build();
+
+        userRepository.save(reviewUser);
     }
 
     @Override
