@@ -40,9 +40,8 @@
 - [Session 방식의 문제점  JWT 개선](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Session-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90--JWT-%EA%B0%9C%EC%84%A0)
 
 ### 인프라
-
+- [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
 - [도커 컴포즈를 통한 고정 IP를 이용한 클라우드 서비스 배포](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%8F%84%EC%BB%A4-%EC%BB%B4%ED%8F%AC%EC%A6%88%EB%A5%BC-%ED%86%B5%ED%95%9C-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC)
-- [Github Webhook을 통해 Jenkins를 이용한 배포 자동화 + SSHAgent](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Github-Webhook%EC%9D%84-%ED%86%B5%ED%95%B4-Jenkins%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EC%9E%90%EB%8F%99%ED%99%94---SSHAgent)
 
 
 ### 지속적인 리펙토링 
@@ -53,6 +52,7 @@
 - [Presentation layer Test Code 관심사 분리 및 가독성 증가]()
 - [예외 코드 추상 클래스 구조 변경](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EC%98%88%EC%99%B8-%EC%BD%94%EB%93%9C-%EC%B6%94%EC%83%81-%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%A1%B0-%EB%B3%80%EA%B2%BD)
 - [Swagger, Rest Docs 어떤 걸 선택을 할까?](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Swagger,-Rest-Docs-%EC%96%B4%EB%96%A4-%EA%B1%B8-%EC%84%A0%ED%83%9D%EC%9D%84-%ED%95%A0%EA%B9%8C%3F)
+- [Jenkins Git Webhook을 통한 배포 자동화(SSHAgent)를 Github Actions CI + CodeDeploy 배포 자동화 변경](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Github-Webhook%EC%9D%84-%ED%86%B5%ED%95%B4-Jenkins%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EC%9E%90%EB%8F%99%ED%99%94---SSHAgent)
 
 
 
@@ -249,13 +249,18 @@ https://documenter.getpostman.com/view/23650109/2s9Y5ZuLvb
 
 <summary> 본문 확인 (👈 Click) </summary>
 
-![image](https://github.com/CStudyTeam/CStudy-backend/assets/103854287/d34ed6b2-b91f-4e27-a175-6dc2629e5747)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/88380c49-85e0-4647-8a79-1208a2298fcc)
 
-- 코드의 변경이 생겼을 때 새로 배포의 어려움을 해결하기 위해 배포 자동화를 추가를 하였습니다.
-- 배포 자동화를 위해 기술을 선택해야 되는 문제가 있었습니다. 
-- 물론 다양한 서비스를 제공하는 SASS 서비스와 (GIT, Travis)와 수동 설치하는 Jenkins가 있었습니다.
-- 선택의 기준은 러닝커브가 제일 적은 부분을 선택을 했습니다.
-- 젠킨스는 다른 기술에 비해 러닝 커브가 있지만 이전에 스터디를 통해서 경험을 하였기 때문에 비교적 러닝커브가 적다고 판단하여 젠킨스를 선택을 하였습니다.
+1. Jenkins -> Git Action 배포 자동화 변경
+   - 코드의 변경이 생기면 배포의 어려움을 해결하기 위해 배포 자동화 도입
+   - 처음에 스터디를 통해서 배운 Jenkins를 활용
+   - 다른 Sass 서비스에 비해서 수동으로 설치하며 Jenkins workspace가 필요하여 변경의 필요성 인지
+   - Git Action, AWS Code Deploy을 사용하여 배포 자동화 변경
+   - [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
+
+2. FE 팀원에게 배포 자동화 방식보다 Docker-compose 방식을 설명
+   - FE의 테스트를 위해서 배포 자동화를 통해서 설명하는 것 보다 가장 쉬운 Docker-compose를 통한 Elastic IP 배포를 전달
+   - [정리 블로그](https://velog.io/@geon_km/AWS-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC-Feat.-docker-compose)
 
 </details>
 
