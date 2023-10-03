@@ -1,6 +1,7 @@
 package com.cstudy.moduleapi.application.member.impl;
 
 import com.cstudy.moduleapi.application.member.DuplicateServiceFinder;
+import com.cstudy.moduleapi.application.member.EmailComponent;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
@@ -18,20 +19,16 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
     private final RefreshTokenService refreshTokenService;
     private final DuplicateServiceFinder duplicateServiceFinder;
     private final ReviewService reviewNoteService;
+    private final EmailComponent emailComponent;
 
     @Value("${spring.mail.username}")
     private String EMAIL;
@@ -58,7 +56,8 @@ public class MemberServiceImpl implements MemberService {
             JavaMailSender javaMailSender,
             RefreshTokenService refreshTokenService,
             DuplicateServiceFinder duplicateServiceFinder,
-            ReviewService reviewNoteService
+            ReviewService reviewNoteService,
+            EmailComponent createKey
     ) {
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
@@ -68,8 +67,8 @@ public class MemberServiceImpl implements MemberService {
         this.refreshTokenService = refreshTokenService;
         this.duplicateServiceFinder = duplicateServiceFinder;
         this.reviewNoteService = reviewNoteService;
+        this.emailComponent = createKey;
     }
-
 
     /**
      * 유저의 회원가입
@@ -77,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
      * 1. 유저를 생성한다.
      * 2. 유저에 대한 권한을 생성한다.
      * 3.  MongoDB의 ReviewUser를 생성한다.
-     *
+     * <p>
      * 다음과 같은 체크를 한다.
      * 1. 이메일에 대한 중복을 체크한다.
      * 2. 이메일에 대한 로직을 체크한다.
@@ -137,7 +136,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     *
      * @param email
      * @param name
      * @return
@@ -184,6 +182,7 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 비밀번호를 변경한다.
+     *
      * @param request
      * @param id
      */
@@ -209,12 +208,12 @@ public class MemberServiceImpl implements MemberService {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        String key = createKey();
+        String key = emailComponent.createKey();
 
         helper.setFrom(EMAIL);
         helper.setTo(recipientEmail);
         helper.setSubject("회원가입 코드 메일");
-        helper.setText(emailHtml(key), true);
+        helper.setText(emailComponent.emailHtml(key), true);
 
         try {
             javaMailSender.send(message);
@@ -226,34 +225,10 @@ public class MemberServiceImpl implements MemberService {
         return future;
     }
 
-    @NotNull
-    private static String emailHtml(String key) {
-        String msgg = "<div style='margin:100px;'>";
-        msgg += "<h1>안녕하세요 CS;tudy입니다!!!</h1>";
-        msgg += "<br>";
-        msgg += "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
-        msgg += "<br>";
-        msgg += "<p>감사합니다!<p>";
-        msgg += "<br>";
-        msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
-        msgg += "<h3 style='color:blue;'>회원가입 코드입니다.</h3>";
-        msgg += "<div style='font-size:130%'>";
-        msgg += "CODE : <strong>";
-        msgg += key + "</strong><div><br/> ";
-        msgg += "</div>";
-        return msgg;
-    }
-
 
     private void signupWithRole(Member member) {
         Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());
         userRole.ifPresent(member::changeRole);
-    }
-
-    private void duplicationWithEmail(MemberSignupRequest request) {
-        if (memberRepository.existsByEmail(request.getEmail())) {
-            throw new EmailDuplication(request.getEmail());
-        }
     }
 
     private MemberLoginResponse createToken(Member member) {
@@ -274,55 +249,22 @@ public class MemberServiceImpl implements MemberService {
                 roles
         );
 
-
         refreshTokenService.addRefreshToken(refreshToken);
         return MemberLoginResponse.of(member, accessToken, refreshToken);
     }
 
-    private String createKey() {
-        StringBuilder key = new StringBuilder();
-        Random rnd = new Random();
-
-        for (int i = 0; i < 8; i++) {
-            int index = rnd.nextInt(3);
-
-            switch (index) {
-                case 0:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
-                    break;
-                case 1:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
-                    break;
-                case 2:
-                    key.append((rnd.nextInt(10)));
-                    break;
-            }
-        }
-
-        return key.toString();
-    }
-
-
     private void checkEmailAndNameDuplication(MemberSignupRequest request) {
-        divisionDuplicationAboutNickEmail(request);
-        divisionDuplicationAboutName(request);
-    }
-
-    private void divisionDuplicationAboutName(MemberSignupRequest request) {
-        DuplicateResponseDto name = duplicateServiceFinder.getVerifyResponseDto("name", request.getName());
-        Optional.of(name)
-                .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
-                .ifPresent(duplicateResponseDto -> {
-                    throw new NameDuplication("중복 이름");
-                });
-    }
-
-    private void divisionDuplicationAboutNickEmail(MemberSignupRequest request) {
         DuplicateResponseDto email = duplicateServiceFinder.getVerifyResponseDto("email", request.getEmail());
         Optional.of(email)
                 .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
                 .ifPresent(duplicateResponseDto -> {
                     throw new EmailDuplication("중복 이메일");
+                });
+        DuplicateResponseDto name = duplicateServiceFinder.getVerifyResponseDto("name", request.getName());
+        Optional.of(name)
+                .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
+                .ifPresent(duplicateResponseDto -> {
+                    throw new NameDuplication("중복 이름");
                 });
     }
 
