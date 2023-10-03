@@ -135,40 +135,6 @@ public class MemberServiceImpl implements MemberService {
         return createToken(member);
     }
 
-    /**
-     * @param email
-     * @param name
-     * @return
-     */
-    @Override
-    @Transactional
-    public Member oauthSignUp(String email, String name) {
-
-        Member member = Member.builder()
-                .email(email)
-                .name(name)
-                .roles(new HashSet<>())
-                .build();
-
-        signupWithRole(member);
-
-        memberRepository.save(member);
-
-        return member;
-    }
-
-    /**
-     * Returns login member with LoginRequest
-     *
-     * @param email 회원 이메일
-     * @return 로그인 성공하면 회원 아이디, JWT(Access, Refresh Token)을 리턴을 합니다.
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public MemberLoginResponse oauthLogin(String email) {
-        return createToken(memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundMemberEmail(email)));
-    }
 
     /**
      * 마이페이지를 조회한다. 이때 로그인한 회원의 id를 기반하여 조회를 한다.
@@ -225,6 +191,35 @@ public class MemberServiceImpl implements MemberService {
         return future;
     }
 
+    @Override
+    @Transactional
+    public Member oauthSignUp(String email, String name) {
+
+        Member member = Member.builder()
+                .email(email)
+                .name(name)
+                .roles(new HashSet<>())
+                .build();
+
+        signupWithRole(member);
+
+        memberRepository.save(member);
+
+        return member;
+    }
+
+    /**
+     * Returns login member with LoginRequest
+     *
+     * @param email 회원 이메일
+     * @return 로그인 성공하면 회원 아이디, JWT(Access, Refresh Token)을 리턴을 합니다.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public MemberLoginResponse oauthLogin(String email) {
+        return createToken(memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundMemberEmail(email)));
+    }
 
     private void signupWithRole(Member member) {
         Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());
