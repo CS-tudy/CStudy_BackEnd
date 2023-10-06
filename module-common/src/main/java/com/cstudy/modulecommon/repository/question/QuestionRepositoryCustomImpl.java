@@ -7,10 +7,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .leftJoin(memberQuestion.member, member)
                 .where(
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
+                        categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
                         statusEq(questionSearchCondition.getStatus()),
                         question.category.id.eq(category.id)
@@ -58,7 +60,20 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(content, pageable, content.size());
+        JPAQuery<Long> countQuery = queryFactory
+                .select(question.count())
+                .from(question)
+                .leftJoin(question.category, category)
+                .leftJoin(question.questions, memberQuestion)
+                .leftJoin(memberQuestion.member, member)
+                .where(
+                        questionTitleEq(questionSearchCondition.getQuestionTitle()),
+                        categoryTitleEq(questionSearchCondition.getCategoryTitle()),
+                        memberIdEq(questionSearchCondition.getMemberId()),
+                        statusEq(questionSearchCondition.getStatus()),
+                        question.category.id.eq(category.id)
+                );
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
 
@@ -110,7 +125,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
 
     private BooleanExpression categoryTitleEq(String categoryTitle) {
-        return StringUtils.hasText(categoryTitle) ? category.categoryTitle.eq(categoryTitle) : null;
+        return StringUtils.hasText(categoryTitle) ? category.categoryTitle.contains(categoryTitle) : null;
     }
 
     private BooleanExpression questionTitleEq(String questionTitle) {

@@ -84,13 +84,7 @@ public class reviewServiceImpl implements ReviewService {
         log.info("questionExistsInFailList : {}", questionExistsInFailList);
         log.info("questionExistsInSuccessList : {}", questionExistsInSuccessList);
 
-        if (questionExistsInSuccessList) {
-            List<String> successQuestion = byName.getSuccessQuestion();
-            successQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
-        } else if (questionExistsInFailList) {
-            List<String> failQuestion = byName.getFailQuestion();
-            failQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
-        }
+        disisionListSuccessOrFail(questionId, questionExistsInSuccessList, byName, questionExistsInFailList);
 
         if (questionExistsInFailList || questionExistsInSuccessList) {
             ReviewNote match = byName.getReviewNotes().stream()
@@ -139,6 +133,16 @@ public class reviewServiceImpl implements ReviewService {
         userRepository.save(byName);
     }
 
+    private static void disisionListSuccessOrFail(long questionId, boolean questionExistsInSuccessList, ReviewUser byName, boolean questionExistsInFailList) {
+        if (questionExistsInSuccessList) {
+            List<String> successQuestion = byName.getSuccessQuestion();
+            successQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
+        } else if (questionExistsInFailList) {
+            List<String> failQuestion = byName.getFailQuestion();
+            failQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
+        }
+    }
+
     @Override
     @Transactional
     public ReviewUserResponseDto findMongoAboutReviewNote(LoginUserDto loginUserDto) {
@@ -150,7 +154,6 @@ public class reviewServiceImpl implements ReviewService {
 
         ReviewUser reviewUser = userRepository.findByUserName(memberName).orElseThrow(RuntimeException::new);
 
-        // Create a ReviewUserResponseDto using the static method 'of' from ReviewUserResponseDto class
         return ReviewUserResponseDto.of(reviewUser);
     }
 }
