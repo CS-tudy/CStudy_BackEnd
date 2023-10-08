@@ -131,6 +131,7 @@ sequenceDiagram
 ```
 ![img.png](image/discord.png)
 
+<br/>
 
 ## 🖼️ 이미지 업로드
 ```mermaid
