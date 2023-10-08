@@ -98,6 +98,10 @@ jwt:
   secretKey: ${JWT_SECRET_KEY}
   refreshKey: ${JWT_REFRESH_KEY}
 
+discord:
+  bot:
+    token: ${DISCORD_TOKEN}
+
 cloud:
   aws:
     credentials:
@@ -109,5 +113,3 @@ cloud:
       static: ${REGION}
     stack:
       auto: false
-
-
