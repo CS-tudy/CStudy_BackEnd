@@ -73,7 +73,10 @@ dependencies {
     implementation 'com.maxmind.geoip2:geoip2:2.12.0'
 
     //jackson
-//    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    //implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    //discord
+    implementation 'net.dv8tion:JDA:5.0.0-beta.5'
 
 
     //multi module

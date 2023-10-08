@@ -20,6 +20,7 @@ public class QuestionResponseDto {
     private String title;
     private String description;
     private String explain;
+    @Builder.Default
     List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
 
     public static QuestionResponseDto of(Question question) {

@@ -77,13 +77,13 @@ public class Initializer {
                 }
 
                 if (customRoleOptional.isPresent()) {
-                    Role adminRole = adminRoleOptional.get();
+                    Role custom = customRoleOptional.get();
 
                     Member member = Member.builder()
                             .email("test@test.com")
                             .password(passwordEncoder.encode("test1234!"))
                             .name("일반회원")
-                            .roles(Collections.singleton(adminRole))
+                            .roles(Collections.singleton(custom))
                             .build();
 
                     memberRepository.save(member);

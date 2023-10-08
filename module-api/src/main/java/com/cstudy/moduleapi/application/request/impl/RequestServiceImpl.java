@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class RequestServiceImpl implements RequestService {
@@ -133,6 +135,12 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.findById(updateRequestRequestDto.getId())
                 .orElseThrow(() -> new NotFoundRequest(updateRequestRequestDto.getId()))
                 .updateRequest(updateRequestRequestDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Request> getRequestListForDiscord() {
+        return requestRepository.findByNotAcceptRequestList();
     }
 
 
