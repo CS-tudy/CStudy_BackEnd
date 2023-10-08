@@ -265,6 +265,7 @@ sequenceDiagram
 
 <summary> 본문 확인 (👈 Click) </summary>
 
+
 https://documenter.getpostman.com/view/23650109/2s9YJgSKui
 
 
@@ -278,7 +279,8 @@ https://documenter.getpostman.com/view/23650109/2s9YJgSKui
 
 <summary> 본문 확인 (👈 Click) </summary>
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/88380c49-85e0-4647-8a79-1208a2298fcc)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/75d1bec3-8b44-452c-a953-30c139facace)
+
 
 1. Jenkins -> Git Action 배포 자동화 변경
    - 코드의 변경이 생기면 배포의 어려움을 해결하기 위해 배포 자동화 도입
