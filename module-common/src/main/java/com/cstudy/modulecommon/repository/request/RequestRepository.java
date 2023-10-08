@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
@@ -18,6 +19,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     Page<Request> findRequestByMemberId(@Param("id") Long id,
                                         Pageable pageable);
 
+    @Query("SELECT R FROM Request R WHERE R.flag= FALSE")
+    List<Request> findByNotAcceptRequestList();
 
     Optional<Request> findByIdAndMemberId(long id, Long memberId);
 }
