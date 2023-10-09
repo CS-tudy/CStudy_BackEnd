@@ -16,4 +16,8 @@ public class WorkbookQuestionResponseDto {
     private Long questionId;
 
     private String title;
+
+    public static WorkbookQuestionResponseDto createWorkQuestion(Long workbookQuestionId, Long questionId, String title) {
+        return new WorkbookQuestionResponseDto(workbookQuestionId, questionId, title);
+    }
 }
