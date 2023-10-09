@@ -152,8 +152,7 @@ public class QuestionMockApiCaller extends MockApiCaller {
         objectMapper.registerModule(new JavaTimeModule());
 
         JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-        List<QuestionPageWithCategoryAndTitle> content = objectMapper.readValue(jsonNode.get("content").toString(), new TypeReference<>() {
-        });
+        List<QuestionPageWithCategoryAndTitle> content = objectMapper.readValue(jsonNode.get("content").toString(), new TypeReference<>() {});
         int totalPages = jsonNode.get("totalPages").asInt();
         long totalElements = jsonNode.get("totalElements").asLong();
 
