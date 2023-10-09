@@ -2,6 +2,7 @@ package com.cstudy.moduleapi.application.request.impl;
 
 import com.cstudy.moduleapi.aop.AuthCheck;
 import com.cstudy.moduleapi.application.request.RequestService;
+import com.cstudy.moduleapi.config.redis.RedisPublisher;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
 import com.cstudy.moduleapi.dto.request.RequestResponseDto;
@@ -16,6 +17,7 @@ import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +29,13 @@ public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
     private final MemberRepository memberRepository;
+    private final RedisPublisher redisPublisher;
 
-    public RequestServiceImpl(
-            RequestRepository requestRepository,
-            MemberRepository memberRepository
-    ) {
+
+    public RequestServiceImpl(RequestRepository requestRepository, MemberRepository memberRepository, RedisPublisher redisPublisher) {
         this.requestRepository = requestRepository;
         this.memberRepository = memberRepository;
+        this.redisPublisher = redisPublisher;
     }
 
     /**
@@ -55,9 +57,10 @@ public class RequestServiceImpl implements RequestService {
                 .description(requestDto.getDescription())
                 .member(member)
                 .build();
-
         requestRepository.save(request);
 
+        //redis pub/sub으로 비동기로 알림 보내기
+//        redisPublisher.publish(ChannelTopic.of("sendDiscord"),"무건아 문제");
         member.addRequest(request);
 
         return request.getId();

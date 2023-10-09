@@ -1,5 +1,6 @@
 package com.cstudy.moduleapi.config.redis;
 
+import com.cstudy.moduleapi.discord.DiscordListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.connection.Message;
@@ -15,13 +16,18 @@ public class RedisSubscriber implements MessageListener {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final CacheManager cacheManager;
+    private final DiscordListener discordListener;
 
-    public RedisSubscriber(final RedisTemplate<String, Object> redisTemplate, final CacheManager cacheManager, final RedisMessageListenerContainer redisMessageListener) {
+    public RedisSubscriber(final RedisTemplate<String, Object> redisTemplate, final CacheManager cacheManager, final RedisMessageListenerContainer redisMessageListener, DiscordListener discordListener) {
         this.redisTemplate = redisTemplate;
         this.cacheManager = cacheManager;
+        this.discordListener = discordListener;
 
         ChannelTopic rankingInvalidationChannel = new ChannelTopic("ranking-invalidation");
         redisMessageListener.addMessageListener(this, rankingInvalidationChannel);
+
+        ChannelTopic sendDiscord = new ChannelTopic("sendDiscord");
+        redisMessageListener.addMessageListener(this, sendDiscord);
     }
 
     @Override
@@ -33,5 +39,10 @@ public class RedisSubscriber implements MessageListener {
             log.debug("Ranking with ID " + body + " has been updated!");
             redisTemplate.delete("ranking::1");
         }
+
+        if ("sendDiscord".equals(channel)) {
+            discordListener.sendMessage(null, body);
+        }
+
     }
 }

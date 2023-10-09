@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -53,8 +52,9 @@ public class DiscordListener extends ListenerAdapter {
 
     }
 
-    private String sendMessage(MessageReceivedEvent event, String message) {
+    public String sendMessage(MessageReceivedEvent event, String message) {
         User user = event.getAuthor();
+        log.info(">>>>"+user);
 
         String returnMessage = "";
         switch (message) {
@@ -73,8 +73,7 @@ public class DiscordListener extends ListenerAdapter {
                 returnMessage = String.valueOf(answer);
                 break;
             case "대회":
-//                returnMessage = user.getName() + "님 힘들어도 꾸준히 하면 좋은 결과가 있을거에요.";
-                returnMessage = "ㅅㄷㄴㅅㄴㅇㅎ";
+                returnMessage = "대회";
                 break;
 
             default:
