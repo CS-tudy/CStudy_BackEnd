@@ -2,11 +2,12 @@ package com.cstudy.moduleapi.dto.request;
 
 import com.cstudy.modulecommon.domain.request.Request;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -28,7 +29,7 @@ public class RequestResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createAt;
 
-    public static RequestResponseDto of(Request request){
+    public static RequestResponseDto of(Request request) {
         return RequestResponseDto.builder()
                 .id(request.getId())
                 .flag(request.isFlag())
@@ -38,6 +39,9 @@ public class RequestResponseDto {
                 .memberName(request.getMember().getName())
                 .createAt(request.getCreatedAt())
                 .build();
-  }
+    }
 
+    public static RequestResponseDto createRequestDto(Long id, boolean flag, String title, String description, Long memberId, String memberName, LocalDateTime createAt) {
+        return new RequestResponseDto(id, flag, title, description, memberId, memberName, createAt);
+    }
 }

@@ -3,18 +3,22 @@ package com.cstudy.moduleapi.dto.review;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewNoteResponseDto {
     private String id;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    //    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdDate;
+
     private Long questionId;
     private int successChoiceNumber;
     private int failChoiceNumber;
@@ -28,4 +32,6 @@ public class ReviewNoteResponseDto {
         this.failChoiceNumber = reviewNote.getFailChoiceNumber();
         this.isAnswer = reviewNote.isAnswer();
     }
+
+
 }

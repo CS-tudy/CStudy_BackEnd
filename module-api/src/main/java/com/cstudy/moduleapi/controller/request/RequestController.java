@@ -91,8 +91,8 @@ public class RequestController {
     }
 
     @Operation(summary = "게시판 업데이트", description = "단일 게시판 업데이트 / ROLE_CUSTOM', 'ROLE_ADMIN")
-    @PutMapping
-    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void updateRequest(@Parameter(description = "updateRequestRequestDto", name = "게시판 update dto")
                               @Valid @RequestBody UpdateRequestRequestDto updateRequestRequestDto,
