@@ -141,6 +141,13 @@ public abstract class MockApiCaller {
         return new ApiResponse<>(response.getStatus(), errorResponse);
     }
 
+    /**
+     *
+     * @param url 특정 url을 입력
+     * @param request requestBody Dto를 입력
+     * @return ErrorResponse
+     * @throws Exception
+     */
     public ApiResponse<ErrorResponse> sendPatchRequest_USER_ExpectErrorResponse(String url, Object request) throws Exception {
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch(url)

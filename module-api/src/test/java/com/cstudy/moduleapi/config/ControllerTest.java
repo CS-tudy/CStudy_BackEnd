@@ -10,6 +10,9 @@ import com.cstudy.moduleapi.application.question.MemberQuestionService;
 import com.cstudy.moduleapi.application.question.QuestionService;
 import com.cstudy.moduleapi.application.ranking.impl.RankingServiceImpl;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
+import com.cstudy.moduleapi.application.request.RequestService;
+import com.cstudy.moduleapi.application.reviewNote.ReviewService;
+import com.cstudy.moduleapi.application.workbook.WorkbookService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.moduleapi.dto.member.MemberLoginRequest;
 import com.cstudy.moduleapi.dto.member.MemberLoginResponse;
@@ -71,12 +74,23 @@ public abstract class ControllerTest {
     @MockBean
     protected MemberQuestionService memberQuestionService;
 
+    @MockBean
+    protected ReviewService reviewService;
+
+    @MockBean
+    protected RequestService requestService;
+
+    @MockBean
+    protected WorkbookService workbookService;
 
     protected MemberMockApiCaller memberMockApiCaller;
     protected CommentMockApiCaller commentMockApiCaller;
     protected NoticeMockApiCaller noticeMockApiCaller;
     protected RankingMockApiCaller rankingMockApiCaller;
     protected QuestionMockApiCaller questionMockApiCaller;
+    protected ReviewMockApiCaller reviewMockApiCaller;
+    protected RequestMockApiCaller requestMockApiCaller;
+    protected WorkbookMockApiCaller workbookMockApiCaller;
 
     public static String CUSTOM_USER = null;
     public static String ADMIN_USER = null;
@@ -89,6 +103,9 @@ public abstract class ControllerTest {
         noticeMockApiCaller = new NoticeMockApiCaller(mockMvc, objectMapper);
         rankingMockApiCaller = new RankingMockApiCaller(mockMvc, objectMapper);
         questionMockApiCaller = new QuestionMockApiCaller(mockMvc, objectMapper);
+        reviewMockApiCaller = new ReviewMockApiCaller(mockMvc, objectMapper);
+        requestMockApiCaller = new RequestMockApiCaller(mockMvc, objectMapper);
+        workbookMockApiCaller = new WorkbookMockApiCaller(mockMvc, objectMapper);
 
         CUSTOM_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.CUSTOM_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
         ADMIN_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.ADMIN_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));

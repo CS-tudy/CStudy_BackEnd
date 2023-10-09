@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class deployController {
+public class DeployController {
 
     @GetMapping("/test")
     public String test() {

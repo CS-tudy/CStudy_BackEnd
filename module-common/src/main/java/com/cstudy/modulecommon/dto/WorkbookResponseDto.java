@@ -21,12 +21,16 @@ public class WorkbookResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
-    public static WorkbookResponseDto of(Workbook workbook){
+    public static WorkbookResponseDto of(Workbook workbook) {
         return WorkbookResponseDto.builder()
                 .id(workbook.getId())
                 .title(workbook.getTitle())
                 .description(workbook.getDescription())
                 .createdAt(workbook.getCreatedAt())
                 .build();
+    }
+
+    public static WorkbookResponseDto createWorkbook(Long id, String title, String description, LocalDateTime createdAt) {
+        return new WorkbookResponseDto(id, title, description, createdAt);
     }
 }
