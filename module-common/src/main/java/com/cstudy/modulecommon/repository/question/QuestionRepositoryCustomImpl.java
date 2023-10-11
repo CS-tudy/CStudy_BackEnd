@@ -53,8 +53,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus()),
-                        question.category.id.eq(category.id)
+                        statusEq(questionSearchCondition.getStatus())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -70,8 +69,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus()),
-                        question.category.id.eq(category.id)
+                        statusEq(questionSearchCondition.getStatus())
                 );
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -125,11 +123,11 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
 
     private BooleanExpression categoryTitleEq(String categoryTitle) {
-        return StringUtils.hasText(categoryTitle) ? category.categoryTitle.contains(categoryTitle) : null;
+        return StringUtils.hasText(categoryTitle) ? category.categoryTitle.eq(categoryTitle) : null;
     }
 
     private BooleanExpression questionTitleEq(String questionTitle) {
-        return StringUtils.hasText(questionTitle) ? question.title.eq(questionTitle) : null;
+        return StringUtils.hasText(questionTitle) ? question.title.contains(questionTitle) : null;
     }
 
     private BooleanExpression memberIdEq(Long memberId) {
