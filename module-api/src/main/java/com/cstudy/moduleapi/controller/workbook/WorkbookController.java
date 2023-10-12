@@ -7,13 +7,13 @@ import com.cstudy.moduleapi.dto.workbook.WorkbookQuestionRequestDto;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,15 +40,13 @@ public class WorkbookController {
     @Operation(summary = "문제집리스트", description = "문제집 리스트를 요청합니다. title, description 값을 설정하면 해당하는 문제집을 검색할 수 있습니다. / PermitAll")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<WorkbookResponseDto> getWorkbookList(@Parameter(description = "page: 페이지 번호, size: 한 페이지 문제 수.")
-                                                     @PageableDefault(sort = {"createdAt"}, direction = Direction.DESC) Pageable pageable,
-                                                     @Parameter(name = "title", description = "문제집 검색할 때 문제집 제목")
-                                                     @RequestParam(value = "title", defaultValue = "") String title,
-                                                     @Parameter(name = "description", description = "문제집 검색할 때 문제집 내용")
-                                                     @RequestParam(value = "description", defaultValue = "") String description,
-                                                     @Parameter(name = "description", description = "제목+내용")
-                                                     @RequestParam(value = "title_desc", defaultValue = "") String titleDesc) {
-        return workbookService.getWorkbookList(pageable, title, description, titleDesc);
+    public Page<WorkbookResponseDto> getWorkbookList(@Parameter(name = "page", description = "페이지")
+                                                     @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                     @Parameter(name = "size", description = "기본 default 10 , size")
+                                                     @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                     @Parameter(name = "title,description,titleDesc", description = "조건 검색 페이징")
+                                                     WorkbookSearchRequestDto requestDto) {
+        return workbookService.getWorkbookList(page,size, requestDto);
     }
 
     @Operation(summary = "문제집 정보 요청", description = "문제집 id를 이용해 문제집 정보를 요청합니다. / PermitAll")

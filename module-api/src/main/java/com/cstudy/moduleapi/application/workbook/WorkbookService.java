@@ -6,6 +6,7 @@ import com.cstudy.moduleapi.dto.workbook.WorkbookQuestionRequestDto;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +15,8 @@ import java.util.List;
 
 public interface WorkbookService {
 
-
-    Page<WorkbookResponseDto> getWorkbookList(Pageable pageable, String title, String description, String titleDesc);
+//page,size, requestDto
+    Page<WorkbookResponseDto> getWorkbookList(int page, int size, WorkbookSearchRequestDto requestDto);
 
     List<WorkbookIdWithImagePath> getWorkbookImagePathList();
 

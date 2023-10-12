@@ -10,6 +10,7 @@ import com.cstudy.modulecommon.domain.question.Question;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +80,7 @@ class WorkbookServiceImplTest extends ServiceTestBase {
         }
         Pageable pageable = PageRequest.of(0, 5, Sort.by("createdAt").descending());
         Page<WorkbookResponseDto> workbookList =
-                workbookService.getWorkbookList(pageable, null, null, null);
+                workbookService.getWorkbookList(0, 10, null);
         for (int i = 10; i > 5; i--) {
             assertEquals(workbookList.getContent().get(10 - i).getTitle(), "문제집 제목" + i);
         }
@@ -102,12 +103,16 @@ class WorkbookServiceImplTest extends ServiceTestBase {
         }
         Pageable pageable = PageRequest.of(0, 5, Sort.by("createdAt").descending());
         Page<WorkbookResponseDto> workbookList =
-                workbookService.getWorkbookList(pageable, "1", null, null);
+                workbookService.getWorkbookList(0,5,null);
         assertEquals(workbookList.getTotalElements(), 4);
         assertEquals(workbookList.getContent().get(0).getTitle(), "문제집 제목10");
 
+        WorkbookSearchRequestDto workbookSearchRequestDto =WorkbookSearchRequestDto.builder()
+                .title("1")
+                .description("설명")
+                .build();
         Page<WorkbookResponseDto> workbookList1 =
-                workbookService.getWorkbookList(pageable, "1", "설명", null);
+                workbookService.getWorkbookList(0,5, workbookSearchRequestDto);
         assertEquals(workbookList1.getTotalElements(), 2);
         assertEquals(workbookList1.getContent().get(0).getDescription(), "문제집 설명10");
 
