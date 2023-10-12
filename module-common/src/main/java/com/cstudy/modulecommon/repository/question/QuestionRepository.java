@@ -14,4 +14,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
             "JOIN FETCH Q.category CA " +
             "WHERE Q.id = :id")
     Optional<Question> findQuestionWithChoicesAndCategoryById(@Param("id") Long id);
+
+    @Query("select q from Question q" +
+            " join fetch q.category" +
+            " where q.id = :questionId")
+    Optional<Question> findByIdFetchJoinCategory(@Param("questionId") Long questionId);
+
 }
