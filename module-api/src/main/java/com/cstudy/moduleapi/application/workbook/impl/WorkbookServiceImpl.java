@@ -13,6 +13,7 @@ import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import com.cstudy.modulecommon.error.question.NotFoundQuestionWithChoicesAndCategoryById;
 import com.cstudy.modulecommon.error.workbook.NotFoundWorkbook;
 import com.cstudy.modulecommon.error.workbook.NotFoundWorkbookQuestion;
@@ -22,6 +23,7 @@ import com.cstudy.modulecommon.repository.workbook.WorkbookQuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,15 +63,11 @@ public class WorkbookServiceImpl implements WorkbookService {
      * @param title       search workbook containing title
      * @param description search workbook containing description
      */
+
     @Override
-    @Transactional(readOnly = true)
-    public Page<WorkbookResponseDto> getWorkbookList(
-            Pageable pageable,
-            String title,
-            String description,
-            String titleDesc
-    ) {
-        return workbookRepository.findWorkbookList(pageable, title, description, titleDesc);
+    public Page<WorkbookResponseDto> getWorkbookList(int page, int size, WorkbookSearchRequestDto requestDto) {
+        Pageable pageable = PageRequest.of(page, size);
+        return workbookRepository.findWorkbookList(pageable, requestDto);
     }
 
     /**
