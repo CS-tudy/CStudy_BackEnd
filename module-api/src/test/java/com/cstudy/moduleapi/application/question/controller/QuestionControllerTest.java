@@ -9,6 +9,7 @@ import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.dto.ChoiceQuestionResponseDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
 import com.cstudy.modulecommon.dto.QuestionSearchCondition;
+import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

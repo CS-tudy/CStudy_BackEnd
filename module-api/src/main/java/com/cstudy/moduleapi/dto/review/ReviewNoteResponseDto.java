@@ -20,6 +20,8 @@ public class ReviewNoteResponseDto {
     private LocalDateTime createdDate;
 
     private Long questionId;
+    private String questionTitle;
+    private String categoryTitle;
     private int successChoiceNumber;
     private int failChoiceNumber;
     private boolean isAnswer;
@@ -28,8 +30,10 @@ public class ReviewNoteResponseDto {
         this.id = reviewNote.getId();
         this.createdDate = reviewNote.getCreatedDate();
         this.questionId = reviewNote.getQuestionId();
+        this.categoryTitle = reviewNote.getCategoryTitle();
         this.successChoiceNumber = reviewNote.getSuccessChoiceNumber();
         this.failChoiceNumber = reviewNote.getFailChoiceNumber();
+        this.questionTitle = reviewNote.getQuestionTitle();
         this.isAnswer = reviewNote.isAnswer();
     }
 

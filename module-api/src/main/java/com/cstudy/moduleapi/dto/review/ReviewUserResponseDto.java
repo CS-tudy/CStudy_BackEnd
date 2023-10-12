@@ -2,7 +2,6 @@ package com.cstudy.moduleapi.dto.review;
 
 import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.domain.question.Question;
-import com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewUser;
 import com.cstudy.modulecommon.dto.ChoiceQuestionResponseDto;
 import lombok.Builder;

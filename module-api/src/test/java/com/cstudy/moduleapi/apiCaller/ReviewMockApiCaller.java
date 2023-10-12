@@ -2,13 +2,9 @@ package com.cstudy.moduleapi.apiCaller;
 
 import com.cstudy.moduleapi.ApiResponse;
 import com.cstudy.moduleapi.config.MockApiCaller;
-import com.cstudy.moduleapi.dto.notice.NoticeSaveRequestDto;
-import com.cstudy.moduleapi.dto.review.ReviewNoteResponseDto;
 import com.cstudy.moduleapi.dto.review.ReviewUserResponseDto;
-import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.jayway.jsonpath.JsonPath;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
