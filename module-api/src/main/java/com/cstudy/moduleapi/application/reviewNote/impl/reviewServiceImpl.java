@@ -3,15 +3,20 @@ package com.cstudy.moduleapi.application.reviewNote.impl;
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
 import com.cstudy.moduleapi.dto.review.ReviewUserResponseDto;
 import com.cstudy.modulecommon.domain.member.Member;
+import com.cstudy.modulecommon.domain.question.Question;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewUser;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
+import com.cstudy.modulecommon.error.question.NotFoundQuestionId;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
+import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import com.cstudy.modulecommon.repository.reviewNote.ReviewNoteRepository;
 import com.cstudy.modulecommon.repository.reviewNote.ReviewUserRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +34,14 @@ public class reviewServiceImpl implements ReviewService {
     private final ReviewUserRepository userRepository;
     private final ReviewNoteRepository reviewNoteRepository;
     private final MemberRepository memberRepository;
+    private final QuestionRepository questionRepository;
 
-    public reviewServiceImpl(
-            ReviewUserRepository userRepository,
-            ReviewNoteRepository reviewNoteRepository,
-            MemberRepository memberRepository
-    ) {
+
+    public reviewServiceImpl(ReviewUserRepository userRepository, ReviewNoteRepository reviewNoteRepository, MemberRepository memberRepository, QuestionRepository questionRepository) {
         this.userRepository = userRepository;
         this.reviewNoteRepository = reviewNoteRepository;
         this.memberRepository = memberRepository;
+        this.questionRepository = questionRepository;
     }
 
     @Override
@@ -68,10 +72,8 @@ public class reviewServiceImpl implements ReviewService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        Member member = memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
-
-        ReviewUser byName = userRepository.findByUserName(member.getName())
+        ReviewUser byName = userRepository.findByUserName(memberRepository.findById(loginUserDto.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())).getName())
                 .orElseThrow(RuntimeException::new);
 
         boolean questionExistsInFailList = byName.getFailQuestion().stream()
@@ -81,59 +83,64 @@ public class reviewServiceImpl implements ReviewService {
         boolean questionExistsInSuccessList = byName.getSuccessQuestion().stream()
                 .anyMatch(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
 
-        log.info("questionExistsInFailList : {}", questionExistsInFailList);
-        log.info("questionExistsInSuccessList : {}", questionExistsInSuccessList);
-
-        disisionListSuccessOrFail(questionId, questionExistsInSuccessList, byName, questionExistsInFailList);
+        divisionListSuccessOrFail(questionId, questionExistsInSuccessList, byName, questionExistsInFailList);
 
         if (questionExistsInFailList || questionExistsInSuccessList) {
             ReviewNote match = byName.getReviewNotes().stream()
                     .filter(reviewNote -> reviewNote.getQuestionId() == questionId)
-                    .findFirst().orElseThrow(() -> new RuntimeException("fds"));
+                    .findFirst().orElseThrow(() -> new RuntimeException("mongodb"));
 
             ObjectId objectId = new ObjectId(match.getId());
-
-            log.info("id : {}", objectId);
 
             reviewNoteRepository.deleteById(objectId.toString());
         }
 
+        updateQuestionStatus(questionId, isAnswer, byName);
 
-        log.info("reviewUser_Name : {}", byName.getUserName());
+        userRepository.save(byName);
 
+        Question question = questionRepository.findByIdFetchJoinCategory(questionId)
+                .orElseThrow(() -> new NotFoundQuestionId(questionId));
+
+        saveNote(questionId, choiceNumber, isAnswer, now, question, byName);
+
+        userRepository.save(byName);
+    }
+
+
+    @Override
+    @Transactional
+    public ReviewUserResponseDto findMongoAboutReviewNote(LoginUserDto loginUserDto) {
+        return ReviewUserResponseDto.of(userRepository.findByUserName(memberRepository.findById(loginUserDto.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())).getName()).orElseThrow(RuntimeException::new));
+    }
+
+
+    @Override
+    @Transactional
+    public Page<ReviewUserResponseDto> findReviewPaging(LoginUserDto loginUserDto, Pageable pageable) {
+        return userRepository.findByUserName(memberRepository.findById(loginUserDto.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())).getName(), pageable).map(ReviewUserResponseDto::of);
+    }
+
+
+    private void saveNote(long questionId, int choiceNumber, boolean isAnswer, LocalDateTime now, Question question, ReviewUser byName) {
+        ReviewNote reviewNote = isAnswer ?
+                ReviewNote.createNote(questionId, choiceNumber, now, question, true) :
+                ReviewNote.createNote(questionId, choiceNumber, now, question, false);
+        reviewNoteRepository.save(reviewNote);
+        byName.getReviewNotes().add(reviewNote);
+    }
+
+    private  void updateQuestionStatus(long questionId, boolean isAnswer, ReviewUser byName) {
         if (isAnswer) {
             byName.getSuccessQuestion().add(String.valueOf(questionId));
         } else {
             byName.getFailQuestion().add(String.valueOf(questionId));
         }
-
-        userRepository.save(byName);
-
-        if (isAnswer) {
-            ReviewNote successNote = ReviewNote.builder()
-                    .questionId(questionId)
-                    .successChoiceNumber(choiceNumber)
-                    .createdDate(now)
-                    .isAnswer(true)
-                    .build();
-            reviewNoteRepository.save(successNote);
-            byName.getReviewNotes().add(successNote);
-        } else {
-            ReviewNote failNote = ReviewNote.builder()
-                    .questionId(questionId)
-                    .successChoiceNumber(choiceAnswerNumber)
-                    .failChoiceNumber(choiceNumber)
-                    .createdDate(now)
-                    .isAnswer(false)
-                    .build();
-            reviewNoteRepository.save(failNote);
-            byName.getReviewNotes().add(failNote);
-        }
-
-        userRepository.save(byName);
     }
 
-    private static void disisionListSuccessOrFail(long questionId, boolean questionExistsInSuccessList, ReviewUser byName, boolean questionExistsInFailList) {
+    private  void divisionListSuccessOrFail(long questionId, boolean questionExistsInSuccessList, ReviewUser byName, boolean questionExistsInFailList) {
         if (questionExistsInSuccessList) {
             List<String> successQuestion = byName.getSuccessQuestion();
             successQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
@@ -141,19 +148,5 @@ public class reviewServiceImpl implements ReviewService {
             List<String> failQuestion = byName.getFailQuestion();
             failQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
         }
-    }
-
-    @Override
-    @Transactional
-    public ReviewUserResponseDto findMongoAboutReviewNote(LoginUserDto loginUserDto) {
-
-        Member member = memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
-
-        String memberName = member.getName();
-
-        ReviewUser reviewUser = userRepository.findByUserName(memberName).orElseThrow(RuntimeException::new);
-
-        return ReviewUserResponseDto.of(reviewUser);
     }
 }
