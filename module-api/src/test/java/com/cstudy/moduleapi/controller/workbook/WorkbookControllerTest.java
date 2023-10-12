@@ -6,6 +6,7 @@ import com.cstudy.moduleapi.dto.workbook.WorkbookIdWithImagePath;
 import com.cstudy.moduleapi.exception.ErrorResponse;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import org.junit.jupiter.api.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -74,7 +75,7 @@ class WorkbookControllerTest extends ControllerTest {
         public void 문제집_리스트_페이징_조회_성공_200() throws Exception {
             //given
             String url = "/api/workbook";
-            given(workbookService.getWorkbookList(any(Pageable.class), anyString(), anyString(), anyString()))
+            given(workbookService.getWorkbookList(anyInt(), anyInt(), any(WorkbookSearchRequestDto.class)))
                     .willReturn(workbookResponseDto);
             //when
             ApiResponse<Page<WorkbookResponseDto>> response = workbookMockApiCaller.getWorkbookList(url);
@@ -117,7 +118,12 @@ class WorkbookControllerTest extends ControllerTest {
             String url = "/api/workbook?title=제목1";
 
             String title = "제목1";
-            given(workbookService.getWorkbookList(any(Pageable.class), eq(title), anyString(), anyString()))
+
+            WorkbookSearchRequestDto workbookSearchRequestDto = WorkbookSearchRequestDto.builder()
+                    .title(title)
+                    .build();
+
+            given(workbookService.getWorkbookList(anyInt(), anyInt(), eq(workbookSearchRequestDto)))
                     .willReturn(workbookResponseDto2);
 
             //when
@@ -143,7 +149,10 @@ class WorkbookControllerTest extends ControllerTest {
             String description = "설명2";
             String url = "/api/workbook?description=설명2";
 
-            given(workbookService.getWorkbookList(any(Pageable.class), anyString(), eq(description), anyString()))
+            WorkbookSearchRequestDto workbookSearchRequestDto = WorkbookSearchRequestDto.builder()
+                    .description(description)
+                    .build();
+            given(workbookService.getWorkbookList(anyInt(), anyInt(), eq(workbookSearchRequestDto)))
                     .willReturn(workbookResponseDto3);
 
             //when
@@ -171,7 +180,10 @@ class WorkbookControllerTest extends ControllerTest {
             String url = "/api/workbook?title_desc=제목3내용3";
 
             //when
-            given(workbookService.getWorkbookList(any(Pageable.class), anyString(), anyString(), eq(titleDesc)))
+            WorkbookSearchRequestDto requestDto =WorkbookSearchRequestDto.builder()
+                            .titleDesc(titleDesc)
+                                    .build();
+            given(workbookService.getWorkbookList(anyInt(),anyInt(),eq(requestDto)))
                     .willReturn(workbookResponseDto4);
 
             ApiResponse<Page<WorkbookResponseDto>> response = workbookMockApiCaller.getWorkbookList(url);
