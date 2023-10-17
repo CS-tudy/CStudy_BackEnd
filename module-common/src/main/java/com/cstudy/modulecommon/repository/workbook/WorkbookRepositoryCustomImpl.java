@@ -68,7 +68,7 @@ public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
                         titleAndDescContains(requestDto.getTitleDesc()),
                         workbook.competitionEndTime.between(LocalDateTime.MIN, now)
                 );
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
     @Override
