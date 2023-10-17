@@ -71,7 +71,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         memberIdEq(questionSearchCondition.getMemberId()),
                         statusEq(questionSearchCondition.getStatus())
                 );
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
 

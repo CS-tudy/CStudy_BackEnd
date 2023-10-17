@@ -1,6 +1,7 @@
 package com.cstudy.modulecommon.repository.workbook;
 
-import com.cstudy.modulecommon.domain.file.QFile;
+import com.cstudy.modulecommon.domain.workbook.Workbook;
+import com.cstudy.modulecommon.dto.QWorkbookResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
@@ -18,13 +19,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.cstudy.modulecommon.domain.competition.QCompetition.competition;
-import static com.cstudy.modulecommon.domain.file.QFile.*;
+import static com.cstudy.modulecommon.domain.file.QFile.file;
 import static com.cstudy.modulecommon.domain.question.QQuestion.question;
 import static com.cstudy.modulecommon.domain.workbook.QWorkbook.workbook;
 import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.workbookQuestion;
 
 
-public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
+public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -35,30 +36,31 @@ public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
     @Override
     public Page<WorkbookResponseDto> findWorkbookList(Pageable pageable, WorkbookSearchRequestDto requestDto) {
         LocalDateTime now = LocalDateTime.now();
+
         List<WorkbookResponseDto> content = queryFactory.select(
-                Projections.fields(WorkbookResponseDto.class,
-                        workbook.id,
-                        workbook.title,
-                        workbook.description,
-                        workbook.createdAt,
-                        file.fileName
-                ))
+                        new QWorkbookResponseDto(workbook.id,
+                                workbook.title,
+                                workbook.description,
+                                workbook.createdAt,
+                                file.fileName
+                        ))
                 .from(workbook)
+                .distinct()
                 .leftJoin(workbook.competition, competition)
                 .leftJoin(workbook.files, file)
                 .where(
-                    titleContains(requestDto.getTitle()),
-                    descriptionContains(requestDto.getDescription()),
-                    titleAndDescContains(requestDto.getTitleDesc()),
-                    competition.competitionEnd.between(LocalDateTime.MIN, now).or(competition.isNull())
+                        titleContains(requestDto.getTitle()),
+                        descriptionContains(requestDto.getDescription()),
+                        titleAndDescContains(requestDto.getTitleDesc()),
+                        competition.competitionEnd.between(LocalDateTime.MIN, now).or(competition.isNull())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(workbook.createdAt.desc())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(workbook.count())
+        JPAQuery<Workbook> countQuery = queryFactory
+                .select(workbook)
                 .from(workbook)
                 .leftJoin(workbook.competition, competition)
                 .leftJoin(workbook.files, file)
@@ -66,8 +68,9 @@ public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
                         titleContains(requestDto.getTitle()),
                         descriptionContains(requestDto.getDescription()),
                         titleAndDescContains(requestDto.getTitleDesc()),
-                        workbook.competitionEndTime.between(LocalDateTime.MIN, now)
+                        competition.competitionEnd.between(LocalDateTime.MIN, now).or(competition.isNull())
                 );
+
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
@@ -75,11 +78,11 @@ public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
     public Page<WorkbookQuestionResponseDto> findWorkbookQuestionList(Pageable pageable,
                                                                       Long id) {
         List<WorkbookQuestionResponseDto> content = queryFactory.select(
-                Projections.fields(WorkbookQuestionResponseDto.class,
-                        workbookQuestion.id.as("workbookQuestionId"),
-                        question.id.as("questionId"),
-                        question.title
-                ))
+                        Projections.fields(WorkbookQuestionResponseDto.class,
+                                workbookQuestion.id.as("workbookQuestionId"),
+                                question.id.as("questionId"),
+                                question.title
+                        ))
                 .from(workbook)
                 .leftJoin(workbook.questions, workbookQuestion)
                 .on(workbookQuestion.workbook.eq(workbook))

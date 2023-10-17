@@ -46,7 +46,7 @@ public class WorkbookController {
                                                      @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                      @Parameter(name = "title,description,titleDesc", description = "조건 검색 페이징")
                                                      WorkbookSearchRequestDto requestDto) {
-        return workbookService.getWorkbookList(page,size, requestDto);
+        return workbookService.getWorkbookList(page, size, requestDto);
     }
 
     @Operation(summary = "문제집 정보 요청", description = "문제집 id를 이용해 문제집 정보를 요청합니다. / PermitAll")
