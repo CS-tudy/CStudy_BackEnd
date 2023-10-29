@@ -2,7 +2,6 @@ package com.cstudy.moduleapi.application.reviewNote.impl;
 
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
 import com.cstudy.moduleapi.dto.review.ReviewUserResponseDto;
-import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.question.Question;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewNote;
 import com.cstudy.modulecommon.domain.reviewQuestion.ReviewUser;
