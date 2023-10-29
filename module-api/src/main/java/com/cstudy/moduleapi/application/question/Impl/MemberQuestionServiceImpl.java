@@ -11,6 +11,8 @@ import com.cstudy.modulecommon.error.question.existByMemberQuestionDataException
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.question.MemberQuestionRepository;
 import com.cstudy.modulecommon.repository.question.QuestionRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,18 +22,23 @@ import java.util.Optional;
 @Service
 public class MemberQuestionServiceImpl implements MemberQuestionService {
 
+    private final static String RANKING_KEY = "MemberRank";
+
     private final MemberQuestionRepository memberQuestionRepository;
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
+    private final StringRedisTemplate redisTemplate;
 
     public MemberQuestionServiceImpl(
             MemberQuestionRepository memberQuestionRepository,
             MemberRepository memberRepository,
-            QuestionRepository questionRepository
+            QuestionRepository questionRepository,
+            StringRedisTemplate redisTemplate
     ) {
         this.memberQuestionRepository = memberQuestionRepository;
         this.memberRepository = memberRepository;
         this.questionRepository = questionRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -61,6 +68,8 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         }
 
         member.addRankingPoint(choiceAnswerRequestDto);
+        modifyScoreForMember(member,choiceAnswerRequestDto, true);
+
 
         memberQuestionRepository.save(MemberQuestion.builder()
                 .member(member)
@@ -69,6 +78,8 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
                 .solveTime(choiceAnswerRequestDto.getTime())
                 .build());
     }
+
+
 
     /**
      * Select a problem. If you choose the correct answer,
@@ -96,7 +107,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         }
 
         member.minusRankingPoint(member.getRankingPoint());
-
+        modifyScoreForMember(member, choiceAnswerRequestDto, false);
         memberQuestionRepository.save(MemberQuestion.builder()
                 .member(member)
                 .question(question)
@@ -149,5 +160,18 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         return QuestionAnswerDto.builder()
                 .answer(answer)
                 .build();
+    }
+
+    private void modifyScoreForMember(Member member, ChoiceAnswerRequestDto choiceAnswerRequestDto, boolean answer) {
+        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
+        Double currentScore = zSetOps.score(RANKING_KEY, member.getName());
+
+        double newScore;
+        if (answer) {
+            newScore = currentScore + 3L + (1 - (choiceAnswerRequestDto.getTime() / 1000.0));
+        } else {
+            newScore = currentScore - 2;
+        }
+        zSetOps.add(RANKING_KEY, member.getName(), newScore);
     }
 }
