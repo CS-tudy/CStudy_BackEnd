@@ -18,7 +18,7 @@ class WorkbookTest {
         Workbook workbook = Workbook.builder()
                 .title("Sample Workbook")
                 .description("Sample Description")
-                .endTime(LocalDateTime.now())
+//                .endTime(LocalDateTime.now())
                 .build();
 
         Assertions.assertEquals("Sample Workbook", workbook.getTitle());
@@ -53,7 +53,6 @@ class WorkbookTest {
         Workbook workbook = Workbook.builder()
                 .title("Original Title")
                 .description("Original Description")
-                .endTime(LocalDateTime.now())
                 .build();
 
         UpdateWorkbookRequestDto workbookDto = new UpdateWorkbookRequestDto();

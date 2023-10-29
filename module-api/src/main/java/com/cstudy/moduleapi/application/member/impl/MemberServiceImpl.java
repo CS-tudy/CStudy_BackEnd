@@ -15,6 +15,8 @@ import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.role.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -44,21 +46,13 @@ public class MemberServiceImpl implements MemberService {
     private final DuplicateServiceFinder duplicateServiceFinder;
     private final ReviewService reviewNoteService;
     private final EmailComponent emailComponent;
+    private final StringRedisTemplate redisTemplate;
 
     @Value("${spring.mail.username}")
     private String EMAIL;
+    private final static String RANKING_KEY = "MemberRank";
 
-    public MemberServiceImpl(
-            MemberRepository memberRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder,
-            JwtTokenizer jwtTokenizer,
-            JavaMailSender javaMailSender,
-            RefreshTokenService refreshTokenService,
-            DuplicateServiceFinder duplicateServiceFinder,
-            ReviewService reviewNoteService,
-            EmailComponent createKey
-    ) {
+    public MemberServiceImpl(MemberRepository memberRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, JavaMailSender javaMailSender, RefreshTokenService refreshTokenService, DuplicateServiceFinder duplicateServiceFinder, ReviewService reviewNoteService, EmailComponent emailComponent, StringRedisTemplate redisTemplate) {
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -67,7 +61,8 @@ public class MemberServiceImpl implements MemberService {
         this.refreshTokenService = refreshTokenService;
         this.duplicateServiceFinder = duplicateServiceFinder;
         this.reviewNoteService = reviewNoteService;
-        this.emailComponent = createKey;
+        this.emailComponent = emailComponent;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -101,10 +96,21 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         signupWithRole(member);
+        Member savedMember = memberRepository.save(member);
+
+
         reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
-        return MemberSignupResponse.of(memberRepository.save(member));
+
+        saveToRedisAsync(savedMember);
+        return MemberSignupResponse.of(savedMember);
     }
 
+
+    @Async
+    public void saveToRedisAsync(Member member) {
+        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
+        zSetOps.add(RANKING_KEY, member.getName(), 0);
+    }
 
     /**
      * 테스트 코드를 작성하면서 호원가입에 관한에서 중복을 막기 위한 로직의 불편함으로 새롭게 작성
@@ -127,6 +133,8 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundMemberEmail(request.getEmail()));
+
+
 
         Optional.of(request.getPassword())
                 .filter(password -> passwordEncoder.matches(password, member.getPassword()))

@@ -19,6 +19,11 @@ import javax.mail.MessagingException;
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 
+    /**
+     *  javax.validation.Valid or @Validated 으로 binding error 발생시 발생한다.
+     *  HttpMessageConverter 에서 등록한 HttpMessageConverter binding 못할경우 발생
+     *  주로 @RequestBody, @RequestPart 어노테이션에서 발생
+     */
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,6 +37,8 @@ public class ExceptionControllerAdvice {
             response.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
+        log.error("handleMethodArgumentNotValidException : {} , StatusCode : {}", e, response.getCode());
+
         return response;
     }
 
@@ -44,6 +51,7 @@ public class ExceptionControllerAdvice {
                 .message(e.getMessage())
                 .build();
 
+        log.error("DataIntegrityViolationException : {} , StatusCode : {}", e, response.getCode());
         response.addValidation("유니크 키 중복 데이터 삽입", e.getMessage());
 
         return response;
@@ -60,7 +68,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         response.addValidation("회원가입 Email", e.getMessage());
-
+        log.error("MessagingException : {} , StatusCode : {}", e, response.getCode());
         return response;
     }
 
@@ -72,7 +80,9 @@ public class ExceptionControllerAdvice {
                 .code("403")
                 .message("Access Denied: " + e.getMessage())
                 .build();
+
         response.addValidation("Spring Security", "권한이 일치하지 않습니다.");
+        log.error("AccessDeniedException : {} , StatusCode : {}", e, response.getCode());
         return response;
     }
 
@@ -89,7 +99,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         body.addValidation("MemberException", "회원 관련 Exception");
-
+        log.error("MemberException : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }
@@ -106,8 +116,8 @@ public class ExceptionControllerAdvice {
                 .message(e.getMessage())
                 .build();
 
-        body.addValidation("pathvariable", "id는 양수로 처리를 해야됩니다.");
-
+        body.addValidation("PathvariableAbstractException", "id는 양수로 처리를 해야됩니다.");
+        log.error("PathvariableAbstractException : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }
@@ -124,7 +134,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         body.addValidation("QuestionException", "문제 관련 Exception");
-
+        log.error("QuestionException : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }
@@ -141,7 +151,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         body.addValidation("WorkbookException", "문제집 관련 Exception");
-
+        log.error("WorkbookException : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }
@@ -159,7 +169,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         body.addValidation("CommentAbstractException", "댓글 관련 Exception");
-
+        log.error("CommentAbstractException : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }
@@ -176,7 +186,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         body.addValidation("RequestException", "요청 관련 Exception");
-
+        log.error("RequestException : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }
@@ -193,7 +203,7 @@ public class ExceptionControllerAdvice {
                 .build();
 
         body.addValidation("Competition", "대회 관련 Exception");
-
+        log.error("Competition : {} , StatusCode : {}", e, body.getCode());
         return ResponseEntity.status(statusCode)
                 .body(body).getBody();
     }

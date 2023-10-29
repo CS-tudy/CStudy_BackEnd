@@ -69,6 +69,11 @@ dependencies {
     //mysql
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    //sentry
+    implementation 'io.sentry:sentry-spring-boot-starter:5.4.2'
+    implementation 'io.sentry:sentry-logback:5.4.2'
+//    implementation 'io.sentry:sentry-logback:1.7.30'
+
     //geoIp
     implementation 'com.maxmind.geoip2:geoip2:2.12.0'
 

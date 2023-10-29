@@ -26,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MEMBER", uniqueConstraints = {
-//        @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
+        @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
         @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
 //        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
