@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--<pattern>app> %d{HH:mm:ss}|%-20t|%-5p|%logger|%C{10}|%M|%L|==> |%m!%n</pattern>-->
+            <!-- 로그수준|발생시간|쓰레드이름|클래스명|메소드명|라인| ==> 로그내용|줄바꿈-->
+            <pattern>%-5p %d{HH:mm:ss} [%t] %c{3}, %M at line %L; %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Configure the Sentry appender, overriding the logging threshold to the WARN level -->
+    <appender name="sentry" class="io.sentry.logback.SentryAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <logger name="org.apache.commons" level="info"/>
+    <logger name="org.springframework" level="info" />
+    <logger name="org.apache.http.client.protocol" level="error"/>
+    <logger name="com.cstudy.moduleapi" level="debug"/>
+    <logger name="org.apache.http" level="info"/>
+
+    <logger name="org.hibernate" level="info"/>
+    <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>
+
+    <root level="info">
+        <appender-ref ref="console"/>
+        <appender-ref ref="sentry"/>
+    </root>
+
+</configuration>
