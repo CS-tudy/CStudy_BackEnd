@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -37,13 +38,16 @@ public class QuestionMockWithoutMongoDB {
     @Mock
     private QuestionRepository questionRepository;
 
+    @Mock
+    private  StringRedisTemplate redisTemplate;
+
     private MemberQuestionService memberQuestionService;
     
     @BeforeEach
     void setUp(){
         openMocks(this);
 
-        memberQuestionService = new MemberQuestionServiceImpl(memberQuestionRepository, memberRepository, questionRepository);
+        memberQuestionService = new MemberQuestionServiceImpl(memberQuestionRepository, memberRepository, questionRepository, redisTemplate);
     }
 
 
