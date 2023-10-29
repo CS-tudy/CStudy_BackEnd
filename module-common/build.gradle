@@ -34,6 +34,9 @@ dependencies {
     //MongoDB
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+    //h2
+    runtimeOnly 'com.h2database:h2'
+
     //QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
