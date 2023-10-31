@@ -3,7 +3,6 @@ package com.cstudy.moduleapi.application.member.impl;
 import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.config.s3.AwsS3Util;
 import com.cstudy.modulecommon.domain.file.File;
-import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.repository.file.FileRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.cstudy.moduleapi.config.s3.ImageUtils.decompressImage;
-
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService {
@@ -45,18 +43,11 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public void uploadFiles(MultipartFile multipartFile, LoginUserDto loginUserDto)  {
-
-        Member member = memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
-
-
-        String originalName = awsS3Util.uploadCompressedImage(multipartFile);
-
         File file = File.builder()
-                .fileName(originalName)
-                .member(member)
+                .fileName(awsS3Util.uploadCompressedImage(multipartFile))
+                .member(memberRepository.findById(loginUserDto.getMemberId())
+                        .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())))
                 .build();
-
         fileRepository.save(file);
     }
 
@@ -67,11 +58,7 @@ public class FileServiceImpl implements FileService {
     @Transactional
     @Override
     public byte[] getImageBytes(LoginUserDto loginUserDto) {
-        Member member = memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
-
-        String fileName = member.getFile().getFileName();
-        byte[] bytes = awsS3Util.downloadFile(fileName);
+        byte[] bytes = awsS3Util.downloadFile(fileRepository.findLatestFileNameByMemberId(loginUserDto.getMemberId()));
         return decompressImage(bytes);
     }
 
