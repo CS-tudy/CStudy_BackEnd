@@ -3,6 +3,9 @@ package com.cstudy.moduleapi.config.jwt.filter;
 
 import com.cstudy.moduleapi.config.jwt.exception.JwtExceptionCode;
 import com.cstudy.moduleapi.config.jwt.token.JwtAuthenticationToken;
+import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
+import com.cstudy.modulecommon.repository.member.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -19,22 +22,41 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final MemberRepository memberRepository;
+    private final JwtTokenizer jwtTokenizer;
+
+    private final static List<String>TOKEN_IN_PARAM_URLS = List.of("/api/member/alarm/subscribe");
 
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
     ) throws ServletException, IOException {
 
         String token = "";
+
+
+        String authorization = request.getHeader("Authorization");
         try {
-            token = getToken(request);
+            if (TOKEN_IN_PARAM_URLS.contains(request.getRequestURI())) {
+                log.info("Request With {} check the query param", request.getRequestURI());
+                String queryString = request.getQueryString();
+                if (StringUtils.hasText(queryString) && queryString.contains("token=")) {
+                    token = queryString.split("token=")[1].trim();
+                }
+            }
+
+// 나머지 코드는 그대로 유지
+            token = getToken(request, authorization);
+            checkValidUser(token);
             if (StringUtils.hasText(token)) {
                 getAuthentication(token);
             } else {
@@ -57,6 +79,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    private void checkValidUser(String token) {
+        String memberEmail = jwtTokenizer.getMemberEmailFromToken(token);
+        memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
+    }
+
     private static void handleJwtException(HttpServletRequest request, JwtExceptionCode notFoundToken, String format, String token, String msg) {
         request.setAttribute("exception", notFoundToken.getCode());
         log.error(format, token);
@@ -70,9 +98,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticate); // 현재 요청에서 언제든지 인증정보를 꺼낼 수 있도록 해준다.
     }
 
-    private String getToken(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer")){
+    private String getToken(HttpServletRequest request, String authorization) {
+//        String authorization = request.getHeader("Authorization");
+        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer")) {
             String[] arr = authorization.split(" ");
             return arr[1];
         }
