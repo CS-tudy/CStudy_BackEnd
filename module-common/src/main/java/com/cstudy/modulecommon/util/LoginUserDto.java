@@ -15,6 +15,8 @@ import java.util.List;
 public class LoginUserDto {
     private Long memberId;
 
+    private String memberEmail;
+
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

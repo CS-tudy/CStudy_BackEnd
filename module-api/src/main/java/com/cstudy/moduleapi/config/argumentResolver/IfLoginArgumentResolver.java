@@ -43,6 +43,7 @@ public class IfLoginArgumentResolver implements HandlerMethodArgumentResolver {
 
         LoginInfoDto loginInfoDto = (LoginInfoDto) principal;
         loginUserDto.setMemberId(loginInfoDto.getMemberId());
+        loginUserDto.setMemberEmail(loginInfoDto.getMemberEmail());
         loginUserDto.setRoles(loginInfoDto.getRoles());
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
