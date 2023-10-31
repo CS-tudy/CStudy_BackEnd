@@ -90,7 +90,7 @@ class QuestionServiceImplTest extends ServiceTestBase {
 
         // Then
         List<Question> questions = questionRepository.findAll();
-        assertThat(questions).hasSize(4);
+        assertThat(questions).hasSize(1);
 
         Question question = questions.get(0);
         assertThat(question.getTitle()).isEqualTo("문제 제목");

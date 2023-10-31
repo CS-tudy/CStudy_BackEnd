@@ -9,6 +9,7 @@ import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.dto.ChoiceQuestionResponseDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
 import com.cstudy.modulecommon.dto.QuestionSearchCondition;
+import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.error.question.NotFoundQuestionWithChoicesAndCategoryById;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import org.junit.jupiter.api.*;
@@ -26,15 +27,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class QuestionControllerTest extends ControllerTest {
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
 
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
 
     @DisplayName("POST /api/questions 문제 생성하기")

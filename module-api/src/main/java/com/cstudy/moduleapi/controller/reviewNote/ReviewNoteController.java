@@ -7,6 +7,9 @@ import com.cstudy.modulecommon.util.LoginUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +27,23 @@ public class ReviewNoteController {
         this.reviewService = reviewService;
     }
 
+    @Operation(summary = "오답노트 페이징", description = "단일 회원의 오답노트 조회하기 ROLE_CUSTOM/ ROLE_ADMIN ")
+    @GetMapping("/page")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
+    public Page<ReviewUserResponseDto> findReviewPaging(@Parameter(hidden = true)
+                                                        @IfLogin LoginUserDto loginUserDto,
+                                                        @PageableDefault Pageable pageable) {
+        return reviewService.findReviewPaging(loginUserDto, pageable);
+    }
+
+
     @Operation(summary = "오답노트 조회", description = "단일 회원의 오답노트 조회하기 ROLE_CUSTOM/ ROLE_ADMIN ")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
-    public ReviewUserResponseDto findMongoAboutReviewNote(@Parameter(hidden = true)
-                                                                @IfLogin LoginUserDto loginUserDto) {
+    public ReviewUserResponseDto findReviewPaging(@Parameter(hidden = true)
+                                                  @IfLogin LoginUserDto loginUserDto) {
         return reviewService.findMongoAboutReviewNote(loginUserDto);
     }
 }

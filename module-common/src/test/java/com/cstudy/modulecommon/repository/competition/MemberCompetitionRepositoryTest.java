@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class})
+@Transactional
 class MemberCompetitionRepositoryTest {
 
     @Autowired
@@ -49,9 +51,9 @@ class MemberCompetitionRepositoryTest {
 
         MemberCompetition memberCompetition = MemberCompetition.builder()
                 .member(Member.builder()
-                        .email("test@example.com")
+                        .email("test55@example.com")
                         .password("test1234!")
-                        .name("김무건")
+                        .name("김무건55")
                         .build())
                 .competition(competition)
                 .build();

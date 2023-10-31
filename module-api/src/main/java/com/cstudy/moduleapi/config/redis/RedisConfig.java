@@ -1,5 +1,6 @@
 package com.cstudy.moduleapi.config.redis;
 
+import com.cstudy.modulecommon.domain.member.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,16 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        return redisTemplate;
+    }
+
+
+    @Bean
+    public RedisTemplate<String, Member> userRedisTemplate() {
+        RedisTemplate<String, Member> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Member>(Member.class));
         return redisTemplate;
     }
 

@@ -55,11 +55,13 @@ public class JwtTokenizer {
     }
 
 
-    public Long getUserIdFromToken(String token) {
-        String[] tokenArr = token.split(" ");
-        token = tokenArr[1];
+    public Long getMemberIdFromToken(String token) {
         Claims claims = parseToken(token, accessSecret);
         return Long.valueOf((Integer) claims.get("memberId"));
+    }
+    public String getMemberEmailFromToken(String token) {
+        Claims claims = parseToken(token, accessSecret);
+        return String.valueOf(claims.get("sub"));
     }
 
     public Claims parseAccessToken(String accessToken) {

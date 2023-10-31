@@ -24,7 +24,7 @@ class CommentTest {
     @Test
     public void createComment() {
         Assertions.assertNotNull(parentComment);
-        Assertions.assertEquals("Parent Comment", parentComment.getContent());
+        Assertions.assertEquals("부모 Comment", parentComment.getContent());
         Assertions.assertEquals(member, parentComment.getMember());
         Assertions.assertEquals(notice, parentComment.getNotice());
         Assertions.assertNull(parentComment.getParentCommentId());

@@ -1,25 +1,31 @@
 package com.cstudy.modulecommon.repository.workbook;
 
+import com.cstudy.modulecommon.domain.workbook.Workbook;
+import com.cstudy.modulecommon.dto.QWorkbookResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.cstudy.modulecommon.domain.competition.QCompetition.competition;
+import static com.cstudy.modulecommon.domain.file.QFile.file;
 import static com.cstudy.modulecommon.domain.question.QQuestion.question;
 import static com.cstudy.modulecommon.domain.workbook.QWorkbook.workbook;
 import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.workbookQuestion;
 
 
-public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
+public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -28,47 +34,55 @@ public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
     }
 
     @Override
-    public Page<WorkbookResponseDto> findWorkbookList(Pageable pageable, String title, String description, String titleDesc) {
+    public Page<WorkbookResponseDto> findWorkbookList(Pageable pageable, WorkbookSearchRequestDto requestDto) {
         LocalDateTime now = LocalDateTime.now();
+
         List<WorkbookResponseDto> content = queryFactory.select(
-                Projections.fields(WorkbookResponseDto.class,
-                        workbook.id,
-                        workbook.title,
-                        workbook.description,
-                        workbook.createdAt
-                ))
+                        new QWorkbookResponseDto(workbook.id,
+                                workbook.title,
+                                workbook.description,
+                                workbook.createdAt,
+                                file.fileName
+                        ))
                 .from(workbook)
+                .distinct()
                 .leftJoin(workbook.competition, competition)
+                .leftJoin(workbook.files, file)
                 .where(
-                    titleContains(title),
-                    descriptionContains(description),
-                    titleAndDescContains(titleDesc),
-                    competition.competitionEnd.between(LocalDateTime.MIN, now).or(competition.isNull())
+                        titleContains(requestDto.getTitle()),
+                        descriptionContains(requestDto.getDescription()),
+                        titleAndDescContains(requestDto.getTitleDesc()),
+                        competition.competitionEnd.between(LocalDateTime.MIN, now).or(competition.isNull())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(workbook.createdAt.desc())
                 .fetch();
-        long total = queryFactory.selectFrom(workbook)
+
+        JPAQuery<Workbook> countQuery = queryFactory
+                .select(workbook)
+                .from(workbook)
+                .leftJoin(workbook.competition, competition)
+                .leftJoin(workbook.files, file)
                 .where(
-                    titleContains(title),
-                    descriptionContains(description),
-                    titleAndDescContains(titleDesc),
-                    workbook.competitionEndTime.between(LocalDateTime.MIN, now)
-                )
-                .fetchCount();
-        return new PageImpl<>(content, pageable, total);
+                        titleContains(requestDto.getTitle()),
+                        descriptionContains(requestDto.getDescription()),
+                        titleAndDescContains(requestDto.getTitleDesc()),
+                        competition.competitionEnd.between(LocalDateTime.MIN, now).or(competition.isNull())
+                );
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
     @Override
     public Page<WorkbookQuestionResponseDto> findWorkbookQuestionList(Pageable pageable,
                                                                       Long id) {
         List<WorkbookQuestionResponseDto> content = queryFactory.select(
-                Projections.fields(WorkbookQuestionResponseDto.class,
-                        workbookQuestion.id.as("workbookQuestionId"),
-                        question.id.as("questionId"),
-                        question.title
-                ))
+                        Projections.fields(WorkbookQuestionResponseDto.class,
+                                workbookQuestion.id.as("workbookQuestionId"),
+                                question.id.as("questionId"),
+                                question.title
+                        ))
                 .from(workbook)
                 .leftJoin(workbook.questions, workbookQuestion)
                 .on(workbookQuestion.workbook.eq(workbook))
@@ -79,6 +93,7 @@ public class WorkbookRepositoryCustomImpl implements WorkbookRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .orderBy(question.id.desc())
                 .fetch();
+
         long total = queryFactory.selectFrom(workbook)
                 .leftJoin(workbook.questions, workbookQuestion)
                 .leftJoin(workbookQuestion.question, question)

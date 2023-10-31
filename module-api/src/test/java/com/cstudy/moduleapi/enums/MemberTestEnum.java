@@ -1,7 +1,7 @@
 package com.cstudy.moduleapi.enums;
 
 public enum  MemberTestEnum {
-    VALID_EMAIL("test1234@test.com"),
+    VALID_EMAIL("test@test.com"),
     VALID_PASSWORD("test1234!"),
     VALID_NAME("김무건"),
     CUSTOM_EMAIL("CUSTOM1234@CUSTOM.COM"),

@@ -34,11 +34,13 @@ class CompetitionControllerTest extends ControllerTestBase {
 
     private static String VALID_TOKEN;
     private static String INVALID_TOKEN;
+    private static String ADMIN_VALID_TOKEN;
 
 
     @BeforeEach
     void setUp() {
         VALID_TOKEN = jwtTokenizer.createAccessToken(1L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));
+        ADMIN_VALID_TOKEN = jwtTokenizer.createAccessToken(1L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));
         INVALID_TOKEN = jwtTokenizer.createAccessToken(2L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
     }
 
@@ -338,7 +340,7 @@ class CompetitionControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/competitions/questions")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + VALID_TOKEN)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(competitionQuestionRequestDto))
                 )
                 .andExpect(MockMvcResultMatchers.status().isNoContent())

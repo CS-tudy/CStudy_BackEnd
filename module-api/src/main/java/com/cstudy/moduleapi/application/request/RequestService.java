@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface RequestService {
 
-    Long createRequest(CreateRequestRequestDto requestDto, Long memberId);
+    Long createRequest(CreateRequestRequestDto requestDto, LoginUserDto loginUserDto);
 
     RequestResponseDto getRequest(Long id);
 

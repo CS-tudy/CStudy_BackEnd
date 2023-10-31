@@ -2,18 +2,13 @@ package com.cstudy.moduleapi.apiCaller;
 
 import com.cstudy.moduleapi.ApiResponse;
 import com.cstudy.moduleapi.config.MockApiCaller;
-import com.cstudy.moduleapi.dto.comment.NoticeCommentResponse;
-import com.cstudy.moduleapi.dto.request.RequestResponseDto;
-import com.cstudy.moduleapi.dto.review.ReviewUserResponseDto;
 import com.cstudy.moduleapi.dto.workbook.WorkbookIdWithImagePath;
-import com.cstudy.moduleapi.exception.ErrorResponse;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.jayway.jsonpath.JsonPath;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

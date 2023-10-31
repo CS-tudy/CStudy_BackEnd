@@ -13,6 +13,7 @@ import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
 import com.cstudy.modulecommon.dto.UpdateWorkbookRequestDto;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import com.cstudy.modulecommon.error.question.NotFoundQuestionWithChoicesAndCategoryById;
 import com.cstudy.modulecommon.error.workbook.NotFoundWorkbook;
 import com.cstudy.modulecommon.error.workbook.NotFoundWorkbookQuestion;
@@ -22,6 +23,7 @@ import com.cstudy.modulecommon.repository.workbook.WorkbookQuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,15 +63,11 @@ public class WorkbookServiceImpl implements WorkbookService {
      * @param title       search workbook containing title
      * @param description search workbook containing description
      */
+
     @Override
-    @Transactional(readOnly = true)
-    public Page<WorkbookResponseDto> getWorkbookList(
-            Pageable pageable,
-            String title,
-            String description,
-            String titleDesc
-    ) {
-        return workbookRepository.findWorkbookList(pageable, title, description, titleDesc);
+    public Page<WorkbookResponseDto> getWorkbookList(int page, int size, WorkbookSearchRequestDto requestDto) {
+        Pageable pageable = PageRequest.of(page, size);
+        return workbookRepository.findWorkbookList(pageable, requestDto);
     }
 
     /**
@@ -79,20 +77,15 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional(readOnly = true)
     public List<WorkbookIdWithImagePath> getWorkbookImagePathList() {
-
-        List<Workbook> workbooks = workbookRepository.findByIdWithWorkbook();
-
-        return workbooks.stream()
+        return workbookRepository.findByIdWithWorkbook().stream()
                 .map(workbook -> {
                     List<String> imagePaths = workbook.getFiles().stream()
                             .map(File::getFileName)
                             .collect(Collectors.toList());
-
                     return WorkbookIdWithImagePath.builder()
                             .id(workbook.getId())
                             .imagePath(imagePaths)
-                            .build();
-                })
+                            .build();})
                 .collect(Collectors.toList());
     }
 
@@ -105,9 +98,8 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional(readOnly = true)
     public WorkbookResponseDto getWorkbook(Long id) {
-        Workbook workbook = workbookRepository.findById(id)
-                .orElseThrow(() -> new NotFoundWorkbook(id));
-        return WorkbookResponseDto.of(workbook);
+        return WorkbookResponseDto.of(workbookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundWorkbook(id)));
     }
 
     /**

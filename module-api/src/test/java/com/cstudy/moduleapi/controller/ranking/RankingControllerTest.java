@@ -13,15 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 class RankingControllerTest extends ControllerTest {
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
-
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
 
     @Nested

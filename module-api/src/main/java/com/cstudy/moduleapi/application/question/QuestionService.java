@@ -4,6 +4,7 @@ package com.cstudy.moduleapi.application.question;
 import com.cstudy.moduleapi.dto.question.*;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.dto.QuestionSearchCondition;
+import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
 import org.springframework.data.domain.Page;

@@ -38,11 +38,11 @@ public class RequestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM')")
-    public void createRequest(@Parameter(name = "CreateRequestRequestDto", description = "title: 게시글 제목, description: 게시글 내용")
+    public Long createRequest(@Parameter(name = "CreateRequestRequestDto", description = "title: 게시글 제목, description: 게시글 내용")
                               @Valid @RequestBody CreateRequestRequestDto requestDto,
                               @Parameter(hidden = true)
                               @IfLogin LoginUserDto loginUser) {
-        requestService.createRequest(requestDto, loginUser.getMemberId());
+        return requestService.createRequest(requestDto, loginUser);
     }
 
     @Operation(summary = "게시글 상태 수정", description = "게시판 상태를 대기에서 승인으로 변경. / ROLE_ADMIN ")

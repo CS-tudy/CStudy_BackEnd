@@ -12,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class LoginInfoDto {
     private Long memberId;
+    private String memberEmail;
     private List<String> roles = new ArrayList<>();
 }

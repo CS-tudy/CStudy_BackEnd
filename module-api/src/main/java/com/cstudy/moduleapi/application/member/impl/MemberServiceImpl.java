@@ -2,19 +2,27 @@ package com.cstudy.moduleapi.application.member.impl;
 
 import com.cstudy.moduleapi.application.member.DuplicateServiceFinder;
 import com.cstudy.moduleapi.application.member.EmailComponent;
+import com.cstudy.moduleapi.application.member.MemberLoadComponent;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.application.reviewNote.ReviewService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
+import com.cstudy.moduleapi.dto.alarm.response.AlarmResponseDto;
 import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.error.member.*;
+import com.cstudy.modulecommon.repository.alarm.AlarmRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.role.RoleRepository;
+import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -44,21 +52,16 @@ public class MemberServiceImpl implements MemberService {
     private final DuplicateServiceFinder duplicateServiceFinder;
     private final ReviewService reviewNoteService;
     private final EmailComponent emailComponent;
+    private final StringRedisTemplate redisTemplate;
+    private final AlarmRepository alarmRepository;
+    private final MemberCacheRepository memberCacheRepository;
+    private final MemberLoadComponent memberLoadComponent;
 
     @Value("${spring.mail.username}")
     private String EMAIL;
+    private final static String RANKING_KEY = "MemberRank";
 
-    public MemberServiceImpl(
-            MemberRepository memberRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder,
-            JwtTokenizer jwtTokenizer,
-            JavaMailSender javaMailSender,
-            RefreshTokenService refreshTokenService,
-            DuplicateServiceFinder duplicateServiceFinder,
-            ReviewService reviewNoteService,
-            EmailComponent createKey
-    ) {
+    public MemberServiceImpl(MemberRepository memberRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, JavaMailSender javaMailSender, RefreshTokenService refreshTokenService, DuplicateServiceFinder duplicateServiceFinder, ReviewService reviewNoteService, EmailComponent emailComponent, StringRedisTemplate redisTemplate, AlarmRepository alarmRepository, MemberCacheRepository memberCacheRepository, MemberLoadComponent memberLoadComponent) {
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -67,7 +70,11 @@ public class MemberServiceImpl implements MemberService {
         this.refreshTokenService = refreshTokenService;
         this.duplicateServiceFinder = duplicateServiceFinder;
         this.reviewNoteService = reviewNoteService;
-        this.emailComponent = createKey;
+        this.emailComponent = emailComponent;
+        this.redisTemplate = redisTemplate;
+        this.alarmRepository = alarmRepository;
+        this.memberCacheRepository = memberCacheRepository;
+        this.memberLoadComponent = memberLoadComponent;
     }
 
     /**
@@ -101,10 +108,18 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         signupWithRole(member);
+        Member savedMember = memberRepository.save(member);
         reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
-        return MemberSignupResponse.of(memberRepository.save(member));
+        saveToRedisAsync(savedMember);
+        return MemberSignupResponse.of(savedMember);
     }
 
+
+    @Async
+    public void saveToRedisAsync(Member member) {
+        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
+        zSetOps.add(RANKING_KEY, member.getName(), 0);
+    }
 
     /**
      * 테스트 코드를 작성하면서 호원가입에 관한에서 중복을 막기 위한 로직의 불편함으로 새롭게 작성
@@ -124,9 +139,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberLoginResponse login(MemberLoginRequest request) {
-
-        Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new NotFoundMemberEmail(request.getEmail()));
+        Member member = memberLoadComponent.loadMemberByEmail(request.getEmail());
+        memberCacheRepository.setMember(member);
 
         Optional.of(request.getPassword())
                 .filter(password -> passwordEncoder.matches(password, member.getPassword()))
@@ -141,28 +155,21 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional(readOnly = true)
-    public MyPageResponseDto getMyPage(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundMemberId(id));
-        return MyPageResponseDto.of(member);
+    public MyPageResponseDto getMyPage(LoginUserDto loginUserDto) {
+        return MyPageResponseDto.of(memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail()));
     }
 
     /**
      * 비밀번호를 변경한다.
-     *
-     * @param request
-     * @param id
      */
     @Override
     @Transactional
-    public void changePassword(MemberPasswordChangeRequest request, Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundMemberId(id));
-
+    public void changePassword(MemberPasswordChangeRequest request, LoginUserDto loginUserDto) {
+        Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
         if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
             throw new InvalidMatchPasswordException(request.getOldPassword());
         }
-
-        String newPassword = passwordEncoder.encode(request.getNewPassword());
-        member.changePassword(newPassword);
+        member.changePassword(passwordEncoder.encode(request.getNewPassword()));
     }
 
     //todo : 반환 타입을 Future로 설정 / 학습
@@ -192,34 +199,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
-    public Member oauthSignUp(String email, String name) {
-
-        Member member = Member.builder()
-                .email(email)
-                .name(name)
-                .roles(new HashSet<>())
-                .build();
-
-        signupWithRole(member);
-
-        memberRepository.save(member);
-
-        return member;
+    public Page<AlarmResponseDto> alarmList(LoginUserDto loginUserDto, Pageable pageable) {
+        Member member = memberRepository.findById(loginUserDto.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
+        return alarmRepository.findAllByMember(member, pageable)
+                .map(AlarmResponseDto::of);
     }
 
-    /**
-     * Returns login member with LoginRequest
-     *
-     * @param email 회원 이메일
-     * @return 로그인 성공하면 회원 아이디, JWT(Access, Refresh Token)을 리턴을 합니다.
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public MemberLoginResponse oauthLogin(String email) {
-        return createToken(memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundMemberEmail(email)));
-    }
 
     private void signupWithRole(Member member) {
         Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());

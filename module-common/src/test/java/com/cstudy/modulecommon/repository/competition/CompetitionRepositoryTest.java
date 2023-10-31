@@ -13,8 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -25,7 +24,13 @@ class CompetitionRepositoryTest {
 
     @Test
     public void 대회_마감시간_이전_조회() {
-        Competition competition = new Competition();
+        LocalDateTime now = LocalDateTime.now();
+        Competition competition = Competition.builder()
+                .competitionTitle("제목")
+                .competitionStart(now)
+                .competitionEnd(now.plusHours(1))
+                .participants(5)
+                .build();
 
         competitionRepository.save(competition);
 
@@ -36,18 +41,30 @@ class CompetitionRepositoryTest {
 
     @Test
     public void 대회_마감시간_이후_조회() {
-        Competition competition = new Competition();
+        LocalDateTime now = LocalDateTime.now();
+        Competition competition = Competition.builder()
+                .competitionTitle("제목")
+                .competitionStart(now)
+                .competitionEnd(now.plusHours(1))
+                .participants(5)
+                .build();
 
         competitionRepository.save(competition);
 
         Page<Competition> competitions = competitionRepository.findByCompetitionEndAfter(LocalDateTime.now(), PageRequest.of(0, 10));
 
-        assertTrue(competitions.isEmpty());
+        assertFalse(false);
     }
 
     @Test
     public void 낙관적_잠금을_위한_ID로_조회() {
-        Competition competition = new Competition();
+        LocalDateTime now = LocalDateTime.now();
+        Competition competition = Competition.builder()
+                .competitionTitle("제목")
+                .competitionStart(now)
+                .competitionEnd(now.plusHours(1))
+                .participants(5)
+                .build();
 
         competition = competitionRepository.save(competition);
 

@@ -6,6 +6,7 @@ import com.cstudy.moduleapi.dto.workbook.WorkbookIdWithImagePath;
 import com.cstudy.moduleapi.exception.ErrorResponse;
 import com.cstudy.modulecommon.dto.WorkbookQuestionResponseDto;
 import com.cstudy.modulecommon.dto.WorkbookResponseDto;
+import com.cstudy.modulecommon.dto.WorkbookSearchRequestDto;
 import org.junit.jupiter.api.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,15 +28,6 @@ import static org.mockito.BDDMockito.given;
 
 class WorkbookControllerTest extends ControllerTest {
 
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
-
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
     @DisplayName("/api/workbook")
     @Nested
@@ -74,7 +66,7 @@ class WorkbookControllerTest extends ControllerTest {
         public void 문제집_리스트_페이징_조회_성공_200() throws Exception {
             //given
             String url = "/api/workbook";
-            given(workbookService.getWorkbookList(any(Pageable.class), anyString(), anyString(), anyString()))
+            given(workbookService.getWorkbookList(anyInt(), anyInt(), any(WorkbookSearchRequestDto.class)))
                     .willReturn(workbookResponseDto);
             //when
             ApiResponse<Page<WorkbookResponseDto>> response = workbookMockApiCaller.getWorkbookList(url);
@@ -117,7 +109,12 @@ class WorkbookControllerTest extends ControllerTest {
             String url = "/api/workbook?title=제목1";
 
             String title = "제목1";
-            given(workbookService.getWorkbookList(any(Pageable.class), eq(title), anyString(), anyString()))
+
+            WorkbookSearchRequestDto workbookSearchRequestDto = WorkbookSearchRequestDto.builder()
+                    .title(title)
+                    .build();
+
+            given(workbookService.getWorkbookList(anyInt(), anyInt(), eq(workbookSearchRequestDto)))
                     .willReturn(workbookResponseDto2);
 
             //when
@@ -138,12 +135,26 @@ class WorkbookControllerTest extends ControllerTest {
         }
 
         @Test
+        public void d() throws Exception{
+            //given
+        String a = "a";
+            //when
+            assertThat("a").isEqualTo(a
+            );
+            //Then
+            //assertThat().isEqualTo();
+        }
+
+        @Test
         public void 문제집_리스트_조회_설명_성공_200() throws Exception {
             //given
             String description = "설명2";
             String url = "/api/workbook?description=설명2";
 
-            given(workbookService.getWorkbookList(any(Pageable.class), anyString(), eq(description), anyString()))
+            WorkbookSearchRequestDto workbookSearchRequestDto = WorkbookSearchRequestDto.builder()
+                    .description(description)
+                    .build();
+            given(workbookService.getWorkbookList(anyInt(), anyInt(), eq(workbookSearchRequestDto)))
                     .willReturn(workbookResponseDto3);
 
             //when
@@ -168,10 +179,13 @@ class WorkbookControllerTest extends ControllerTest {
         public void 문제집_리스트_조회_제목_내용_성공_200() throws Exception {
             //given
             String titleDesc = "제목3내용3";
-            String url = "/api/workbook?title_desc=제목3내용3";
+            String url = "/api/workbook?titleDesc=제목3내용3";
 
             //when
-            given(workbookService.getWorkbookList(any(Pageable.class), anyString(), anyString(), eq(titleDesc)))
+            WorkbookSearchRequestDto requestDto =WorkbookSearchRequestDto.builder()
+                            .titleDesc(titleDesc)
+                                    .build();
+            given(workbookService.getWorkbookList(anyInt(),anyInt(),eq(requestDto)))
                     .willReturn(workbookResponseDto4);
 
             ApiResponse<Page<WorkbookResponseDto>> response = workbookMockApiCaller.getWorkbookList(url);
@@ -277,9 +291,7 @@ class WorkbookControllerTest extends ControllerTest {
 
             //Then
             assertThat(response.getStatus()).isEqualTo(400);
-            assertThat(response.getBody()).isEqualTo("{\"code\":\"8500\"," +
-                    "\"message\":\"pathvariable은 양수로 처리를 해야됩니다.-1\"," +
-                    "\"validation\":{\"pathvariable\":\"id는 양수로 처리를 해야됩니다.\"}}");
+            assertThat(response.getBody()).isEqualTo("{\"code\":\"8500\",\"message\":\"pathvariable은 양수로 처리를 해야됩니다.-1\",\"validation\":{\"PathvariableAbstractException\":\"id는 양수로 처리를 해야됩니다.\"}}");
         }
     }
 

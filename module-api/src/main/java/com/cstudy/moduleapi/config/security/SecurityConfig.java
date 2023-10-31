@@ -97,7 +97,9 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/questions/*/answer").authenticated() // 단일 문제에 대한 정답 선택하기
 
                 //RankingController
-                .antMatchers(HttpMethod.GET, "/api/rank").permitAll() // 전체 랭킹 조회하기
+                .antMatchers(HttpMethod.GET, "/api/ranks").permitAll() // 전체 랭킹 조회하기
+                .antMatchers(HttpMethod.GET, "/api/ranking").permitAll() // 전체 랭킹 조회하기 - 리밋
+                .antMatchers(HttpMethod.GET, "/api/rank").authenticated() // 나의 랭킹 조회하기
 
                 //RequestController
                 .antMatchers(HttpMethod.GET, "/api/request/*").permitAll()  // id를 기반해서 단일 게시판 글 조회
@@ -133,6 +135,11 @@ public class SecurityConfig {
 
                 //ReviewNoteController
                 .antMatchers(HttpMethod.GET, "/api/review").authenticated()
+
+                //AlarmController
+                .antMatchers(HttpMethod.GET, "/api/alarm/subscribe").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/alarm").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/alarm/**").authenticated()
 
 
                 .anyRequest().permitAll()

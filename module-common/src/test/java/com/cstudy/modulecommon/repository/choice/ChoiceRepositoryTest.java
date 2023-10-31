@@ -24,7 +24,11 @@ public class ChoiceRepositoryTest {
 
     @Test
     public void testFindByQuestionAndNumber() {
-        Question question = new Question();
+        Question question = Question.builder()
+                .title("문제1")
+                .description("설명")
+                .explain("설명")
+                .build();
 
         Choice choice = Choice.builder()
                 .question(question)
