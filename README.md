@@ -84,7 +84,7 @@
 
 ### Service
  ``Service Layer Test``의 경우에 Test Double(Mocking)을 통하여 테스트를 진행을 하였을 때 Repository의 인터페이스가 변화를 하면 실패를 한다.
-- 단위 테스트에서 Mocking을 하면 연관 관계의 인터페이스와 강하게 의존하여 리펙토링을 어렵기 때문에 Classic 방식을 통하여 테스트를 진행을 하였습니다.
+- 단위 테스트에서 Mocking을 하면 연관 관계의 ``인터페이스와 강하게 의존``하여 리펙토링을 어렵기 때문에 Classic 방식을 통하여 테스트를 진행을 하였습니다.
 - 제어할 수 없는 코드인 경우에만 Test Double을 사용을 하였습니다.
 - ``LocalDateTime.now()``의 테스트 코드는 항상 일관성을 보장하기 힘들어 Service에 변수를 넘겨주는 방식으로 변경
 
