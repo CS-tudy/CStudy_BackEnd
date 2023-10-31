@@ -25,15 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 class RequestControllerTest extends ControllerTest {
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
 
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
     @DisplayName("/api/request 게시판 요청 게시글 생성하기")
     @Nested

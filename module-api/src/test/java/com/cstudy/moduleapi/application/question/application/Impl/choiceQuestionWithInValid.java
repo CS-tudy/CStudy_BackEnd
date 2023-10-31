@@ -24,10 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class choiceQuestionWithInValid extends ServiceTestBase {
 
 
-    @BeforeEach
-    void setUp() {
-        memberRepository.deleteAll();
-    }
+
 
 
     @Test

@@ -27,15 +27,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class QuestionControllerTest extends ControllerTest {
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
 
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
 
     @DisplayName("POST /api/questions 문제 생성하기")

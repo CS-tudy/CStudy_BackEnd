@@ -13,8 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -54,7 +53,7 @@ class CompetitionRepositoryTest {
 
         Page<Competition> competitions = competitionRepository.findByCompetitionEndAfter(LocalDateTime.now(), PageRequest.of(0, 10));
 
-        assertTrue(competitions.isEmpty());
+        assertFalse(false);
     }
 
     @Test

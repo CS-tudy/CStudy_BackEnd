@@ -28,15 +28,6 @@ import static org.mockito.BDDMockito.given;
 
 class WorkbookControllerTest extends ControllerTest {
 
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
-
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
     @DisplayName("/api/workbook")
     @Nested
@@ -144,6 +135,17 @@ class WorkbookControllerTest extends ControllerTest {
         }
 
         @Test
+        public void d() throws Exception{
+            //given
+        String a = "a";
+            //when
+            assertThat("a").isEqualTo(a
+            );
+            //Then
+            //assertThat().isEqualTo();
+        }
+
+        @Test
         public void 문제집_리스트_조회_설명_성공_200() throws Exception {
             //given
             String description = "설명2";
@@ -177,7 +179,7 @@ class WorkbookControllerTest extends ControllerTest {
         public void 문제집_리스트_조회_제목_내용_성공_200() throws Exception {
             //given
             String titleDesc = "제목3내용3";
-            String url = "/api/workbook?title_desc=제목3내용3";
+            String url = "/api/workbook?titleDesc=제목3내용3";
 
             //when
             WorkbookSearchRequestDto requestDto =WorkbookSearchRequestDto.builder()
@@ -289,9 +291,7 @@ class WorkbookControllerTest extends ControllerTest {
 
             //Then
             assertThat(response.getStatus()).isEqualTo(400);
-            assertThat(response.getBody()).isEqualTo("{\"code\":\"8500\"," +
-                    "\"message\":\"pathvariable은 양수로 처리를 해야됩니다.-1\"," +
-                    "\"validation\":{\"pathvariable\":\"id는 양수로 처리를 해야됩니다.\"}}");
+            assertThat(response.getBody()).isEqualTo("{\"code\":\"8500\",\"message\":\"pathvariable은 양수로 처리를 해야됩니다.-1\",\"validation\":{\"PathvariableAbstractException\":\"id는 양수로 처리를 해야됩니다.\"}}");
         }
     }
 

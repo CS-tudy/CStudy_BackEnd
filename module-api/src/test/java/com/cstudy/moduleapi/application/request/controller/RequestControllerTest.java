@@ -38,12 +38,16 @@ class RequestControllerTest extends ControllerTestBase {
 
     private String token;
     private static String INVALID_TOKEN;
+    private static String ADMIN_VALID_TOKEN;
+    private static String CUSTOM_VALID_TOKEN;
 
 
     @BeforeEach
     void setUp() {
         token = jwtTokenizer.createAccessToken(1L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));
         INVALID_TOKEN = jwtTokenizer.createAccessToken(2L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
+        ADMIN_VALID_TOKEN = jwtTokenizer.createAccessToken(1L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));
+        CUSTOM_VALID_TOKEN = jwtTokenizer.createAccessToken(2L, MemberTestEnum.ADMIN_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
     }
 
     @Test
@@ -91,9 +95,9 @@ class RequestControllerTest extends ControllerTestBase {
                 .build();
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/request/create")
+                        MockMvcRequestBuilders.post("/api/request")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + CUSTOM_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(requestDto))
                 )
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -132,12 +136,12 @@ class RequestControllerTest extends ControllerTestBase {
         FlagRequestDto flagRequestDto = new FlagRequestDto(1L, true);
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/request/approve")
+                        MockMvcRequestBuilders.patch("/api/request/approve")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(flagRequestDto))
                 )
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
         //then
         //verify()
@@ -150,12 +154,12 @@ class RequestControllerTest extends ControllerTestBase {
         FlagRequestDto flagRequestDto = new FlagRequestDto(1L, true);
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/request/approve")
+                        MockMvcRequestBuilders.patch("/api/request/approve")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + INVALID_TOKEN)
+                                .header("Authorization", "Bearer " + CUSTOM_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(flagRequestDto))
                 )
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andDo(MockMvcResultHandlers.print());
         //then
         //verify()
@@ -179,7 +183,7 @@ class RequestControllerTest extends ControllerTestBase {
         given(requestService.getRequestList(1L, pageable)).willReturn(mockPageResult);
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/request/mylist")
+                        MockMvcRequestBuilders.get("/api/request/member")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                                 .content("")
@@ -208,7 +212,7 @@ class RequestControllerTest extends ControllerTestBase {
         given(requestService.getRequestList(pageable)).willReturn(mockPageResult);
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/request/list")
+                        MockMvcRequestBuilders.get("/api/request/requests")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                                 .content("")
@@ -231,12 +235,12 @@ class RequestControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/api/request")
+                        MockMvcRequestBuilders.patch("/api/request")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(updateRequestRequestDto))
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
         //then
         //verify()

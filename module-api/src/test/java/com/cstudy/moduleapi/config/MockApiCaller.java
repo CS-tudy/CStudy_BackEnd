@@ -17,9 +17,9 @@ import static com.cstudy.moduleapi.config.ControllerTest.CUSTOM_USER;
 
 public abstract class MockApiCaller {
 
-    protected final MockMvc mockMvc;
+    public final MockMvc mockMvc;
 
-    protected final ObjectMapper objectMapper;
+    public final ObjectMapper objectMapper;
 
     public MockApiCaller(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;

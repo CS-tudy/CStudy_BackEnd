@@ -26,15 +26,6 @@ import static org.mockito.BDDMockito.given;
 
 class NoticeControllerTest extends ControllerTest {
 
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
-
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
     @DisplayName("/api/notice 공지사항 조회 페이징")
     @Nested

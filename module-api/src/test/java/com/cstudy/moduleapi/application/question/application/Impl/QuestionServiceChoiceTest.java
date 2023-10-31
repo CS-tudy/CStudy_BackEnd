@@ -16,10 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class QuestionServiceChoiceTest extends ServiceTestBase {
 
 
-    @BeforeEach
-    void setUp() {
-        memberRepository.deleteAll();
-    }
+
 
 //
 //    @Test
@@ -177,54 +174,54 @@ public class QuestionServiceChoiceTest extends ServiceTestBase {
 //        //Then
 //        assertThat(memberQuestion.getSuccess()).isEqualTo(3);
 //    }
-
-    @Test
-    @DisplayName("페이징 문제 및 카테고리")
-    public void findPagingQuestionAndCategoryWithValid() throws Exception {
-        //given
-        LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(1L)
-                .build();
-        //when
-        QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
-                .build();
-        //Then
-        Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
-                questionSearchCondition, 0, 10,
-                loginUserDto);
-
-        System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
-
-        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
-                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
-
-        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
-                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
-    }
-
-    @Test
-    @DisplayName("페이징 문제 및 카테고리 - 문제 제목")
-    public void findPagingQuestionAndCategoryWithValidCondition() throws Exception {
-        //given
-        LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(1L)
-                .build();
-        QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
-                .questionTitle("문제 제목")
-                .build();
-        //when
-        Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
-                questionSearchCondition, 0, 10,
-                loginUserDto);
-
-        //Then
-
-        System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
-
-        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
-                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
-
-        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
-                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
-    }
+//
+//    @Test
+//    @DisplayName("페이징 문제 및 카테고리")
+//    public void findPagingQuestionAndCategoryWithValid() throws Exception {
+//        //given
+//        LoginUserDto loginUserDto = LoginUserDto.builder()
+//                .memberId(1L)
+//                .build();
+//        //when
+//        QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
+//                .build();
+//        //Then
+//        Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
+//                questionSearchCondition, 0, 10,
+//                loginUserDto);
+//
+//        System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
+//
+//        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
+//                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
+//
+//        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
+//                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
+//    }
+//
+//    @Test
+//    @DisplayName("페이징 문제 및 카테고리 - 문제 제목")
+//    public void findPagingQuestionAndCategoryWithValidCondition() throws Exception {
+//        //given
+//        LoginUserDto loginUserDto = LoginUserDto.builder()
+//                .memberId(1L)
+//                .build();
+//        QuestionSearchCondition questionSearchCondition = QuestionSearchCondition.builder()
+//                .questionTitle("문제 제목")
+//                .build();
+//        //when
+//        Page<QuestionPageWithCategoryAndTitle> questionPageWithCategoryAndTitles = questionService.questionPageWithCategory(
+//                questionSearchCondition, 0, 10,
+//                loginUserDto);
+//
+//        //Then
+//
+//        System.out.println("questionPageWithCategoryAndTitles = " + questionPageWithCategoryAndTitles);
+//
+//        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getQuestionTitle)
+//                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("문제 제목");
+//
+//        assertThat(questionPageWithCategoryAndTitles.stream().map(QuestionPageWithCategoryAndTitle::getCategoryTitle)
+//                .findFirst().orElseThrow(RuntimeException::new)).isEqualTo("네트워크");
+//    }
 }

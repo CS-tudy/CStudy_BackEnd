@@ -78,10 +78,7 @@
 //        competitionService.createCompetition(requestDto);
 //    }
 //
-//    @AfterEach
-//    void after(){
-//        memberRepository.deleteAll();
-//    }
+
 //
 //    @Test
 //    @DisplayName("싱글 스레드 환경에서 대회 참가 조회")
