@@ -46,16 +46,9 @@ public class AlarmController {
     @Operation(summary = "SSE 연결하기", description = "SSE 연결")
     @GetMapping("subscribe")
     @ResponseStatus(HttpStatus.OK)
-    @PermitAll
-    public SseEmitter subscribe(HttpServletRequest request) {
-        String token ="";
-        String queryString = request.getQueryString();
-        if (StringUtils.hasText(queryString) && queryString.contains("token=")) {
-            token = queryString.split("token=")[1].trim();
-        }
-        Long memberId = jwtTokenizer.getMemberIdFromToken(token);
-        log.info("memberId :::::: {} ", memberId);
-        return alarmService.connectionAlarm(memberId);
+    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
+    public SseEmitter subscribe(@IfLogin LoginUserDto loginUserDto) {
+        return alarmService.connectionAlarm(loginUserDto.getMemberId());
     }
 
     @Operation(summary = "알람 삭제하게 {id}", description = "알람 삭제하기")
