@@ -77,20 +77,15 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional(readOnly = true)
     public List<WorkbookIdWithImagePath> getWorkbookImagePathList() {
-
-        List<Workbook> workbooks = workbookRepository.findByIdWithWorkbook();
-
-        return workbooks.stream()
+        return workbookRepository.findByIdWithWorkbook().stream()
                 .map(workbook -> {
                     List<String> imagePaths = workbook.getFiles().stream()
                             .map(File::getFileName)
                             .collect(Collectors.toList());
-
                     return WorkbookIdWithImagePath.builder()
                             .id(workbook.getId())
                             .imagePath(imagePaths)
-                            .build();
-                })
+                            .build();})
                 .collect(Collectors.toList());
     }
 
@@ -103,9 +98,8 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Override
     @Transactional(readOnly = true)
     public WorkbookResponseDto getWorkbook(Long id) {
-        Workbook workbook = workbookRepository.findById(id)
-                .orElseThrow(() -> new NotFoundWorkbook(id));
-        return WorkbookResponseDto.of(workbook);
+        return WorkbookResponseDto.of(workbookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundWorkbook(id)));
     }
 
     /**

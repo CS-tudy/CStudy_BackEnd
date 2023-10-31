@@ -1,10 +1,10 @@
 package com.cstudy.moduleapi.application.ranking.impl;
 
+import com.cstudy.moduleapi.application.member.MemberLoadComponent;
 import com.cstudy.moduleapi.application.ranking.RankingService;
 import com.cstudy.moduleapi.config.redis.RedisCacheKey;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.question.MemberQuestion;
-import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,11 +24,13 @@ public class RankingServiceImpl implements RankingService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final MemberRepository memberRepository;
+    private final MemberLoadComponent memberLoadComponent;
 
 
-    public RankingServiceImpl(RedisTemplate<String, String> redisTemplate, MemberRepository memberRepository) {
+    public RankingServiceImpl(RedisTemplate<String, String> redisTemplate, MemberRepository memberRepository, MemberLoadComponent memberLoadComponent) {
         this.redisTemplate = redisTemplate;
         this.memberRepository = memberRepository;
+        this.memberLoadComponent = memberLoadComponent;
     }
 
     /**
@@ -54,8 +56,7 @@ public class RankingServiceImpl implements RankingService {
     @Transactional(readOnly = true)
     public Long getMyRanking(LoginUserDto loginUserDto) {
         return redisTemplate.opsForZSet()
-                .reverseRank(RANKING_KEY, memberRepository.findById(loginUserDto.getMemberId())
-                        .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()))
+                .reverseRank(RANKING_KEY, memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail())
                         .getName());
     }
 

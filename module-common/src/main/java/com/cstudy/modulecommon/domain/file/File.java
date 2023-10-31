@@ -1,5 +1,6 @@
 package com.cstudy.modulecommon.domain.file;
 
+import com.cstudy.modulecommon.domain.BaseEntity;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import javax.persistence.*;
         @UniqueConstraint(name = "fileName", columnNames = {"fileName"})
 })
 @AllArgsConstructor
-public class File {
+public class File extends BaseEntity {
 
     /********************************* PK 필드 *********************************/
     @Id
@@ -28,9 +29,6 @@ public class File {
     private String fileName;
 
     /********************************* 연관관계 매핑 *********************************/
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
@@ -39,7 +37,11 @@ public class File {
     @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 
-
-    /********************************* 빌더 *********************************/
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST
+    )
+    @JoinColumn(name = "member_id")
+    private Member member;
 
 }

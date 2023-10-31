@@ -27,10 +27,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         Claims claims = jwtTokenizer.parseAccessToken(authenticationToken.getToken());
 
         Long memberId = claims.get("memberId", Long.class);
+        String memberEmail = claims.get("sub", String.class);
         List<GrantedAuthority> authorities = getGrantedAuthorities(claims);
 
         LoginInfoDto loginInfo = new LoginInfoDto();
         loginInfo.setMemberId(memberId);
+        loginInfo.setMemberEmail(memberEmail);
 
         return new JwtAuthenticationToken(authorities, loginInfo, null);
     }

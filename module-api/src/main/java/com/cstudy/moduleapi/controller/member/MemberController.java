@@ -123,7 +123,7 @@ public class MemberController {
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public MyPageResponseDto myPage(@Parameter(hidden = true)
                                     @IfLogin LoginUserDto loginUserDto) {
-        return memberService.getMyPage(loginUserDto.getMemberId());
+        return memberService.getMyPage(loginUserDto);
     }
 
     @Operation(summary = "비밀번호 수정", description = "비밀번호 수정 / ROLE_CUSTOM', 'ROLE_ADMIN")
@@ -133,7 +133,7 @@ public class MemberController {
     public void changePassword(@Parameter(name = "memberPasswordChangeRequest", description = "회원 이전 비밀번호, 새로운 비밀번호")
                                @Valid @RequestBody MemberPasswordChangeRequest memberPasswordChangeRequest,
                                @Parameter(hidden = true) @IfLogin LoginUserDto loginUserDto) {
-        memberService.changePassword(memberPasswordChangeRequest, loginUserDto.getMemberId());
+        memberService.changePassword(memberPasswordChangeRequest, loginUserDto);
     }
 
 

@@ -136,6 +136,11 @@ public class SecurityConfig {
                 //ReviewNoteController
                 .antMatchers(HttpMethod.GET, "/api/review").authenticated()
 
+                //AlarmController
+                .antMatchers(HttpMethod.GET, "/api/alarm/subscribe").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/alarm").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/alarm/**").authenticated()
+
 
                 .anyRequest().permitAll()
                 .and()

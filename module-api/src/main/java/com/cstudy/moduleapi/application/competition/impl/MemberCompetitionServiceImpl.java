@@ -1,7 +1,10 @@
 package com.cstudy.moduleapi.application.competition.impl;
 
+import com.cstudy.moduleapi.application.alarm.AlarmService;
 import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
 import com.cstudy.moduleapi.dto.competition.MyCompetitionRankingDto;
+import com.cstudy.modulecommon.domain.alarm.AlarmArgs;
+import com.cstudy.modulecommon.domain.alarm.AlarmType;
 import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.domain.competition.MemberCompetition;
 import com.cstudy.modulecommon.domain.member.Member;
@@ -13,7 +16,7 @@ import com.cstudy.modulecommon.repository.competition.CompetitionRepository;
 import com.cstudy.modulecommon.repository.competition.MemberCompetitionRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,13 +24,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
 public class MemberCompetitionServiceImpl implements MemberCompetitionService {
+
+    private final static Long ADMIN_ID = 1L;
 
     private final MemberCompetitionRepository memberCompetitionRepository;
     private final MemberRepository memberRepository;
     private final CompetitionRepository competitionRepository;
+    private final AlarmService alarmService;
+
+    public MemberCompetitionServiceImpl(MemberCompetitionRepository memberCompetitionRepository, MemberRepository memberRepository, CompetitionRepository competitionRepository, AlarmService alarmService) {
+        this.memberCompetitionRepository = memberCompetitionRepository;
+        this.memberRepository = memberRepository;
+        this.competitionRepository = competitionRepository;
+        this.alarmService = alarmService;
+    }
 
     @Override
     @Transactional
@@ -48,12 +61,15 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
 
         decreaseParticipantsCountIfPossible(competition);
 
-        MemberCompetition memberCompetition = MemberCompetition.builder()
+        memberCompetitionRepository.save(MemberCompetition.builder()
                 .member(member)
                 .competition(competition)
-                .build();
+                .build());
 
-        memberCompetitionRepository.save(memberCompetition);
+        Long loginMemberId = loginUserDto.getMemberId();
+
+        alarmService.send(AlarmType.JOIN_COMPETITION, new AlarmArgs(loginMemberId, ADMIN_ID, competition.getCompetitionTitle()), ADMIN_ID);
+        alarmService.send(AlarmType.JOIN_COMPETITION, new AlarmArgs(loginMemberId, loginMemberId, competition.getCompetitionTitle()), loginMemberId);
     }
 
     @Override

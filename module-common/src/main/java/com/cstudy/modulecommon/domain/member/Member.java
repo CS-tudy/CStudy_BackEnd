@@ -27,10 +27,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "MEMBER", uniqueConstraints = {
         @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
-        @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
-//        @UniqueConstraint(name = "name", columnNames = {"name"}),
+//        @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
+        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
-public class Member extends BaseEntity {
+public class Member {
 
     /********************************* PK 필드 *********************************/
     @Id
@@ -54,9 +54,6 @@ public class Member extends BaseEntity {
 
     private String countryIsoCode;
 
-    @OneToOne(mappedBy = "member")
-    private File file;
-
 
     /********************************* 동시성 버전 *********************************/
 
@@ -65,6 +62,13 @@ public class Member extends BaseEntity {
 
 
     /********************************* 연관관계 매핑 *********************************/
+
+    @OneToMany(
+            mappedBy = "member",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private List<File> file = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "member",

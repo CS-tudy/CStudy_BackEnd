@@ -270,7 +270,7 @@ class MemberControllerTest extends ControllerTestBase {
                 .name(MemberTestEnum.VALID_NAME.getMessage())
                 .build();
 
-        given(memberService.getMyPage(any(Long.class))).willReturn(myPageResponseDto);
+        given(memberService.getMyPage(any(LoginUserDto.class))).willReturn(myPageResponseDto);
 
         // when
         mockMvc.perform(
