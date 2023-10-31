@@ -5,13 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.mail.MessagingException;
 
@@ -208,4 +211,61 @@ public class ExceptionControllerAdvice {
                 .body(body).getBody();
     }
 
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AlarmAbstractException.class)
+    public ErrorResponse AlarmAbstractException(AlarmAbstractException e) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(e.getStatusCode()))
+                .message(e.getMessage())
+                .build();
+
+        body.addValidation("AlarmAbstractException", "Alarm 관련 Exception");
+        log.error("AlarmAbstractException : {} , StatusCode : {}", e, body.getCode());
+        return ResponseEntity.status(e.getStatusCode())
+                .body(body).getBody();
+    }
+
+
+    @ExceptionHandler(HttpMessageConversionException.class)
+    protected ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .message(e.getMessage())
+                .build();
+
+        body.addValidation("json의 형식이 잘못됨", "body json의 형식을 확인을 해주세요");
+        log.error("AlarmAbstractException : {} , StatusCode : {}", e, body.getCode());
+        return ResponseEntity.status(HttpStatus.valueOf(e.getMessage()))
+                .body(body).getBody();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .message(e.getMessage())
+                .build();
+
+        body.addValidation("json의 형식이 잘못됨", "body json의 형식을 확인을 해주세요");
+        log.error("AlarmAbstractException : {} , StatusCode : {}", e, body.getCode());
+        return ResponseEntity.status(HttpStatus.valueOf(e.getMessage()))
+                .body(body).getBody();
+    }
+    /**
+     * 지원하지 않은 HTTP method 호출 할 경우 발생
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    protected ErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .message(e.getMessage())
+                .build();
+
+        body.addValidation("지원하지 않은 HTTP method 호출 할 경우 발생", "지원하지 않은 HTTP method 호출 할 경우 발생");
+        return ResponseEntity.status(HttpStatus.valueOf(e.getMessage()))
+                .body(body).getBody();
+    }
 }
