@@ -1,23 +1,28 @@
 package com.cstudy.moduleapi.application.request.impl;
 
 import com.cstudy.moduleapi.aop.AuthCheck;
+import com.cstudy.moduleapi.application.alarm.AlarmService;
+import com.cstudy.moduleapi.application.member.MemberLoadComponent;
 import com.cstudy.moduleapi.application.request.RequestService;
 import com.cstudy.moduleapi.config.redis.RedisPublisher;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
 import com.cstudy.moduleapi.dto.request.RequestResponseDto;
+import com.cstudy.modulecommon.domain.alarm.Alarm;
+import com.cstudy.modulecommon.domain.alarm.AlarmArgs;
+import com.cstudy.modulecommon.domain.alarm.AlarmType;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.dto.UpdateRequestRequestDto;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.error.request.NotFoundRequest;
+import com.cstudy.modulecommon.repository.alarm.AlarmRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.request.RequestRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +32,22 @@ import java.util.List;
 @Slf4j
 public class RequestServiceImpl implements RequestService {
 
+    private final static Long ADMIN_ID = 1L;
+
     private final RequestRepository requestRepository;
     private final MemberRepository memberRepository;
     private final RedisPublisher redisPublisher;
+    private final AlarmRepository alarmRepository;
+    private final MemberLoadComponent memberLoadComponent;
+    private final AlarmService alarmService;
 
-
-    public RequestServiceImpl(RequestRepository requestRepository, MemberRepository memberRepository, RedisPublisher redisPublisher) {
+    public RequestServiceImpl(RequestRepository requestRepository, MemberRepository memberRepository, RedisPublisher redisPublisher, AlarmRepository alarmRepository, MemberLoadComponent memberLoadComponent, AlarmService alarmService) {
         this.requestRepository = requestRepository;
         this.memberRepository = memberRepository;
         this.redisPublisher = redisPublisher;
+        this.alarmRepository = alarmRepository;
+        this.memberLoadComponent = memberLoadComponent;
+        this.alarmService = alarmService;
     }
 
     /**
@@ -47,23 +59,32 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public Long createRequest(
             CreateRequestRequestDto requestDto,
-            Long memberId
-    ) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberId(memberId));
-
-        Request request = Request.builder()
+            LoginUserDto loginUserDto) {
+        Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
+        requestRepository.save(Request.builder()
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
                 .member(member)
-                .build();
-        requestRepository.save(request);
+                .build());
 
-        //redis pub/sub으로 비동기로 알림 보내기
-//        redisPublisher.publish(ChannelTopic.of("sendDiscord"),"무건아 문제");
-        member.addRequest(request);
+        alarmService.send(AlarmType.NEW_REQUEST_USER, new AlarmArgs(loginUserDto.getMemberId(),ADMIN_ID, requestDto.getTitle()),ADMIN_ID);
 
-        return request.getId();
+        member.addRequest(Request.builder()
+                .title(requestDto.getTitle())
+                .description(requestDto.getDescription())
+                .member(memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail()))
+                .build());
+
+        return Request.builder()
+                .title(requestDto.getTitle())
+                .description(requestDto.getDescription())
+                .member(memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail()))
+                .build().getId();
+    }
+
+    private Member adminMember() {
+        return memberRepository.findById(ADMIN_ID)
+                .orElseThrow(() -> new NotFoundMemberId(ADMIN_ID));
     }
 
 
