@@ -4,7 +4,6 @@ package com.cstudy.moduleapi.config.jwt.filter;
 import com.cstudy.moduleapi.config.jwt.exception.JwtExceptionCode;
 import com.cstudy.moduleapi.config.jwt.token.JwtAuthenticationToken;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
-import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -32,7 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final MemberRepository memberRepository;
     private final JwtTokenizer jwtTokenizer;
 
-    private final static List<String>TOKEN_IN_PARAM_URLS = List.of("/api/member/alarm/subscribe");
+    private final static List<String> TOKEN_IN_PARAM_URLS = List.of("/api/member/alarm/subscribe");
+
 
     @Override
     protected void doFilterInternal(
@@ -42,10 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String token = "";
-
-
-        String authorization = request.getHeader("Authorization");
         try {
+            String result = null;
+            String authorization = request.getHeader("Authorization");
+            result = getString(authorization, result);
+            token = result;
+
             if (TOKEN_IN_PARAM_URLS.contains(request.getRequestURI())) {
                 log.info("Request With {} check the query param", request.getRequestURI());
                 String queryString = request.getQueryString();
@@ -54,9 +56,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
-// 나머지 코드는 그대로 유지
-            token = getToken(request, authorization);
-            checkValidUser(token);
             if (StringUtils.hasText(token)) {
                 getAuthentication(token);
             } else {
@@ -79,10 +78,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void checkValidUser(String token) {
-        String memberEmail = jwtTokenizer.getMemberEmailFromToken(token);
-        memberRepository.findByEmail(memberEmail)
-                .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
+    private static String getString(String authorization, String result) {
+        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer")) {
+            String[] arr = authorization.split(" ");
+            result = arr[1];
+        }
+        return result;
     }
 
     private static void handleJwtException(HttpServletRequest request, JwtExceptionCode notFoundToken, String format, String token, String msg) {
@@ -98,12 +99,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticate); // 현재 요청에서 언제든지 인증정보를 꺼낼 수 있도록 해준다.
     }
 
-    private String getToken(HttpServletRequest request, String authorization) {
-//        String authorization = request.getHeader("Authorization");
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer")) {
-            String[] arr = authorization.split(" ");
-            return arr[1];
-        }
-        return null;
-    }
 }

@@ -21,10 +21,11 @@ class NoticeControllerTest extends ControllerTestBase {
 
 
     private String token;
+    private static String ADMIN_VALID_TOKEN;
 
     @BeforeEach
     void setUp() {
-        token = jwtTokenizer.createAccessToken(1L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
+        ADMIN_VALID_TOKEN = jwtTokenizer.createAccessToken(1L, MemberTestEnum.ADMIN_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));
     }
 
     @Test
@@ -39,7 +40,7 @@ class NoticeControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/notice")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(noticeSaveRequestDto))
                 )
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -59,7 +60,7 @@ class NoticeControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/notice")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(noticeSaveRequestDto))
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -79,7 +80,7 @@ class NoticeControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/notice")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(noticeSaveRequestDto))
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -101,12 +102,12 @@ class NoticeControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/api/notice/{noticeId}", id)
+                        MockMvcRequestBuilders.patch("/api/notice/{noticeId}", id)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                                 .content(objectMapper.writeValueAsBytes(noticeUpdateRequestDto))
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(print());
         //then
         //verify()
@@ -122,7 +123,7 @@ class NoticeControllerTest extends ControllerTestBase {
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/notice/{noticeId}", id)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer " + token)
+                                .header("Authorization", "Bearer " + ADMIN_VALID_TOKEN)
                 )
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(print());

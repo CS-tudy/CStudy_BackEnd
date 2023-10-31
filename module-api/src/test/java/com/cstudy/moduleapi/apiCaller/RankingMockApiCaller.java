@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static com.cstudy.moduleapi.config.ControllerTest.ADMIN_USER;
+
 public class RankingMockApiCaller extends MockApiCaller {
 
     public RankingMockApiCaller(MockMvc mockMvc, ObjectMapper objectMapper) {
@@ -23,7 +25,8 @@ public class RankingMockApiCaller extends MockApiCaller {
 
 
     public ApiResponse<String> findMemberAllAboutRankingBoard() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/rank")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/ranks")
+                .header("Authorization", "Bearer " + ADMIN_USER)
                 .contentType(MediaType.APPLICATION_JSON);
 
         MockHttpServletResponse response = mockMvc.perform(builder)

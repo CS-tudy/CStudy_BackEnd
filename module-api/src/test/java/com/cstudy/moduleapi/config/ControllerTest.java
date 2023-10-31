@@ -20,6 +20,7 @@ import com.cstudy.moduleapi.enums.MemberTestEnum;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,68 +37,68 @@ import static org.mockito.BDDMockito.given;
 public abstract class ControllerTest {
 
     @Autowired
-    protected MockMvc mockMvc;
+    public MockMvc mockMvc;
 
     @Autowired
-    protected ObjectMapper objectMapper;
+    public ObjectMapper objectMapper;
 
     @Autowired
-    protected JwtTokenizer jwtTokenizer;
+    public JwtTokenizer jwtTokenizer;
 
     @Autowired
-    protected MemberRepository memberRepository;
+    public MemberRepository memberRepository;
 
     @MockBean
-    protected MemberService memberService;
+    public MemberService memberService;
 
     @MockBean
-    protected DuplicateServiceFinder duplicateServiceFinder;
+    public DuplicateServiceFinder duplicateServiceFinder;
 
     @MockBean
-    protected RefreshTokenService refreshTokenService;
+    public RefreshTokenService refreshTokenService;
 
     @MockBean
-    protected FileService fileService;
+    public FileService fileService;
 
     @MockBean
-    protected CommentService commentService;
+    public CommentService commentService;
 
     @MockBean
-    protected NoticeService noticeService;
+    public NoticeService noticeService;
 
     @MockBean
-    protected RankingServiceImpl rankingService;
+    public RankingServiceImpl rankingService;
 
     @MockBean
-    protected QuestionService questionService;
+    public QuestionService questionService;
 
     @MockBean
-    protected MemberQuestionService memberQuestionService;
+    public MemberQuestionService memberQuestionService;
 
     @MockBean
-    protected ReviewService reviewService;
+    public ReviewService reviewService;
 
     @MockBean
-    protected RequestService requestService;
+    public RequestService requestService;
 
     @MockBean
-    protected WorkbookService workbookService;
+    public WorkbookService workbookService;
 
-    protected MemberMockApiCaller memberMockApiCaller;
-    protected CommentMockApiCaller commentMockApiCaller;
-    protected NoticeMockApiCaller noticeMockApiCaller;
-    protected RankingMockApiCaller rankingMockApiCaller;
-    protected QuestionMockApiCaller questionMockApiCaller;
-    protected ReviewMockApiCaller reviewMockApiCaller;
-    protected RequestMockApiCaller requestMockApiCaller;
-    protected WorkbookMockApiCaller workbookMockApiCaller;
+    public MemberMockApiCaller memberMockApiCaller;
+    public CommentMockApiCaller commentMockApiCaller;
+    public NoticeMockApiCaller noticeMockApiCaller;
+    public RankingMockApiCaller rankingMockApiCaller;
+    public QuestionMockApiCaller questionMockApiCaller;
+    public ReviewMockApiCaller reviewMockApiCaller;
+    public RequestMockApiCaller requestMockApiCaller;
+    public WorkbookMockApiCaller workbookMockApiCaller;
 
     public static String CUSTOM_USER = null;
     public static String ADMIN_USER = null;
     public static String INVALID_TOKEN = null;
 
-
-    protected void setup() throws Exception {
+    @BeforeEach
+    public void setup() throws Exception {
         memberMockApiCaller = new MemberMockApiCaller(mockMvc, objectMapper);
         commentMockApiCaller = new CommentMockApiCaller(mockMvc, objectMapper);
         noticeMockApiCaller = new NoticeMockApiCaller(mockMvc, objectMapper);
@@ -107,8 +108,8 @@ public abstract class ControllerTest {
         requestMockApiCaller = new RequestMockApiCaller(mockMvc, objectMapper);
         workbookMockApiCaller = new WorkbookMockApiCaller(mockMvc, objectMapper);
 
-        CUSTOM_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.CUSTOM_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
         ADMIN_USER = jwtTokenizer.createAccessToken(1L, MemberTestEnum.ADMIN_EMAIL.getMessage(), List.of(RoleEnum.ADMIN.getRoleName()));
+        CUSTOM_USER = jwtTokenizer.createAccessToken(2L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of(RoleEnum.CUSTOM.getRoleName()));
         INVALID_TOKEN = jwtTokenizer.createAccessToken(2L, MemberTestEnum.VALID_EMAIL.getMessage(), List.of("INVALID_ROLE"));
 
         given(memberService.login(any(MemberLoginRequest.class))).willReturn(MemberLoginResponse.builder()
@@ -119,9 +120,7 @@ public abstract class ControllerTest {
                 .build());
     }
 
-    protected void cleanup() {
-        memberRepository.deleteAll();
-    }
+
 
 }
 

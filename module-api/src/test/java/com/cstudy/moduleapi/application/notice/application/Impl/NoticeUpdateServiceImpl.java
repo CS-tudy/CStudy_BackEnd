@@ -2,29 +2,38 @@ package com.cstudy.moduleapi.application.notice.application.Impl;
 
 import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.notice.NoticeSaveRequestDto;
+import com.cstudy.modulecommon.domain.member.Member;
+import com.cstudy.modulecommon.domain.notice.Notice;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
+import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
+import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NoticeUpdateServiceImpl extends ServiceTestBase {
 
 
     @BeforeEach
     void setUp() {
-        NoticeSaveRequestDto noticeSaveRequestDto = NoticeSaveRequestDto.builder()
-                .title("공지사항 제목")
-                .content("공지사항 내용")
-                .build();
-
-        LoginUserDto loginUserDto = LoginUserDto.builder()
-                .memberId(1L)
-                .roles(List.of(RoleEnum.ADMIN.getRoleName()))
-                .build();
-
-        //when
-        noticeService.saveNotice(noticeSaveRequestDto, loginUserDto);
+//        NoticeSaveRequestDto noticeSaveRequestDto = NoticeSaveRequestDto.builder()
+//                .title("공지사항 제목")
+//                .content("공지사항 내용")
+//                .build();
+//
+//        LoginUserDto loginUserDto = LoginUserDto.builder()
+//                .memberId(1L)
+//                .roles(List.of(RoleEnum.ADMIN.getRoleName()))
+//                .build();
+//
+//        //when
+//        noticeService.saveNotice(noticeSaveRequestDto, loginUserDto);
     }
 
 //    @Test

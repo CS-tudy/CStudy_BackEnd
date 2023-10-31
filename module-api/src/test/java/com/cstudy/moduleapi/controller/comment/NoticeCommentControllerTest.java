@@ -19,16 +19,6 @@ class NoticeCommentControllerTest extends ControllerTest {
 
     private static final String URL = "/api/comment";
 
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
-
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
-
     @DisplayName("/api/comment")
     @Nested
     class Comment_create {

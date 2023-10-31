@@ -51,9 +51,9 @@ class MemberCompetitionRepositoryTest {
 
         MemberCompetition memberCompetition = MemberCompetition.builder()
                 .member(Member.builder()
-                        .email("test@example.com")
+                        .email("test55@example.com")
                         .password("test1234!")
-                        .name("김무건")
+                        .name("김무건55")
                         .build())
                 .competition(competition)
                 .build();

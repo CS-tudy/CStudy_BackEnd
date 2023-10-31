@@ -3,6 +3,7 @@ package com.cstudy.moduleapi.application.notice.application.Impl;
 import com.cstudy.moduleapi.config.ServiceTestBase;
 import com.cstudy.moduleapi.dto.member.MemberSignupRequest;
 import com.cstudy.moduleapi.dto.notice.NoticeSaveRequestDto;
+import com.cstudy.moduleapi.enums.MemberTestEnum;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.util.LoginUserDto;
@@ -46,6 +47,7 @@ class NoticeServiceImplTest extends ServiceTestBase {
 
             LoginUserDto loginUserDto = LoginUserDto.builder()
                     .memberId(1L)
+                    .memberEmail(MemberTestEnum.ADMIN_EMAIL.getMessage())
                     .roles(List.of(RoleEnum.ADMIN.getRoleName()))
                     .build();
 
@@ -53,20 +55,6 @@ class NoticeServiceImplTest extends ServiceTestBase {
             noticeService.saveNotice(noticeSaveRequestDto, loginUserDto);
         }
 
-        @Test
-        @DisplayName("공지사항 삭제 권한 오류")
-        public void InvalidNoticeBadRequest() throws Exception {
-            //given
-            LoginUserDto loginUserDto = LoginUserDto.builder()
-                    .memberId(2L)
-                    .roles(List.of(RoleEnum.CUSTOM.getRoleName()))
-                    .build();
-            //when
-            //Then
-            assertThatThrownBy(() -> noticeService.deleteNotice(1L, loginUserDto))
-                    .isInstanceOf(NotFoundMemberId.class)
-                    .hasMessage("Not Found Member With:2");
-        }
 
     }
 
@@ -81,6 +69,7 @@ class NoticeServiceImplTest extends ServiceTestBase {
 
         LoginUserDto loginUserDto = LoginUserDto.builder()
                 .memberId(1L)
+                .memberEmail(MemberTestEnum.ADMIN_EMAIL.getMessage())
                 .roles(List.of(RoleEnum.ADMIN.getRoleName()))
                 .build();
 

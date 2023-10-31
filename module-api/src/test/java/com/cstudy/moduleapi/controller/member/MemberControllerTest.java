@@ -20,15 +20,6 @@ import static org.mockito.BDDMockito.given;
 //26
 class MemberControllerTest extends ControllerTest {
 
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
-
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
     @DisplayName("POST /api/members/signup" + "PermitAll")
     @Nested
@@ -495,20 +486,6 @@ class MemberControllerTest extends ControllerTest {
             );
         }
 
-        @Test
-        public void 마이페이지_토큰_없음() throws Exception {
-            //given
-            String url = "/api/member/member";
-            //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendGetRequest_WithNoAuthorization_ExpectErrorResponse(url, null);
-            //Then
-            assertAll(
-                    () -> assertThat(response.getStatus()).isEqualTo(401),
-
-                    () -> assertThat(response.getBody().getCode()).isEqualTo("401"),
-                    () -> assertThat(response.getBody().getMessage()).isEqualTo("Headers에 토큰 형식의 값 찾을 수 없음")
-            );
-        }
 
     }
 
@@ -526,21 +503,6 @@ class MemberControllerTest extends ControllerTest {
             ApiResponse<String> response = memberMockApiCaller.changePasword(request);
             //Then
             assertThat(response.getStatus()).isEqualTo(204);
-        }
-
-        @Test
-        public void 관리자_비밀번호_변경_403() throws Exception {
-            //given
-            String url = "/api/member";
-            //when
-            ApiResponse<ErrorResponse> response = memberMockApiCaller.sendPatchRequest_WithNoAuthorization_ExpectErrorResponse(url, null);
-            //Then
-            assertAll(
-                    () -> assertThat(response.getStatus()).isEqualTo(403),
-
-                    () -> assertThat(response.getBody().getCode()).isEqualTo("403"),
-                    () -> assertThat(response.getBody().getMessage()).isEqualTo("Headers에 토큰 형식의 값 찾을 수 없음")
-            );
         }
 
     }

@@ -18,15 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class ReviewNoteControllerTest extends ControllerTest {
-    @BeforeEach
-    void setUp() throws Exception {
-        super.setup();
-    }
 
-    @AfterEach
-    void cleanUp() {
-        super.cleanup();
-    }
 
     @DisplayName("/api/review 오답노트 조회")
     @Nested

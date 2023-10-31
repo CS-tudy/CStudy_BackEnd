@@ -95,7 +95,7 @@ class QuestionControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/question")
+                        MockMvcRequestBuilders.post("/api/questions")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                                 .content(objectMapper.writeValueAsBytes(createQuestionAndCategoryRequestDto))
@@ -158,7 +158,7 @@ class QuestionControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/question")
+                        MockMvcRequestBuilders.post("/api/questions")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsBytes(createQuestionAndCategoryRequestDto))
                 )
@@ -224,7 +224,7 @@ class QuestionControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/questions")
+                        MockMvcRequestBuilders.post("/api/questions/bulk")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                                 .content(objectMapper.writeValueAsBytes(bulkList))
@@ -326,7 +326,7 @@ class QuestionControllerTest extends ControllerTestBase {
         given(questionService.findQuestionWithChoiceAndCategory(eq(questionId))).willReturn(questionResponseDto);
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/question/{questionId}", questionId)
+                        MockMvcRequestBuilders.get("/api/questions/{questionId}", questionId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                 )
@@ -369,7 +369,7 @@ class QuestionControllerTest extends ControllerTestBase {
         given(questionService.findQuestionWithChoiceAndCategory(eq(questionId))).willReturn(questionResponseDto);
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/question/{questionId}", questionId)
+                        MockMvcRequestBuilders.get("/api/questions/{questionId}", questionId)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -396,7 +396,7 @@ class QuestionControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/question/{questionId}", questionId)
+                        MockMvcRequestBuilders.post("/api/questions/{questionId}/answer", questionId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                                 .content(objectMapper.writeValueAsBytes(choiceAnswerRequestDto))
@@ -498,7 +498,7 @@ class QuestionControllerTest extends ControllerTestBase {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/questions/myquestion")
+                        MockMvcRequestBuilders.get("/api/questions/my-questions")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token)
                                 .content("")
