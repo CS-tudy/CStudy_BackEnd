@@ -35,4 +35,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByIdForUpdateOptimistic(@Param("memberId") Long memberId);
 
     Optional<Member> findByName(String value);
+
+    @Query("select m from Member m join fetch m.file where m.id =:memberId")
+    Optional<Member> findByMemberFetchFile(@Param("memberId") Long memberId);
 }
