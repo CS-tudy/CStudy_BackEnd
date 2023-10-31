@@ -481,7 +481,7 @@ class MemberControllerTest extends ControllerTest {
         public void 마이페이지_성공() throws Exception {
             //given
 
-            given(memberService.getMyPage(anyLong()))
+            given(memberService.getMyPage(any(LoginUserDto.class)))
                     .willReturn(MyPageResponseDto.builder()
                             .id(1L)
                             .email(MemberTestEnum.CUSTOM_EMAIL.getMessage())
