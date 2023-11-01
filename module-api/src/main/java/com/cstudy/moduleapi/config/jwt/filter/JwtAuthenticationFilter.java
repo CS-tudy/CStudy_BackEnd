@@ -27,6 +27,8 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final MemberRepository memberRepository;
+    private final JwtTokenizer jwtTokenizer;
 
     @Override
     protected void doFilterInternal(
