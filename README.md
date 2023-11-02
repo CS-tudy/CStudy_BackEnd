@@ -246,7 +246,8 @@ https://documenter.getpostman.com/view/23650109/2s9YJgSKui
 
 <summary> 본문 확인 (👈 Click) </summary>
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/75d1bec3-8b44-452c-a953-30c139facace)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/bc51a370-c36c-41b9-abcd-76d97462be4f)
+
 
 
 1. Jenkins -> Git Action 배포 자동화 변경
