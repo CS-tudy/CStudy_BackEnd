@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class WorkbookQuestionRequestDto {
 
     private Long workbookId;
+
     private List<QuestionIdRequestDto> questionIds;
 
 }

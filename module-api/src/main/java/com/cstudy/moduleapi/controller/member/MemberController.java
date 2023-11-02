@@ -127,7 +127,7 @@ public class MemberController {
     }
 
     @Operation(summary = "비밀번호 수정", description = "비밀번호 수정 / ROLE_CUSTOM', 'ROLE_ADMIN")
-    @PatchMapping
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public void changePassword(@Parameter(name = "memberPasswordChangeRequest", description = "회원 이전 비밀번호, 새로운 비밀번호")

@@ -69,7 +69,6 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
         Long loginMemberId = loginUserDto.getMemberId();
 
         alarmService.send(AlarmType.JOIN_COMPETITION, new AlarmArgs(loginMemberId, ADMIN_ID, competition.getCompetitionTitle()), ADMIN_ID);
-        alarmService.send(AlarmType.JOIN_COMPETITION, new AlarmArgs(loginMemberId, loginMemberId, competition.getCompetitionTitle()), loginMemberId);
     }
 
     @Override

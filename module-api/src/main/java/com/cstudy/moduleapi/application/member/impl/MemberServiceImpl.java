@@ -12,7 +12,10 @@ import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
-import com.cstudy.modulecommon.error.member.*;
+import com.cstudy.modulecommon.error.member.EmailDuplication;
+import com.cstudy.modulecommon.error.member.InvalidMatchPasswordException;
+import com.cstudy.modulecommon.error.member.NameDuplication;
+import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.repository.alarm.AlarmRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.role.RoleRepository;
@@ -83,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
      * 1. 유저를 생성한다.
      * 2. 유저에 대한 권한을 생성한다.
      * 3.  MongoDB의 ReviewUser를 생성한다.
-     * <p>
+     *
      * 다음과 같은 체크를 한다.
      * 1. 이메일에 대한 중복을 체크한다.
      * 2. 이메일에 대한 로직을 체크한다.
@@ -140,12 +143,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberLoginResponse login(MemberLoginRequest request) {
         Member member = memberLoadComponent.loadMemberByEmail(request.getEmail());
-        memberCacheRepository.setMember(member);
 
         Optional.of(request.getPassword())
                 .filter(password -> passwordEncoder.matches(password, member.getPassword()))
                 .orElseThrow(() -> new InvalidMatchPasswordException(request.getPassword()));
 
+        memberCacheRepository.setMember(member);
         return createToken(member);
     }
 
@@ -165,11 +168,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void changePassword(MemberPasswordChangeRequest request, LoginUserDto loginUserDto) {
-        Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
+        Member member = memberRepository.findById(loginUserDto.getMemberId())
+                .orElseThrow(()-> new NotFoundMemberId(loginUserDto.getMemberId()));
         if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
             throw new InvalidMatchPasswordException(request.getOldPassword());
         }
         member.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        memberCacheRepository.deleteMember(member);
     }
 
     //todo : 반환 타입을 Future로 설정 / 학습
