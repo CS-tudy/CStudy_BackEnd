@@ -233,7 +233,7 @@
 <summary> 본문 확인 (👈 Click) </summary>
 
 
-https://documenter.getpostman.com/view/23650109/2s9YJgSKui
+[https://documenter.getpostman.com/view/23650109/2s9YRGxp2L](https://documenter.getpostman.com/view/23650109/2s9YRGxp2L)
 
 
 </details>
