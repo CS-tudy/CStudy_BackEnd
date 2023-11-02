@@ -22,8 +22,12 @@ public class MemberCacheRepository {
 
     public void setMember(Member member) {
         String key = getKey(member.getEmail());
-        log.info("Set Member to Redis : {},{}", key, member);
-        redisTemplate.opsForValue().set(key, member, Member_Cache_TTL);
+        Member existingMember = redisTemplate.opsForValue().get(key);
+
+        if (existingMember == null || !existingMember.getPassword().equals(member.getPassword())) {
+            log.info("Set Member to Redis: {}, {}", key, member);
+            redisTemplate.opsForValue().set(key, member, Member_Cache_TTL);
+        }
     }
 
     public Optional<Member> getMember(String memberEmail) {
@@ -35,6 +39,13 @@ public class MemberCacheRepository {
 
     private String getKey(String memberEmail) {
         return "Member:" + memberEmail;
+    }
+
+    public void deleteMember(Member member) {
+        String memberEmail = member.getEmail();
+        String key = getKey(memberEmail);
+        Boolean isDeleted = redisTemplate.delete(key);
+        log.info("Delete Redis Key: {}, Deleted: {}", key, isDeleted);
     }
 
 

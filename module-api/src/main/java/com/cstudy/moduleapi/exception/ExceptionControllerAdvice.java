@@ -229,18 +229,18 @@ public class ExceptionControllerAdvice {
     }
 
 
-    @ExceptionHandler(HttpMessageConversionException.class)
-    protected ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
-        ErrorResponse body = ErrorResponse.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.name())
-                .message(e.getMessage())
-                .build();
-
-        body.addValidation("json의 형식이 잘못됨", "body json의 형식을 확인을 해주세요");
-        log.error("AlarmAbstractException : {} , StatusCode : {}", e, body.getCode());
-        return ResponseEntity.status(HttpStatus.valueOf(e.getMessage()))
-                .body(body).getBody();
-    }
+//    @ExceptionHandler(HttpMessageConversionException.class)
+//    protected ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
+//        ErrorResponse body = ErrorResponse.builder()
+//                .code(HttpStatus.INTERNAL_SERVER_ERROR.name())
+//                .message(e.getMessage())
+//                .build();
+//
+//        body.addValidation("json의 형식이 잘못됨", "body json의 형식을 확인을 해주세요");
+//        log.error("AlarmAbstractException : {} , StatusCode : {}", e, body.getCode());
+//        return ResponseEntity.status(HttpStatus.valueOf(e.getMessage()))
+//                .body(body).getBody();
+//    }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
