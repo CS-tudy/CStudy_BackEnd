@@ -1,7 +1,4 @@
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/76d5726a-c2de-4cba-9ff3-cacfd347f526)# 📖 취업 CS 걱정하지마, CS;tudy
-
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/5e369ecb-e275-474a-8453-3fcd8b12286d)
-
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/76d5726a-c2de-4cba-9ff3-cacfd347f526)
 
 ## ✨ 프로젝트 소개
 
