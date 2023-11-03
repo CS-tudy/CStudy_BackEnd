@@ -50,6 +50,9 @@ jobs:
 
           spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }}
 
+          discord.bot.token: ${{ secrets.DISCORD_BOT }}
+
+
           jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
           jwt.refreshKey: ${{ secrets.JWT_REFRESH_KEY }}
 
