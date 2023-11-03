@@ -59,6 +59,8 @@ jobs:
           cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
 
+          sentry.dns: ${{ sentry.dns }}
+
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
