@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/CStudy
+    destination: /home/ubuntu/CStudy_BackEnd
     overwrite: yes
 
 permissions:

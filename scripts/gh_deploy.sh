@@ -1,6 +1,6 @@
 #!/bin/bash
-PROJECT_NAME="CStudy"
-JAR_PATH="/home/ubuntu/CStudy/module-api/build/libs/*.jar"
+PROJECT_NAME="CStudy_BackEnd"
+JAR_PATH="/home/ubuntu/CStudy_BackEnd/module-api/build/libs/*.jar"
 DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
 DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
