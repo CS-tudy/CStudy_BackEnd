@@ -63,13 +63,16 @@
 <img src="https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=Postman&logoColor=white"/>
 <img src="https://img.shields.io/badge/sentry-362D59.svg?style=for-the-badge&logo=sentry&logoColor=white"/>
 
-</p><br>
+</p>
+
+<br>
 
 
 ## 🎨 ERD Diagram
 
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/d4cf09ff-9a03-4eee-b02c-eacd4cfd84fa)
 
+<br>
 
 
 ## 🐧Test Code
@@ -87,6 +90,32 @@
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/cb0a17d2-31b3-43d6-bec1-27a5e71465c4)
 
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/be95e586-3c28-4974-87b6-c389bf100795)
+
+<br>
+
+
+## 📋 API 문서
+
+[https://documenter.getpostman.com/view/23650109/2s9YRGxp2L](https://documenter.getpostman.com/view/23650109/2s9YRGxp2L)
+
+<br>
+
+
+## 🏛️ CI/CD 아키텍처 (배포 자동화)
+
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/9d287ab0-95e0-4ed4-89da-6ae0eca05cf7)
+
+
+1. Jenkins -> Git Action 배포 자동화 변경
+   - 코드의 변경이 생기면 배포의 어려움을 해결하기 위해 배포 자동화 도입
+   - 처음에 스터디를 통해서 배운 Jenkins를 활용
+   - 다른 Sass 서비스에 비해서 수동으로 설치하며 Jenkins workspace가 필요하여 변경의 필요성 인지
+   - Git Action, AWS Code Deploy을 사용하여 배포 자동화 변경
+   - [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
+
+2. FE 팀원에게 배포 자동화 방식보다 Docker-compose 방식을 설명
+   - FE의 테스트를 위해서 배포 자동화를 통해서 설명하는 것 보다 가장 쉬운 Docker-compose를 통한 Elastic IP 배포를 전달
+   - [정리 블로그](https://velog.io/@geon_km/AWS-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC-Feat.-docker-compose)
 
 
 
@@ -211,54 +240,8 @@
 
 ## 🥃 Wireframe
 
-<details>
-
-<summary> 본문 확인 (👈 Click) </summary>
-
 [📝 Figma 바로가기 ](https://www.figma.com/file/67asFaSpQCu4s2CKAJqxac/Untitled?type=design&node-id=0-1&mode=design&t=DdRtY5ictOvnNkSn-0)
 
 ![image](https://github.com/CStudyTeam/CStudy-backend/assets/103854287/cf4eae6b-43b5-409d-9125-178e33b89473)
-
-</details>
-
-
-## 📋 API 문서
-
-
-<details>
-
-<summary> 본문 확인 (👈 Click) </summary>
-
-
-[https://documenter.getpostman.com/view/23650109/2s9YRGxp2L](https://documenter.getpostman.com/view/23650109/2s9YRGxp2L)
-
-
-</details>
-
-
-## 🏛️ CI/CD 아키텍처 (배포 자동화)
-
-
-<details>
-
-<summary> 본문 확인 (👈 Click) </summary>
-
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/bc51a370-c36c-41b9-abcd-76d97462be4f)
-
-
-
-1. Jenkins -> Git Action 배포 자동화 변경
-   - 코드의 변경이 생기면 배포의 어려움을 해결하기 위해 배포 자동화 도입
-   - 처음에 스터디를 통해서 배운 Jenkins를 활용
-   - 다른 Sass 서비스에 비해서 수동으로 설치하며 Jenkins workspace가 필요하여 변경의 필요성 인지
-   - Git Action, AWS Code Deploy을 사용하여 배포 자동화 변경
-   - [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
-
-2. FE 팀원에게 배포 자동화 방식보다 Docker-compose 방식을 설명
-   - FE의 테스트를 위해서 배포 자동화를 통해서 설명하는 것 보다 가장 쉬운 Docker-compose를 통한 Elastic IP 배포를 전달
-   - [정리 블로그](https://velog.io/@geon_km/AWS-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC-Feat.-docker-compose)
-
-</details>
-
 
 
