@@ -1,7 +1,5 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/76d5726a-c2de-4cba-9ff3-cacfd347f526)
-
 ## ✨ 프로젝트 소개
 
 - 취업에 있어 필요한 CS 지식을 학습할 수 있는 웹 어플리케이션 플랫폼 입니다. 카테고리 별 문제를 통해 필요한 지식을 빠르게 학습할 수 있으며 틀린 문제를 모아서 부족한 부분을 빠르게 인지할 수 있습니다.  또한 경쟁을 통하여 지루한 CS 학습에 재미를 부여하며 선의의 경쟁을 통해 동료와 함께 성장이 가능합니다.
@@ -120,74 +118,6 @@
 
 
 <br>
-
-## 🐌Git Commit Convention
-<details>
-
-<summary> 본문 확인 (👈 Click) </summary>
-
-
-<table>
-  <tr>
-    <td>
-         ✨feat
-    </td>
-     <td>
-        새로운 기능과 관련된 것을 의미
-    </td>
-  </tr>
-  <tr>
-    <td>
-         🐛fix
-    </td>
-     <td>
-        오류와 같은 것을 수정을 하였을 때 사용
-    </td>
-  </tr>
-   <tr>
-    <td>
-         ✅test
-    </td>
-     <td>
-        테스트를 추가하거나 수정
-    </td>
-  </tr>
-  <tr>
-    <td>
-         📝docs
-    </td>
-     <td>
-        문서와 관련하여 수정한 부분이 있을 때 사용
-    </td>
-  </tr>
-    <tr>
-    <td>
-         🔥move
-    </td>
-     <td>
-        파일, 코드의 이동
-    </td>
-  </tr>
-    <tr>
-    <td>
-         💚build
-    </td>
-     <td>
-         빌드 관련 파일을 수정
-    </td>
-  </tr>
-    <tr>
-    <td>
-         ♻️refactor
-    </td>
-     <td>
-       코드의 리팩토링을 의미
-    </td>
-  </tr>
-</table>
-
-</details>
-
 
 
 
