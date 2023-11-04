@@ -1,4 +1,4 @@
-# 📖 취업 CS 걱정하지마, CS;tudy
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/1a337472-3079-4b9b-9262-4a5b68912a2e)# 📖 취업 CS 걱정하지마, CS;tudy
 
 ## ✨ 프로젝트 소개
 
@@ -110,18 +110,27 @@
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/9d287ab0-95e0-4ed4-89da-6ae0eca05cf7)
 
 
-1. Jenkins -> Git Action 배포 자동화 변경
-   - 코드의 변경이 생기면 배포의 어려움을 해결하기 위해 배포 자동화 도입
-   - 처음에 스터디를 통해서 배운 Jenkins를 활용
-   - 다른 Sass 서비스에 비해서 수동으로 설치하며 Jenkins workspace가 필요하여 변경의 필요성 인지
-   - Git Action, AWS Code Deploy을 사용하여 배포 자동화 변경
-   - [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
+### 현재 배포를 선택한 이유
 
-2. FE 팀원에게 배포 자동화 방식보다 Docker-compose 방식을 설명
-   - FE의 테스트를 위해서 배포 자동화를 통해서 설명하는 것 보다 가장 쉬운 Docker-compose를 통한 Elastic IP 배포를 전달
-   - [정리 블로그](https://velog.io/@geon_km/AWS-EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%A0%EC%A0%95-IP%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%B0%B0%ED%8F%AC-Feat.-docker-compose)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/95de9fda-bd5a-4989-b76a-5c694ce95d33)
 
 
+1. 기존에 Jenkins를 통하여 배포 자동화
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/498a3c20-3c9b-46a0-8d83-0cacdd350479)
+- 처음 배포를 선택한 `파이프라인`입니다. 이때 Jenkins를 선택한 이유는 스터디를 통하여 Jenkins를 학습한 경험이 있어 다른 2개의 기술보다 러닝커브가 낮다고 생각하여 적용을 하였습니다.
+- Jenkins를 통하여 배포의 문제점은 트래픽이 증가를 하였을 때 Auto Scailing을 처리하기 위해 추가적인 작업이 필요하여 스프링 부트와 AWS로 혼자 구현하는 웹 서비스의 무중단 배포로 구조를 변경을 했습니다.
+
+  2. Github Action 배포 자동화 변경
+  [ 현재 문제 ]
+- SSE를 추가하면서 분산 환경에 대한 제약사항이 발생을 하였습니다.
+- 이러한 문제로 WAS를 1개만 사용하게 변경
+
+  [ 현재 적용 ]
+  - Git과 연동성이 좋은 Github Action을 통한 배포 자동화로 변경을 했습니다.
+  - 변경한 이유는 가장 간단하게 배포 자동화를 구성할 수 있었고, 제한된 Resource를 통하여 최대의 효율로 관리가 가능하다. ( Action만 사용하여 파이프라인 효율적 관리, 배포 성공시 알람이 나오는 ChatOps를 통해 서비스 오류에 빠르게 대응이 가능하다. )
+
+ [ 변경을 생각하는 부분 ] 
+ - 현재 SSE의 확장성을 생각하여 메세지(Kafka)를 적용하여 AWS 고가용성 아키텍처를 사용하여 배포를 고려하고 있습니다.
 
 <br>
 
