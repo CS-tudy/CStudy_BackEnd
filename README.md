@@ -98,6 +98,12 @@
 
 <br>
 
+## 📕CStudy의 여정의 기능을 소개할게요.
+
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/4b3a3265-9e7e-43c2-8bd9-da8732ebbf8b)
+
+
+<br>
 
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
