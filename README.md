@@ -112,8 +112,6 @@
 
 ### 현재 배포를 선택한 이유
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/95de9fda-bd5a-4989-b76a-5c694ce95d33)
-
 ### 1. 기존에 Jenkins를 통하여 배포 자동화
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/498a3c20-3c9b-46a0-8d83-0cacdd350479)
 
