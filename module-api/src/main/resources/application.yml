@@ -119,3 +119,6 @@ sentry:
   #  environment: production  # 원하는 환경으로 설정하세요
   logging:
     enabled: true
+
+front:
+  baseURL: ${FRONT_URL}
