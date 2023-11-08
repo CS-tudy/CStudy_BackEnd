@@ -76,6 +76,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         refreshToken.setMaxAge(604800); // 7 days
         response.addCookie(refreshToken);
 
+        log.info("OAuth 성공");
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
