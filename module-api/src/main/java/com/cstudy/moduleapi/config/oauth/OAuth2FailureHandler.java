@@ -32,7 +32,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
 
         log.warn("OAuth exception Cause :", exception.getCause());
 
-        String redirectUri = "http://localhost:3000/oauth2/fail";
+        String redirectUri = FRONT_BASE_URL+"oauth2/fail";
         response.sendRedirect(
                 redirectUri +
                         "?login_success=" + false);
