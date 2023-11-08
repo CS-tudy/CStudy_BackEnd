@@ -7,6 +7,7 @@ import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -25,6 +26,9 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    @Value("${front.baseURL}")
+    String FRONT_BASE_URL;
 
     private final MemberRepository memberRepository;
     private final JwtTokenizer jwtTokenizer;
@@ -62,7 +66,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 List.of(RoleEnum.CUSTOM.getRoleName())
         );
 
-        String redirectUri = "http://localhost:3000/oauth2/login";
+        String redirectUri = FRONT_BASE_URL+"/oauth2/login";
 
         Cookie accessToken = new Cookie("accessToken", access);
         accessToken.setHttpOnly(true);
