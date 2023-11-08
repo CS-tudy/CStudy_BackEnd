@@ -162,7 +162,7 @@ test
 
 ### 최적화
 
-- [실행 계획 분석을 통한 인덱스 추가 및 QueryDSL 페이징 쿼리 성능 튜닝 58.20% 개선](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EC%8B%A4%ED%96%89-%EA%B3%84%ED%9A%8D-%EB%B6%84%EC%84%9D%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%B6%94%EA%B0%80-%EB%B0%8F-QueryDSL-%ED%8E%98%EC%9D%B4%EC%A7%95-%EC%BF%BC%EB%A6%AC-%EC%84%B1%EB%8A%A5-%ED%8A%9C%EB%8B%9D-58.20%25-%EA%B0%9C%EC%84%A0)
+- [실행 계획 분석을 통한 인덱스 추가 및 QueryDSL 페이징 쿼리 성능 튜닝 58.20% 개선](https://velog.io/@geon_km/MySQL-Explain-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%B6%94%EA%B0%80-%EB%B0%8F-QueryDSL-%EC%BF%BC%EB%A6%AC-%ED%8A%9C%EB%8B%9D)
 - [문제 Bulk Insert 문제를 Recursion(재귀)에서 Batch Insert으로 10,000건 데이터 1440초에서 105초 성능 개선](https://github.com/CS-tudy/CStudy_BackEnd/wiki/%EB%AC%B8%EC%A0%9C-Bulk-Insert-%EB%AC%B8%EC%A0%9C%EB%A5%BC-Recursion(%EC%9E%AC%EA%B7%80)%EC%97%90%EC%84%9C-Batch-Insert%EC%9C%BC%EB%A1%9C-10,000%EA%B1%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-1440%EC%B4%88%EC%97%90%EC%84%9C-105%EC%B4%88)
 - [AWS S3 이미지 파일 Deflater 활용하여 압축을 통해서 JPG 기준 이미지 16.01% 크기 감소 ](https://github.com/CS-tudy/CStudy_BackEnd/wiki/AWS-S3-%EC%9D%B4%EB%AF%B8%EC%A7%80-%ED%8C%8C%EC%9D%BC-Deflater-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%95%95%EC%B6%95%EC%9D%84-%ED%86%B5%ED%95%B4%EC%84%9C-JPG-%EA%B8%B0%EC%A4%80-%EC%9D%B4%EB%AF%B8%EC%A7%80-16.01%25-%ED%81%AC%EA%B8%B0-%EA%B0%90%EC%86%8C)
 
