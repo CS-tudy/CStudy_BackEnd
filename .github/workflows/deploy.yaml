@@ -63,6 +63,7 @@ jobs:
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
 
           sentry.dsn: ${{ secrets.SENTRY_DSN }}
+          front.baseURL: ${{ secrets.FRONT_URL }}
 
 
       - name: Grant execute permission for gradlew
