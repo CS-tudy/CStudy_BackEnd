@@ -56,8 +56,8 @@ jobs:
           jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
           jwt.refreshKey: ${{ secrets.JWT_REFRESH_KEY }}
 
-          cloud.aws.credentials.accessKey: ${{ secrets.AWS_CREDENTIALS_ACCESS_KEY }}
-          cloud.aws.credentials.secretKey: ${{ secrets.AWS_CREDENTIALS_SECRET_KEY }}
+          cloud.aws.credentials.accessKey: ${{ secrets.FILE_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.FILE_SECRET_KEY }}
 
           cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}

@@ -106,8 +106,8 @@ discord:
 cloud:
   aws:
     credentials:
-      accessKey: ${CLOUD_ACCESS_KEY}
-      secretKey: ${CLOUD_SECRET_KEY}
+      accessKey: ${FILE_ACCESS_KEY}
+      secretKey: ${FILE_SECRET_KEY}
     s3:
       bucket: ${BUCKET}
     region:
