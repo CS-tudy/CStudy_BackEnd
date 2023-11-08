@@ -1,4 +1,3 @@
-#15.165.212.243
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -10,11 +9,9 @@ spring:
       max-request-size: 10MB
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: cstudy
+      uri: ${MONGO_URL}
   redis:
-    host: localhost
+    host: ${REDIS_HOST}
     port: 6379
   session:
     timeout: 600
@@ -24,9 +21,9 @@ spring:
       namespace: spring:session
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/CStudy?serverTimezone=Asia/Seoul
-    username: root
-    password: 1234
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWD}
     hikari:
       connectionTimeout: 30000
       maximumPoolSize: 20
@@ -44,8 +41,8 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: cstudy1234@naver.com
-    password: cstudy1234!
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWD}
     properties:
       mail:
         smtp:
@@ -58,18 +55,18 @@ spring:
       client:
         registration:
           google:
-            client-id: 319204520285-5qokq596i728ouqcoi05dhanof27g22a.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_SECRET}
             scope: profile,email
           naver:
-            client-id: 1f3HeZd31asH2DxQwkxw
-            client-secret: Q0lk7ddsJE
+            client-id: ${NAVER_CLIENT_ID}
+            client-secret: ${NAVER_SECRET}
             redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             authorization-grant-type: authorization_code
             scope: name,email,profile_image
             client-name: Naver
           kakao:
-            client-id: a3d6495c7a1eef1cd1850730e928e704
+            client-id: ${KAKAO_CLIENT_ID}
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
@@ -89,9 +86,6 @@ spring:
             user_name_attribute: id
 
 
-discord:
-  bot:
-    token: MTE2MDU3MjI0MDE5OTQzMDMxNw.G2GPAr.mj1PxJ-s2eXQchmfnL-MJuWy8I-hLUeyfXc_aU
 
 server:
   tomcat:
@@ -102,28 +96,24 @@ server:
   port: 8080
 
 jwt:
-  secretKey: "0123456789012345678901234567890123456789"
-  refreshKey: "0123456789012345678901234567890123456789"
+  secretKey: ${JWT_SECRET_KEY}
+  refreshKey: ${JWT_REFRESH_KEY}
+
+discord:
+  bot:
+    token: ${DISCORD_TOKEN}
 
 cloud:
   aws:
     credentials:
-      accessKey: "AKIATRTDCFACR5O3BIAI"
-      secretKey: "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"
+      accessKey: ${FILE_ACCESS_KEY}
+      secretKey: ${FILE_SECRET_KEY}
     s3:
-      bucket: cstudy
+      bucket: ${BUCKET}
     region:
-      static: ap-northeast-2
+      static: ${REGION}
     stack:
       auto: false
 
-
-sentry:
-  dsn: https://23e71df6587d0cf31153fc92ed773532@o4506121903865856.ingest.sentry.io/4506121904652288
-  #  environment: production  # 원하는 환경으로 설정하세요
-  logging:
-    enabled: true
-
-
 front:
-  baseURL: "TEST"
+  baseURL: ${baseURL}
