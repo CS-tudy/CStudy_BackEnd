@@ -86,6 +86,16 @@
 - 테스트 코드는 단순히 데이터의 정합성을 검증하는 로직이 아니라 내 코드를 읽는 상대방에게 설명하는 코드라고 생각합니다.
 - ``Controller``의 테스트는 Mock을 통하여 HTTP 요청, 검증에서 책임, 주요 관심사를 분리하여 ``요청,검증``을 분리를 하였습니다.
 
+
+```bash
+test 
+└── com.cstudy.moduleapi 
+    ├── apiCaller # 도메인별 HTTP 요청 
+    ├── controller # 도메일별 HTTP 검증
+    └── config     # application context를 재활용 하기 위하여 상속 
+```
+
+
 ### Service
  ``Service Layer Test``의 경우에 Test Double(Mocking)을 통하여 테스트를 진행을 하였을 때 Repository의 인터페이스가 변화를 하면 실패를 한다.
 - 단위 테스트에서 Mocking을 하면 연관 관계의 ``인터페이스와 강하게 의존``하여 리펙토링을 어렵기 때문에 Classic 방식을 통하여 테스트를 진행을 하였습니다.
@@ -115,19 +125,24 @@
 
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/9d287ab0-95e0-4ed4-89da-6ae0eca05cf7)
-
-
-### 현재 배포를 선택한 이유
-
 ### 1. 기존에 Jenkins를 통하여 배포 자동화
+
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/498a3c20-3c9b-46a0-8d83-0cacdd350479)
+
+블로그 : [Jenkins Pipeline을 이용한 CI/CD + SSHAgent](https://pos04167.tistory.com/195)
 
 - 처음 배포를 선택한 `파이프라인`입니다. 이때 Jenkins를 선택한 이유는 스터디를 통하여 Jenkins를 학습한 경험이 있어 다른 2개의 기술보다 러닝커브가 낮다고 생각하여 적용을 하였습니다.
 - Jenkins를 통하여 배포의 문제점은 트래픽이 증가를 하였을 때 Auto Scailing을 처리하기 위해 추가적인 작업이 필요하여 스프링 부트와 AWS로 혼자 구현하는 웹 서비스의 무중단 배포로 구조를 변경을 했습니다.
 
-### 2. Github Action 배포 자동화 변경
- 
+
+### 2. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화 변경)
+
+![img.png](image/GITACTION.png)
+
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/9d287ab0-95e0-4ed4-89da-6ae0eca05cf7)
+
+블로그 : [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d) 
+
 [ 현재 문제 ]
 - SSE를 추가하면서 분산 환경에 대한 제약사항이 발생을 하였습니다.
 - 이러한 문제로 WAS를 1개만 사용하게 변경
