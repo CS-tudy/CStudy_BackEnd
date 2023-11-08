@@ -8,7 +8,6 @@ import com.cstudy.moduleapi.config.redis.RedisPublisher;
 import com.cstudy.moduleapi.dto.request.CreateRequestRequestDto;
 import com.cstudy.moduleapi.dto.request.FlagRequestDto;
 import com.cstudy.moduleapi.dto.request.RequestResponseDto;
-import com.cstudy.modulecommon.domain.alarm.Alarm;
 import com.cstudy.modulecommon.domain.alarm.AlarmArgs;
 import com.cstudy.modulecommon.domain.alarm.AlarmType;
 import com.cstudy.modulecommon.domain.member.Member;
@@ -51,9 +50,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     /**
-     * Create requests for request problem.
-     *
-     * @param requestDto the request DTO containing the request information
+     * 일반 회원이 관리자에게 새로운 문제를 풀고 싶어서 요청을 보낸다.
+     * 이때 알림을 통해서 관리자에게 어떤 회원이 문제를 요청을 하였는지 알림을 보낸다.
      */
     @Override
     @Transactional
@@ -67,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
                 .member(member)
                 .build());
 
-        alarmService.send(AlarmType.NEW_REQUEST_USER, new AlarmArgs(loginUserDto.getMemberId(),ADMIN_ID, requestDto.getTitle()),ADMIN_ID);
+        alarmService.send(AlarmType.NEW_REQUEST_USER, new AlarmArgs(loginUserDto.getMemberId(), ADMIN_ID, requestDto.getTitle()), ADMIN_ID);
 
         member.addRequest(Request.builder()
                 .title(requestDto.getTitle())
@@ -89,9 +87,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     /**
-     * Get requests for request problem.
-     *
-     * @param id id of request entity.
+     * 단일 요청 게시글을 조회한다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -104,9 +100,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     /**
-     * Get request list.
-     *
-     * @param pageable page information
+     * 전체 페이징을 처리하는 부분으로 조건이 없이 페이징을 한다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -133,9 +127,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     /**
-     * Update flag for request problem. Only ADMIN can change flag
-     *
-     * @param flagDto id of request entity
+     * 관리자가 문제를 생성을 하였다면 기존의 상태를 대기-> 완료로 변경을 한다.
      */
     @Override
     @Transactional
@@ -145,6 +137,9 @@ public class RequestServiceImpl implements RequestService {
                 .updateFlag(flagDto.isFlag());
     }
 
+    /**
+     * 해당 게시글을 관리자, 작성자인지 판단하고 삭제한다.
+     */
     @Override
     @AuthCheck
     @Transactional
@@ -152,6 +147,9 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.deleteById(id);
     }
 
+    /**
+     * 해당 게시글을 관리자, 작성자인지 판단하고 업데이트 한다.
+     */
     @Override
     @AuthCheck
     @Transactional

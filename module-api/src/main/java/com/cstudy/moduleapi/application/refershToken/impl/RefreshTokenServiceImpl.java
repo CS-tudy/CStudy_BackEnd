@@ -35,9 +35,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     /**
-     *
-     * @param refreshTokenDto refresh Token의 정보
-     * @return MemberLoginResponse 재할당 access Token, refresh Token, member의 정보를 보여준다.
+     *  REFRESH TOKEN이 있으면 ACCESS TOKEN을 재할당을 한다.
      */
     @Override
     public MemberLoginResponse AccessTokenWithRefreshToken(RefreshTokenDto refreshTokenDto) {

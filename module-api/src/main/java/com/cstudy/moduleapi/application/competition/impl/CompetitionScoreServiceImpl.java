@@ -33,10 +33,7 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
 
 
     /**
-     * 대회에서 제출한 답안을 채점.
-     *
-     * @param requestDto 제출한 답안 dto.
-     * @param userDto user information.
+     *  일반 회원 대회에서 제출한 답안을 채점한다.
      */
     @Override
     @Transactional

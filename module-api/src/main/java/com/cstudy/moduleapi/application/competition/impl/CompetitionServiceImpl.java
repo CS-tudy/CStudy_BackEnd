@@ -54,6 +54,12 @@ public class CompetitionServiceImpl implements CompetitionService {
         this.memberRepository = memberRepository;
     }
 
+    /**
+     *  경기를 생성을 한다.
+     *  시간에 따라서 생성의 조건을 처리한다.
+     *  이후 문제집을 만들어서 경기에 사용하는 문제를 추가한다.
+     *  이때 경기에서 시작과 끝나는 TIME을 지정한다.
+     */
     @Override
     @Transactional
     public Long createCompetition(CreateCompetitionRequestDto createCompetitionRequestDto) {
@@ -90,9 +96,9 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     /**
-     * 대회 정보.
-     *
-     * @param competitionId competition id
+     * 경기 ID를 기반으로 대회의 정보를 조회한다.
+     * PATH를 통해서 경기의 아이디를 받는다. 이때 고민이 되는 부분이 ID를 처리를 해도 되는지 고민이다.
+     * 이 부분에 대해서 UUID를 처리를 고려해보자.
      */
     @Override
     @Transactional(readOnly = true)
@@ -107,11 +113,10 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     /**
-     * 대회 리스트.
-     *
-     * @param finish   끝난 대회이면 true, 진행 전 대회이면 false
-     * @param pageable pageable
-     * @param now      현재 시간
+     * 대회 리스트 조회
+     * 끝난 대회이면 TRUE를 반환하고 진행 전 대회이면 FALSE를 반환한다.
+     * 이때 PAGEABLE 방식으로 페이징 처리를 한다.
+     * TIME을 파라미터로 넣어서 테스트의 정합성을 보장하게 변경을 하였다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -129,9 +134,6 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     /**
      * 대회 랭킹.
-     *
-     * @param competitionId competition id
-     * @param pageable      pageable
      */
     @Override
     @Transactional(readOnly = true)
@@ -143,6 +145,9 @@ public class CompetitionServiceImpl implements CompetitionService {
                 .map(CompetitionRankingResponseDto::of);
     }
 
+    /**
+     *  회원의 경기 문제를 조회한다.
+     */
     @Override
     public List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) {
 
@@ -155,6 +160,12 @@ public class CompetitionServiceImpl implements CompetitionService {
         return questionRepository.findQuestionWithCompetitionById(competitionId);
     }
 
+    /**
+     * 경기에 대한 문제를 추가할 수 있다.
+     * 이때 문제를 추가하여 경기의 문제를 선정할 수 있다.
+     * 이때 관리자만 이 로직을 사용할 수 있다.
+     * Controller에서 처리
+     */
     @Override
     @Transactional
     public void addCompetitionQuestion(CompetitionQuestionRequestDto requestDto) {
@@ -168,6 +179,12 @@ public class CompetitionServiceImpl implements CompetitionService {
         workbookService.addQuestion(questionDto);
     }
 
+    /**
+     *  경기의 문제를 삭제한다.
+     *     private Long competitionId;
+     *     private List<QuestionIdRequestDto> questionIds;
+     *     경기의 아이디와 LIST의 문제 아이디를 통하여 여러개의 문제를 삭제한다.
+     */
     @Override
     @Transactional
     public void deleteCompetitionQuestion(CompetitionQuestionRequestDto requestDto) {
@@ -181,6 +198,9 @@ public class CompetitionServiceImpl implements CompetitionService {
         workbookService.deleteQuestion(questionDto);
     }
 
+    /**
+     *  경기 아이디를 받아서 시간을 조회한다.
+     */
     @Override
     @Transactional
     public void checkCompetitionTime(Long competitionId) {

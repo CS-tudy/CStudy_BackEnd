@@ -42,6 +42,13 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
         this.alarmService = alarmService;
     }
 
+    /**
+     * 경기를 참가한다.
+     * 일단 대회를 참가하면 MEMBER_COMPETITION에 추가를 한다.
+     * 대회의 참가 가능한 인원의 수를 줄인다.
+     *
+     * 많은 사용자가 동시에 요청을 했을 때 동시성을 막기 위해서 낙관적 락을 선택을 하였다.
+     */
     @Override
     @Transactional
     public void joinCompetition(LoginUserDto loginUserDto, Long competitionId) {
@@ -51,7 +58,6 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
         Optional.of(loginUserDto)
                 .filter(dto -> dto.getMemberId() != 1L)
                 .ifPresent(dto -> preventionDuplicateParticipation(dto, competitionId));
-
 
         Member member = memberRepository.findByIdForUpdateOptimistic(loginUserDto.getMemberId())
                 .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
@@ -71,6 +77,9 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
         alarmService.send(AlarmType.JOIN_COMPETITION, new AlarmArgs(loginMemberId, ADMIN_ID, competition.getCompetitionTitle()), ADMIN_ID);
     }
 
+    /**
+     *  경기의 ID를 받아서 참가 가능한 인원을 조회하낟.
+     */
     @Override
     @Transactional
     public int getJoinMemberCount(Long competitionId) {
@@ -79,6 +88,10 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
         return memberCompetitions.size();
     }
 
+    /**
+     *  경기마다 랭킹이 존재한다.
+     *  이때 회원의 아이디와 경기의 ID를 기반으로 해당 회원의 랭킹을 조회할 수 있다.
+     */
     @Override
     @Transactional
     public MyCompetitionRankingDto myRanking(Long memberId, Long competitionId) {

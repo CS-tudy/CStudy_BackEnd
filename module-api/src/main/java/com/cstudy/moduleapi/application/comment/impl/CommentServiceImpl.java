@@ -39,8 +39,6 @@ public class CommentServiceImpl implements CommentService {
      * 계층형 댓글을 생성한다.
      * 처음에 부모 댓글은 parentId가 없다.
      * 이후 부모 댓글에 대댓글을 작성하고 싶으면 parentId를 추가해서 작성한다.
-     * @param dto
-     * @param loginUserDto
      */
     @Override
     @Transactional
@@ -63,8 +61,17 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * 해당 공지사항에 대한 아이디에 대한 댓글을 조회를 한다.
-     * @param noticeId 공지사항 아이디
-     * @return
+     *     private Long id;
+     *     private String content;
+     *     private Long memberId;
+     *     private String author;
+     *     private Long parentCommentId;
+     *     private List<NoticeCommentResponse> childComments = new ArrayList<>();
+     *
+     *     해당 구조에서 NoticeCommentResponse의 List에 child comments를 같이 보여주어서 한번에 조회가 가능하다.
+     *
+     *     이때 무한 댓글이기 때문에 고민을 해야되는 부분은 더보기를 눌렀을 때 그때 모든 댓글을 보여주어야 하는지
+     *     아니면 처음에 상위 댓글을 보여주면서 같이 조회를 해야되는지 한번 고민을 해야되는 부분인거 같다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -102,7 +109,8 @@ public class CommentServiceImpl implements CommentService {
     /**
      * 해당 공지사항의 댓글을 삭제를 합니다.
      * 댓글 부모 아이디를 판단하고 만약에 있으면 자식 댓글도 삭제를 합니다.
-     * @param commentId 댓글 아이디
+     *
+     * 댓글을 관리하는 부분은 사이트마다 차이가 있었다. 가장 좋은 방식에 대해서 생각이 필요하다.
      */
     @Override
     @Transactional

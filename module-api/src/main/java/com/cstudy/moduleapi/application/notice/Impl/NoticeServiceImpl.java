@@ -23,6 +23,8 @@ import java.util.Optional;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
+    private static final Long ADMIN_ID = 1L;
+
     private final NoticeRepository noticeRepository;
     private final MemberLoadComponent memberLoadComponent;
 
@@ -31,6 +33,10 @@ public class NoticeServiceImpl implements NoticeService {
         this.memberLoadComponent = memberLoadComponent;
     }
 
+    /**
+     *  공지사항을 생성을 한다.
+     *  관리자만 생성할 수 있다.
+     */
     @Override
     @Transactional
     public void saveNotice(NoticeSaveRequestDto noticeSaveRequestDto, LoginUserDto loginUserDto) {
@@ -41,6 +47,9 @@ public class NoticeServiceImpl implements NoticeService {
                 .build());
     }
 
+    /**
+     * 공지사항의 아이디를 기반으로 업데이트를 한다.
+     */
     @Override
     @Transactional
     public void updateNotice(Long noticeId, NoticeUpdateRequestDto noticeUpdateRequestDto, LoginUserDto loginUserDto) {
@@ -48,20 +57,27 @@ public class NoticeServiceImpl implements NoticeService {
                 .orElseThrow(()->new NotFoundNoticeId(noticeId)).updateNotice(noticeUpdateRequestDto);
     }
 
+    /**
+     * 공지사항을 삭제한다.
+     * 이때 공지사항을 삭제하는 권한은 관리자만 제거가 가능하다.
+     */
     @Override
     @Transactional
     public void deleteNotice(Long noticeId, LoginUserDto loginUserDto) {
-        Long adminId = 1L;
-
         Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
 
         Optional.of(member.getId())
-                .filter(id -> id.equals(adminId))
-                .orElseThrow(() -> new NotMatchAdminIpException(adminId));
+                .filter(id -> id.equals(ADMIN_ID))
+                .orElseThrow(() -> new NotMatchAdminIpException(ADMIN_ID));
 
         noticeRepository.deleteById(noticeId);
     }
 
+    /**
+     *  처음 공지사항을 조회하는 페이징 처리
+     *  PAGE, SIZE, REQUEST를 통해서 페이징을 처리를 할 수 있다.
+     *   제목, 내용, 생성일을 통해서 조회를 할 수 있다.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<NoticeResponseDto> findNoticePage(int page, int size, NoticeSearchRequestDto requestDto) {
@@ -69,6 +85,9 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeRepository.findNoticePage(pageRequest, requestDto);
     }
 
+    /**
+     * 공지사항 페이징에서 세부 공지사항의 정보를 조회한다.
+     */
     @Override
     @Transactional(readOnly = true)
     public NoticeResponseDto findNoticeWithId(Long noticeId) {

@@ -57,13 +57,10 @@ public class WorkbookServiceImpl implements WorkbookService {
     }
 
     /**
-     * Get Workbook list.
+     * 문제집 전체 조회 페이지의 페이징을 담당
+     * PAGE, SIZE를 통해서 수를 조정하고 SEARCH를 통해서 페이징을 한다.
      *
-     * @param pageable    page information
-     * @param title       search workbook containing title
-     * @param description search workbook containing description
      */
-
     @Override
     public Page<WorkbookResponseDto> getWorkbookList(int page, int size, WorkbookSearchRequestDto requestDto) {
         Pageable pageable = PageRequest.of(page, size);
@@ -71,8 +68,7 @@ public class WorkbookServiceImpl implements WorkbookService {
     }
 
     /**
-     * 문제집 전체 List와 List에 따른 이미지 Path
-     * @return WorkbookIdWithImagePath -> workbookId, imagePath (List)
+     * 문제집의 이미지의 정보를 list를 통해서 보낸다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -91,9 +87,7 @@ public class WorkbookServiceImpl implements WorkbookService {
 
 
     /**
-     * Get Workbook.
-     *
-     * @param id workbook id
+     * 문제집의 페이징을 처리한다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -102,12 +96,6 @@ public class WorkbookServiceImpl implements WorkbookService {
                 .orElseThrow(() -> new NotFoundWorkbook(id)));
     }
 
-    /**
-     * Get question list in workbook.
-     *
-     * @param pageable page information
-     * @param id       workbook id
-     */
     @Override
     @Transactional
     public Page<WorkbookQuestionResponseDto> getQuestions(Long id, Pageable pageable) {
@@ -115,9 +103,8 @@ public class WorkbookServiceImpl implements WorkbookService {
     }
 
     /**
-     * Create Workbook.
-     *
-     * @param workbookDto workbook information containing title and description.
+     * 새로운 문제집을 생성한다.
+     * 이때 문제집은 관리자만 생성이 가능하다.
      */
     @Override
     @Transactional
@@ -130,11 +117,6 @@ public class WorkbookServiceImpl implements WorkbookService {
         return workbook.getId();
     }
 
-    /**
-     * Add question in workbook.
-     *
-     * @param requestDto contains question information.
-     */
     @Override
     @Transactional
     public void addQuestion(WorkbookQuestionRequestDto requestDto) {
@@ -164,9 +146,7 @@ public class WorkbookServiceImpl implements WorkbookService {
     }
 
     /**
-     * update workbook information.
-     *
-     * @param requestDto contains workbook information.
+     * 문제집의 정보를 업데이트 한다.
      */
     @Override
     @Transactional
@@ -177,9 +157,7 @@ public class WorkbookServiceImpl implements WorkbookService {
     }
 
     /**
-     * delete question in workbook.
-     *
-     * @param requestDto contains question and workbook id.
+     * 문제집의 문제를 삭제한다.
      */
     @Override
     @Transactional
@@ -200,9 +178,6 @@ public class WorkbookServiceImpl implements WorkbookService {
 
     /**
      * 단일 문제집 업로드
-     *
-     * @param file       사진 업로드
-     * @param workbookId 문제집 아이디
      */
     @Override
     @Transactional

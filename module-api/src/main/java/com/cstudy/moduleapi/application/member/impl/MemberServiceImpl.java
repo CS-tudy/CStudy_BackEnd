@@ -91,9 +91,6 @@ public class MemberServiceImpl implements MemberService {
      * 1. 이메일에 대한 중복을 체크한다.
      * 2. 이메일에 대한 로직을 체크한다.
      *
-     * @param request 회원가입 Signup
-     * @return 회원가입 성공을 하면 이메일, 이름을 리턴을 합니다.
-     * @throws EmailDuplication 중복된 이메일 회원가입 요청
      */
     @Override
     @Transactional
@@ -177,7 +174,6 @@ public class MemberServiceImpl implements MemberService {
         memberCacheRepository.deleteMember(member);
     }
 
-    //todo : 반환 타입을 Future로 설정 / 학습
     @Async
     @Override
     @Transactional

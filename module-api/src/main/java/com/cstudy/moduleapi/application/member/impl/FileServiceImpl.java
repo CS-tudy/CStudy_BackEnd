@@ -35,10 +35,7 @@ public class FileServiceImpl implements FileService {
     private String region;
 
     /**
-     * Upload single, multiple files to aws3 Enter file in key to enter as postman
-     *
-     * @param multipartFile 멀티파트 파일 List
-     * @param loginUserDto      로그인 회원의 정보
+     *  파일을 업로드 한다. 이때 loginUserDto를 기반으로 데이터를 삽입한다.
      */
     @Override
     @Transactional
@@ -52,8 +49,10 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * @param loginUserDto 로그인 회원의 정보
-     * @return s3에 업로드 파일의 url을 통하여 전송
+     *  회원의 이미지를 BYTE[]로 불러온다.
+     *  현재 이 부분을 고민하자.
+     *  //TODO : 이 부분을 CLOUD-FONT로 처리를 해야되는지 아니면 BYTE[]로 처리를 해야되는지 고민하자
+     *
      */
     @Transactional
     @Override

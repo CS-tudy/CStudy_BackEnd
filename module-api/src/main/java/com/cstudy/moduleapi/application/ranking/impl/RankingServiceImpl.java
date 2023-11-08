@@ -34,7 +34,7 @@ public class RankingServiceImpl implements RankingService {
     }
 
     /**
-     * @return redis에 회원의 정보를 가져와 포인트를 0~10까지 가져온다.
+     *  redis에 회원의 정보를 가져와 포인트를 0~10까지 가져온다.
      */
     @Cacheable(key = "1", value = RedisCacheKey.Ranking, cacheManager = "redisCacheManager")
     @Transactional(readOnly = true)
@@ -52,6 +52,9 @@ public class RankingServiceImpl implements RankingService {
         return new ArrayList<>(Objects.requireNonNull(stringStringZSetOperations.reverseRangeWithScores("ranking", 0, 9), "Ranking Board Data null"));
     }
 
+    /**
+     *  랭킹에서 자신의 랭킹을 조회한다.
+     */
     @Override
     @Transactional(readOnly = true)
     public Long getMyRanking(LoginUserDto loginUserDto) {
@@ -60,6 +63,9 @@ public class RankingServiceImpl implements RankingService {
                         .getName());
     }
 
+    /**
+     *  랭킹의 범위를 선정하여 동적으로 랭킹 보드를 조작할 수 있다.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<ZSetOperations.TypedTuple<String>> getTopRanking(int limitRank) {

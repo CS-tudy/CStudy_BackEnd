@@ -42,12 +42,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     }
 
     /**
-     * Select a problem. If you choose the correct answer,
-     * add the correct answer to the memberQuestion table.
-     *
-     * @param memberId               회원 아이디
-     * @param questionId             단일 문제에 대한 아이디
-     * @param choiceAnswerRequestDto 문제 선택
+     * 만약 사용자가 정확한 정답을 선택을 하였을 때 MEMBERQUESTION TABLE에 기존의 데이터가 있는지 확인한다.
      */
     @Override
     @Transactional
@@ -82,12 +77,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
 
 
     /**
-     * Select a problem. If you choose the correct answer,
-     * add the wrong answer to the memberQuestion table.
-     *
-     * @param memberId               회원 아이디
-     * @param questionId             단일 문제에 대한 아이디
-     * @param choiceAnswerRequestDto 선택 문제
+     * 만약 사용자가 정확한 오답을 선택을 하였을 때 MEMBERQUESTION TABLE에 기존의 데이터가 있는지 확인한다.
      */
     @Override
     @Transactional
@@ -118,11 +108,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
 
 
     /**
-     * If the memberQuestion table contains information
-     * that is an existing incorrect answer, delete the incorrect answer and add the correct answer.
-     *
-     * @param memberId   회원 아이디
-     * @param questionId 단일 문제에 대한 아이디
+     *  MEMBERQUESTION 테이블에 기존의 정보가 있다면 삭제한다. 그리고 새로운 데이터를 삽입한다.
      */
     @Override
     @Transactional
@@ -137,11 +123,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     }
 
     /**
-     * If the memberQuestion table contains information
-     * that is an existing correct answer, delete the correct answer and add the correct answer.
-     *
-     * @param memberId   회원 아이디
-     * @param questionId 단일 문제에 대한 아이디
+     * MEMBERQUESTION 테이블에 기존의 정보가 있다면 삭제한다. 그리고 새로운 데이터를 삽입한다.
      */
     @Override
     @Transactional
@@ -154,6 +136,9 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         }
     }
 
+    /**
+     * 4지선다의 문제에서 정답의 유무를 판단한다.
+     */
     @Override
     public QuestionAnswerDto isCorrectAnswer(Long memberId, Long questionId, ChoiceAnswerRequestDto requestDto) {
         boolean answer = memberQuestionRepository.existsByMemberAndQuestionAndSuccess(memberId, questionId, requestDto.getChoiceNumber());
