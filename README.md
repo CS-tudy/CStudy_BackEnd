@@ -137,7 +137,8 @@ test
 
 ![img.png](image/GITACTION.png)
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/9d287ab0-95e0-4ed4-89da-6ae0eca05cf7)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/650a1a91-5f20-41b3-b41b-8a39d717e9f5)
+
 
 블로그 : [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
 
