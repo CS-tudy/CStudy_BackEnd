@@ -82,6 +82,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         log.info("OAuth 성공");
 
+
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
 
