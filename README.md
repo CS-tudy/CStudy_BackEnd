@@ -3,7 +3,6 @@
 🧸 배포 사이트 : [http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/](http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/)
 - 현재 Front의 OAuth URL 수정이 필요하여 OAuth X
 
-
   <br/>
 
 ## ✨ 프로젝트 소개
