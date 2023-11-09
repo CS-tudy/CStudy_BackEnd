@@ -70,7 +70,7 @@ public class AwsS3Util {
         File fileObj = convertMultiPartFileToFile(file);
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
-        String fileName = UUID.randomUUID() + "." + extension;
+        String fileName = UUID.randomUUID() + "-" + extension;
 
         log.info("uploadFile fileName: {}", fileName);
         s3Client.putObject(new PutObjectRequest(bucketName + AWS_PROD_BUCKET_PATH, fileName, fileObj));
