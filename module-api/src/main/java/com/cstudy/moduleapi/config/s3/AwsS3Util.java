@@ -1,6 +1,7 @@
 package com.cstudy.moduleapi.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -33,7 +34,7 @@ public class AwsS3Util {
     String BASE_CLOUD_FRONT;
 
 
-    private final AmazonS3 s3Client;
+    private final AmazonS3Client amazonS3Client;
 
 
     public String uploadCompressedImage(MultipartFile file) {
@@ -54,7 +55,7 @@ public class AwsS3Util {
         String fileName = UUID.randomUUID() + ".compressed";
 
         log.info("uploadCompressedImage fileName: {}", fileName);
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, new ByteArrayInputStream(compressedImageBytes), null));
+        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, new ByteArrayInputStream(compressedImageBytes), null));
 
         return fileName;
     }
@@ -70,10 +71,10 @@ public class AwsS3Util {
         File fileObj = convertMultiPartFileToFile(file);
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
-        String fileName = UUID.randomUUID() + "-" + extension;
+        String fileName = UUID.randomUUID() + "." + extension;
 
         log.info("uploadFile fileName: {}", fileName);
-        s3Client.putObject(new PutObjectRequest(bucketName + AWS_PROD_BUCKET_PATH, fileName, fileObj));
+        amazonS3Client.putObject(new PutObjectRequest(bucketName + AWS_PROD_BUCKET_PATH, fileName, fileObj));
         fileObj.delete();
 
         return fileName;
@@ -98,7 +99,7 @@ public class AwsS3Util {
 
 
     public byte[] downloadFile(String fileName) {
-        S3Object s3Object = s3Client.getObject(bucketName, fileName);
+        S3Object s3Object = amazonS3Client.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
             byte[] content = IOUtils.toByteArray(inputStream);
@@ -111,7 +112,7 @@ public class AwsS3Util {
 
 
     public String deleteFile(String fileName) {
-        s3Client.deleteObject(bucketName, fileName);
+        amazonS3Client.deleteObject(bucketName, fileName);
         return fileName + " removed ...";
     }
 
