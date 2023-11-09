@@ -2,39 +2,29 @@ package com.cstudy.moduleapi.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AwsS3Util {
 
-    private final static String AWS_PROD_BUCKET_PATH  = "/Image";
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    @Value("${img.cloudFront}")
-    String BASE_CLOUD_FRONT;
-
-
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 s3Client;
 
 
     public String uploadCompressedImage(MultipartFile file) {
@@ -55,29 +45,25 @@ public class AwsS3Util {
         String fileName = UUID.randomUUID() + ".compressed";
 
         log.info("uploadCompressedImage fileName: {}", fileName);
-        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, new ByteArrayInputStream(compressedImageBytes), null));
+        s3Client.putObject(new PutObjectRequest(bucketName, fileName, new ByteArrayInputStream(compressedImageBytes), null));
 
         return fileName;
     }
 
 
-
-
-
     public String uploadFile(MultipartFile file) {
 
-        if (file == null || file.isEmpty()) return "";
-
+        if (file == null || file.isEmpty())
+            return "";
         File fileObj = convertMultiPartFileToFile(file);
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
         String fileName = UUID.randomUUID() + "." + extension;
 
         log.info("uploadFile fileName: {}", fileName);
-        amazonS3Client.putObject(new PutObjectRequest(bucketName + AWS_PROD_BUCKET_PATH, fileName, fileObj));
+        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-
-        return fileName;
+        return s3Client.getUrl(bucketName, fileName).toString();
     }
 
     public String uploadFiles(List<MultipartFile> files) {
@@ -99,7 +85,7 @@ public class AwsS3Util {
 
 
     public byte[] downloadFile(String fileName) {
-        S3Object s3Object = amazonS3Client.getObject(bucketName, fileName);
+        S3Object s3Object = s3Client.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
             byte[] content = IOUtils.toByteArray(inputStream);
@@ -112,7 +98,7 @@ public class AwsS3Util {
 
 
     public String deleteFile(String fileName) {
-        amazonS3Client.deleteObject(bucketName, fileName);
+        s3Client.deleteObject(bucketName, fileName);
         return fileName + " removed ...";
     }
 
