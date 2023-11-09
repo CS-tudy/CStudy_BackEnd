@@ -58,22 +58,22 @@ public class AwsS3Util {
     }
 
 
+
+
+
     public String uploadFile(MultipartFile file) {
 
-        if (file == null || file.isEmpty()) return "";
-
+        if (file == null || file.isEmpty())
+            return "";
         File fileObj = convertMultiPartFileToFile(file);
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
         String fileName = UUID.randomUUID() + "." + extension;
 
         log.info("uploadFile fileName: {}", fileName);
-        log.info("bucketName : {}", bucketName);
-        log.info("fileObj : {}", fileObj);
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-
-        return fileName;
+        return s3Client.getUrl(bucketName, fileName).toString();
     }
 
     public String uploadFiles(List<MultipartFile> files) {
