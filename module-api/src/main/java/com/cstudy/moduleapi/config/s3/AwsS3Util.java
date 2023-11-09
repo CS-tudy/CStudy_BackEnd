@@ -24,6 +24,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AwsS3Util {
 
+    private final static String AWS_PROD_BUCKET_PATH  = "/Image";
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
@@ -63,17 +65,18 @@ public class AwsS3Util {
 
     public String uploadFile(MultipartFile file) {
 
-        if (file == null || file.isEmpty())
-            return "";
+        if (file == null || file.isEmpty()) return "";
+
         File fileObj = convertMultiPartFileToFile(file);
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
         String fileName = UUID.randomUUID() + "." + extension;
 
         log.info("uploadFile fileName: {}", fileName);
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+        s3Client.putObject(new PutObjectRequest(bucketName + AWS_PROD_BUCKET_PATH, fileName, fileObj));
         fileObj.delete();
-        return s3Client.getUrl(bucketName, fileName).toString();
+
+        return fileName;
     }
 
     public String uploadFiles(List<MultipartFile> files) {
