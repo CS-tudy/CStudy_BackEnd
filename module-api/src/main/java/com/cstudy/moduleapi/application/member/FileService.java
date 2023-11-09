@@ -5,7 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 public interface FileService {
-   void uploadFiles(MultipartFile multipartFileList, LoginUserDto loginUserDto);
+   void uploadFiles(MultipartFile file, LoginUserDto loginUserDto);
 
     byte[] getImageBytes(LoginUserDto loginUserDto);
+
+    String getMemberImagePath(LoginUserDto loginUserDto);
 }

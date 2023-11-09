@@ -13,8 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -96,11 +94,11 @@ public class MemberController {
     @PostMapping("/upload")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
-    public void upload(@Parameter(name = "multipartFileList", description = "Multi part file")
-                       @RequestParam("files") MultipartFile multipartFile,
+    public void upload(@Parameter(name = "file", description = "file")
+                       @RequestParam(value = "file") MultipartFile file,
                        @Parameter(hidden = true)
                        @IfLogin LoginUserDto loginUserDto) {
-        fileService.uploadFiles(multipartFile, loginUserDto);
+        fileService.uploadFiles(file, loginUserDto);
     }
 
 
@@ -108,13 +106,9 @@ public class MemberController {
     @GetMapping("/download")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
-    public ResponseEntity<byte[]> downloadFile(@Parameter(hidden = true)
-                                               @IfLogin LoginUserDto loginUserDto) {
-        byte[] imageBytes = fileService.getImageBytes(loginUserDto);
-        // 이미지 데이터를 반환
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageBytes);
+    public String downloadFile(@Parameter(hidden = true)
+                               @IfLogin LoginUserDto loginUserDto) {
+        return fileService.getMemberImagePath(loginUserDto);
     }
 
     @Operation(summary = "마이페이지", description = "마이페이지 / ROLE_CUSTOM', 'ROLE_ADMIN")
