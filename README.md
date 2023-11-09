@@ -1,6 +1,12 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
+### 🧸 배포 사이트 : [http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/](http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/)
+
+  <br/>
+
 ## ✨ 프로젝트 소개
+
+
 
 ### [ 프로젝트 간단 소개 ]
 
