@@ -68,6 +68,8 @@ public class AwsS3Util {
         String fileName = UUID.randomUUID() + "." + extension;
 
         log.info("uploadFile fileName: {}", fileName);
+        log.info("bucketName : {}", bucketName);
+        log.info("fileObj : {}", fileObj);
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
 
