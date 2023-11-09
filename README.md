@@ -97,8 +97,22 @@
 ## 🖥 모니터링
 
 ![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/383ced45-7d62-40f9-9a6d-611a1c0ac9cc)
+![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/2a88b3d5-4eae-4caf-adbf-4b30a8feeb53)
 
+[ 현재 서비스 운영 문제점 ] 
+- 서버를 운영하면서 CPU 100%가 되어서 시스템의 오류가 발생.
+- 서버 비용의 문제로 인하여 확장성이 부족한 EC2에 DB 설치하여 운영.
+- DB 서버가 CPU 100%가 되면 서비스 오류, 새벽 2시에 Redis Backup을 수행하지 못하는 문제 발생
 
+[ 현재 문제 개선 ] 
+- 현재는 이 문제를 해결하기 위하여 메모리 Swap, EC2 버스트 현상의 Credit 부족을 막기 위하여 인스턴스 유형 변경, Stop & Start 방식으로 문제 해결
+- Stop & Start 방식을 수행하면서 모니터링의 중요성이 증가하여 이를 자동화 하기 위하여 `CloudWatch`, `Lambda`, `Slack`을 이용하여 자동화 변경
+
+[ 개선해야 되는 부분 ] 
+- 알림을 통하여 자동화를 하여도 현재 Stop & Start 방식을 사용하기 때문에 재시작을 해야되는 문제
+- 이를 개션하기 위하여 Lambda Trigger를 통하여 Stop & Start 방식의 문제점을 개선 필요
+- Lambda를 통하여 Stop & Start의 문제를 해결하여도 재시작하는 동안 서비스가 잠시 사용하지 못한다. 이를 해결하기 위하여 분산 환경으로 변경을 해야된다.
+  
 
 <br>
 
