@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -56,14 +58,15 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public void uploadFiles(MultipartFile file, LoginUserDto loginUserDto) {
         String uploadFile = awsS3Util.uploadFile(file);
-
+        String fileName = Paths.get(URI.create(uploadFile).getPath()).getFileName().toString();
         log.info("uploadFile : {}", file);
+        log.info("fileName 입니다. : {}", fileName);
 
         Member member = memberRepository.findById(loginUserDto.getMemberId())
                 .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
 
         fileRepository.save(File.builder()
-                .fileName(uploadFile)
+                .fileName(fileName)
                 .member(member)
                 .build());
 
