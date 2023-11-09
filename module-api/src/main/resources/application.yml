@@ -117,3 +117,7 @@ cloud:
 
 front:
   baseURL: ${baseURL}
+
+img:
+  cloudFront: ${BASIC_CLOUD_FRONT_URL}
+
