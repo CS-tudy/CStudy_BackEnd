@@ -52,6 +52,8 @@ jobs:
 
           discord.bot.token: ${{ secrets.DISCORD_BOT }}
 
+          img.cloudFront: ${{ secrets.CLOUD_FRONT }}
+
 
           jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
           jwt.refreshKey: ${{ secrets.JWT_REFRESH_KEY }}
