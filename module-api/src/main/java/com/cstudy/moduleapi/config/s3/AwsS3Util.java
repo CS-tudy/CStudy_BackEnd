@@ -1,7 +1,6 @@
 package com.cstudy.moduleapi.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -27,6 +26,11 @@ public class AwsS3Util {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+
+    @Value("${img.cloudFront}")
+    String BASE_CLOUD_FRONT;
+
+
     private final AmazonS3 s3Client;
 
 
@@ -56,8 +60,8 @@ public class AwsS3Util {
 
     public String uploadFile(MultipartFile file) {
 
-        if (file == null || file.isEmpty())
-            return "";
+        if (file == null || file.isEmpty()) return "";
+
         File fileObj = convertMultiPartFileToFile(file);
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
@@ -66,7 +70,8 @@ public class AwsS3Util {
         log.info("uploadFile fileName: {}", fileName);
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-        return s3Client.getUrl(bucketName, fileName).toString();
+
+        return fileName;
     }
 
     public String uploadFiles(List<MultipartFile> files) {

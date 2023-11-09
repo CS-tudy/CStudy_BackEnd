@@ -75,7 +75,6 @@ public class WorkbookController {
         workbookService.uploadFile(file, workbookId);
     }
 
-    //todo : db에 path를 저장을 했으니깐 페이징에서 같이 처리하자
     @Operation(summary = "문제집 이미지 Path를 List 형태로 보여준다.", description = "문제집 아이디와 해당 아이디의 이미지 Path를 보여준다.")
     @GetMapping("/images")
     @ResponseStatus(HttpStatus.OK)

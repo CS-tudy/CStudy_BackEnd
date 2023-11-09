@@ -22,6 +22,7 @@ import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookQuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class WorkbookServiceImpl implements WorkbookService {
+
+    private final static String WORKBOOK_BASIC_PICTURE = "WORKBOOK_BASIC_PICTURE";
+
+    @Value("${img.cloudFront}")
+    String BASE_CLOUD_FRONT;
 
     private final WorkbookRepository workbookRepository;
     private final WorkbookQuestionRepository workbookQuestionRepository;
@@ -76,8 +82,13 @@ public class WorkbookServiceImpl implements WorkbookService {
         return workbookRepository.findByIdWithWorkbook().stream()
                 .map(workbook -> {
                     List<String> imagePaths = workbook.getFiles().stream()
-                            .map(File::getFileName)
+                            .map(file -> BASE_CLOUD_FRONT + file.getFileName())
                             .collect(Collectors.toList());
+
+                    if (imagePaths.isEmpty()) {
+                        imagePaths.add(WORKBOOK_BASIC_PICTURE);
+                    }
+
                     return WorkbookIdWithImagePath.builder()
                             .id(workbook.getId())
                             .imagePath(imagePaths)
@@ -189,7 +200,7 @@ public class WorkbookServiceImpl implements WorkbookService {
                 .orElseThrow(() -> new NotFoundWorkbook(workbookId));
 
         File fileName = File.builder()
-                .fileName(uploadFileName)
+                .fileName(BASE_CLOUD_FRONT+uploadFileName)
                 .workbook(workbook)
                 .build();
 

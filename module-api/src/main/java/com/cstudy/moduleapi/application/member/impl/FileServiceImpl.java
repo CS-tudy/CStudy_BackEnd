@@ -23,6 +23,8 @@ import static com.cstudy.moduleapi.config.s3.ImageUtils.decompressImage;
 @Service
 public class FileServiceImpl implements FileService {
 
+    private final static String MEMBER_BASIC_PICTURE = "MEMBER_BASIC_PICTURE";
+
     private final FileRepository fileRepository;
     private final MemberRepository memberRepository;
     private final AwsS3Util awsS3Util;
@@ -43,6 +45,10 @@ public class FileServiceImpl implements FileService {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+
+    @Value("${img.cloudFront}")
+    String BASE_CLOUD_FRONT;
+
     /**
      * 파일을 업로드 한다. 이때 loginUserDto를 기반으로 데이터를 삽입한다.
      */
@@ -50,8 +56,12 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public void uploadFiles(MultipartFile file, LoginUserDto loginUserDto) {
         String uploadFile = awsS3Util.uploadFile(file);
+
+        log.info("uploadFile : {}", file);
+
         Member member = memberRepository.findById(loginUserDto.getMemberId())
                 .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
+
         fileRepository.save(File.builder()
                 .fileName(uploadFile)
                 .member(member)
@@ -59,10 +69,28 @@ public class FileServiceImpl implements FileService {
 
     }
 
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getMemberImagePath(LoginUserDto loginUserDto) {
+        Optional<Member> optionalMember = memberRepository.findByMemberFetchFile(loginUserDto.getMemberId());
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+
+            return BASE_CLOUD_FRONT + member.getFile().stream()
+                    .max(Comparator.comparing(File::getCreatedDate))
+                    .map(File::getFileName)
+                    .orElse(MEMBER_BASIC_PICTURE);
+        } else {
+            return MEMBER_BASIC_PICTURE;
+        }
+    }
+
     /**
      * 회원의 이미지를 BYTE[]로 불러온다.
      * 현재 이 부분을 고민하자.
-     * //TODO : 이 부분을 CLOUD-FONT로 처리를 해야되는지 아니면 BYTE[]로 처리를 해야되는지 고민하자
      */
     @Transactional
     @Override
@@ -70,13 +98,4 @@ public class FileServiceImpl implements FileService {
         byte[] bytes = awsS3Util.downloadFile(fileRepository.findLatestFileNameByMemberId(loginUserDto.getMemberId()));
         return decompressImage(bytes);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public String getMemberImagePath(LoginUserDto loginUserDto) {
-        Member member = memberRepository.findByMemberFetchFile(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
-        return member.getFile().stream().max(Comparator.comparing(File::getCreatedDate)).map(File::getFileName).orElse("testtest");
-    }
-
 }

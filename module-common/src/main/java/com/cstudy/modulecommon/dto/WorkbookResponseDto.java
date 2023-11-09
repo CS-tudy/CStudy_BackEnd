@@ -37,7 +37,7 @@ public class WorkbookResponseDto {
         this.title = title;
         this.description = description;
         this.createdAt = createdAt;
-        this.fileName = fileName;
+        this.fileName = fileName != null ? fileName : "WORKBOOK_BASIC_PICTURE";
     }
 
     public WorkbookResponseDto(Long id, String title, String description, LocalDateTime createdAt) {
