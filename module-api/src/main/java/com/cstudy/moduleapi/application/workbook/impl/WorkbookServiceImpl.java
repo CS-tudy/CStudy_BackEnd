@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -194,13 +196,16 @@ public class WorkbookServiceImpl implements WorkbookService {
     @Transactional
     public void uploadFile(MultipartFile file, Long workbookId) {
         String uploadFileName = awsS3Util.uploadFile(file);
+        String fileNameString = Paths.get(URI.create(uploadFileName).getPath()).getFileName().toString();
+
         log.info("Uploading file : {} ", uploadFileName);
+        log.info("fileName 입니다. : {}", fileNameString);
 
         Workbook workbook = workbookRepository.findById(workbookId)
                 .orElseThrow(() -> new NotFoundWorkbook(workbookId));
 
         File fileName = File.builder()
-                .fileName(BASE_CLOUD_FRONT+uploadFileName)
+                .fileName(fileNameString)
                 .workbook(workbook)
                 .build();
 
