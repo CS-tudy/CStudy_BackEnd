@@ -24,12 +24,16 @@ spring:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWD}
+
+
     hikari:
       connectionTimeout: 30000
       maximumPoolSize: 20
       maxLifetime: 295000
       poolName: HikariCP
       readOnly: false
+
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -49,6 +53,7 @@ spring:
           auth: true
           ssl:
             enable: true
+
 
   security:
     oauth2:
@@ -84,16 +89,6 @@ spring:
             token_uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
-
-
-
-server:
-  tomcat:
-    threads:
-      max: 18
-      min-spare: 18
-    accept-count: 300
-  port: 8080
 
 jwt:
   secretKey: ${JWT_SECRET_KEY}
