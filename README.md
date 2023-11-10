@@ -157,9 +157,7 @@ test
 
 <br>
 
-## 📋 API 문서
-
-[https://documenter.getpostman.com/view/23650109/2s9YRGxp2L](https://documenter.getpostman.com/view/23650109/2s9YRGxp2L)
+## 📋 API 문서 - [문서 보기](https://documenter.getpostman.com/view/23650109/2s9YXk2g2e)
 
 <br>
 
