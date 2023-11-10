@@ -28,7 +28,7 @@ import java.util.Set;
 @Table(name = "MEMBER", uniqueConstraints = {
         @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
 //        @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
-        @UniqueConstraint(name = "name", columnNames = {"name"}),
+//        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
 public class Member {
 
