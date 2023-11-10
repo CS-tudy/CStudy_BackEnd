@@ -245,6 +245,9 @@ public class QuestionServiceImpl implements QuestionService {
     public void choiceQuestion(LoginUserDto loginUserDto, Long questionId, ChoiceAnswerRequestDto choiceNumber) {
 
         log.info("questionId :  {}", questionId);
+        log.info("ChoiceAnswerRequestDto : {}", choiceNumber.getTime());
+        log.info("ChoiceAnswerRequestDto : {}", choiceNumber.getChoiceNumber());
+
         Integer choiceAnswerNumber = questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
                 .orElseThrow(() -> new NotFoundQuestionId(questionId)).getChoices().stream()
                 .filter(Choice::isAnswer)
