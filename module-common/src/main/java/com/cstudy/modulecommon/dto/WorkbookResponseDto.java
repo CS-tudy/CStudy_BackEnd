@@ -3,17 +3,21 @@ package com.cstudy.modulecommon.dto;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static com.cstudy.modulecommon.config.cloudFrontValue.BASE_CLOUD_FRONT;
+
+
 @Data
 @Builder
 @NoArgsConstructor
 public class WorkbookResponseDto {
+
+
 
     private Long id;
     private String title;
@@ -37,7 +41,7 @@ public class WorkbookResponseDto {
         this.title = title;
         this.description = description;
         this.createdAt = createdAt;
-        this.fileName = fileName != null ? fileName : "WORKBOOK_BASIC_PICTURE";
+        this.fileName = fileName != null ? BASE_CLOUD_FRONT+fileName : "WORKBOOK_BASIC_PICTURE";
     }
 
     public WorkbookResponseDto(Long id, String title, String description, LocalDateTime createdAt) {
