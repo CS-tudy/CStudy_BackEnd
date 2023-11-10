@@ -1,7 +1,16 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
 🧸 배포 사이트 : [http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/](http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/)
-- 현재 Front의 OAuth URL 수정이 필요하여 OAuth X
+
+### 📢 현재 배포 사이트 문제점 공지 ( 빠르게 수정하겠습니다. )
+1. 현재 Front의 OAuth URL 수정이 필요하여 OAuth X
+2. 회원 이미지 Byte[]에서 CloudFront로 변경하여 Front 작업이 아직 완성되지 못했습니다.
+3. 대회 참가가 가능하나 현재 Front 오류로 인하여 대회 기능이 잠시 멈춤니다.
+
+- 만약에 테스트를 하고 싶으시면 다음 계정을 이용하세요
+ID : user99@email.com
+Password : user1234!
+
 
   <br/>
 
@@ -210,8 +219,9 @@ test
 ### 프로젝트 진행 이슈
 
 - 사용자 관점에 Polling 방식에서 SSE 방식으로 알림 개선
+- [EC2 Cpu 100% 버스트 문제, 모니터링 자동화 AWS CloudWatch , Slack을 통한 경도 알림](https://velog.io/@geon_km/AWS-CloudWatch-Lambda%EC%9D%98-%EA%B2%BD%EB%B3%B4%EB%A5%BC-Slack%EC%9C%BC%EB%A1%9C-%EC%95%8C%EB%A6%BC)
+- [Redis 데이터 유실을 막기 위해서 RDB을 통하여 백업파일 , Corn을 통하여 2시에 동작하게 변경](https://velog.io/@geon_km/%ED%8A%B9%EC%A0%95-%EC%8B%9C%EA%B0%84%EC%97%90-Shell-Crontab%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-Redis-RDB-%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EB%B0%B1%EC%97%85)
 - 운영 로그 관리, 접근성을 위해 Logback Rolling FileAppender 적용 및 Sentry 도입
-- Redis 데이터 유실을 막기 위해서 RDB을 통하여 백업파일 , Corn을 통하여 2시에 동작하게 변경
 - [Exception을 추상 클래스을 활용하여 응집도 증가 및 Front와 협업을 위해 Custom Error Status 생성](https://github.com/CS-tudy/CStudy_BackEnd/wiki/Exception%EC%9D%84-%EC%B6%94%EC%83%81-%ED%81%B4%EB%9E%98%EC%8A%A4%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%9D%91%EC%A7%91%EB%8F%84-%EC%A6%9D%EA%B0%80-%EB%B0%8F-Front%EC%99%80-%ED%98%91%EC%97%85%EC%9D%84-%EC%9C%84%ED%95%B4-Custom-Error-Status-%EC%83%9D%EC%84%B1)
 
 ### 백엔드 이슈
