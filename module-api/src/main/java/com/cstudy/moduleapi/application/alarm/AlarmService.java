@@ -44,7 +44,6 @@ public class AlarmService {
      *  3. 일반 회원이 경기에 참가를 하면 관리자에게 알림을 보낸다.
      *  - 일반 회원이 경기에 참가를 하면 관리자에게 n번 회원이 경기에 참가를 하였습니다.
      */
-    @Transactional
     public void send(AlarmType type, AlarmArgs args, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundMemberId(memberId));
@@ -77,7 +76,6 @@ public class AlarmService {
      * 이때 jpa의 open-in-view를 false로 설정을 해야된다.
      * SSE 통신을 하는 동안에 HTTP Connection이 계속 열려있다. -> true로 설정을 하면 DB Connection이 유지된다.
      */
-    @Transactional
     public SseEmitter connectionAlarm(Long userId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
         emitterRepository.save(userId, emitter);
