@@ -83,7 +83,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("OAuth 성공");
 
         log.info("access token : {}", access);
-        log.info("refresh token : {}", refreshToken);
+        log.info("refresh token : {}", refresh);
 
         log.info("redirect url : {}", redirectUri);
 
