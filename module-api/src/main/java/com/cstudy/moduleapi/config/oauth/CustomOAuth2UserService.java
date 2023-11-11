@@ -6,6 +6,7 @@ import com.cstudy.moduleapi.config.security.auth.OAuthAttributes;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
+import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.role.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -64,15 +65,22 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
     private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member member = Member.builder()
-                .email(attributes.getEmail())
-                .name(attributes.getName())
-                .roles(new HashSet<>())
-                .build();
+        Optional<Member> existingMember = memberRepository.findByEmail(attributes.getEmail());
 
-        Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());
-        userRole.ifPresent(member::changeRole);
-        return memberRepository.save(member);
+        if (existingMember.isPresent()) {
+            return existingMember.orElseThrow(()-> new NotFoundMemberEmail(attributes.getEmail()));
+        } else {
+            Member member = Member.builder()
+                    .email(attributes.getEmail())
+                    .name(attributes.getName())
+                    .roles(new HashSet<>())
+                    .build();
+
+            Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());
+            userRole.ifPresent(member::changeRole);
+
+            return memberRepository.save(member);
+        }
     }
 
 }
