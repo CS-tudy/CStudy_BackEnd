@@ -19,6 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +92,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .build().toUriString();
 
         log.info("target url : {}", targetUrl);
+
+        log.info("request  :{}", Arrays.stream(request.getCookies()));
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
