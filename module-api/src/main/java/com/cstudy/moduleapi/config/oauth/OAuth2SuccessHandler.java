@@ -66,7 +66,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 List.of(RoleEnum.CUSTOM.getRoleName())
         );
 
-        String redirectUri = FRONT_BASE_URL+"/oauth2/login";
+        String redirectUri = FRONT_BASE_URL+"oauth2/login";
 
         Cookie accessToken = new Cookie("accessToken", access);
         accessToken.setHttpOnly(true);
