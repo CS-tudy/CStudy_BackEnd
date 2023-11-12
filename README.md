@@ -3,11 +3,11 @@
 🧸 배포 사이트 : [http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/](http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/)
 
 ### 📢 현재 배포 사이트 문제점 공지 ( 빠르게 수정하겠습니다. )
-1. 현재 Front의 OAuth URL 수정이 필요하여 OAuth X
-2. 회원 이미지 Byte[]에서 CloudFront로 변경하여 Front 작업이 아직 완성되지 못했습니다.
-3. 대회 참가가 가능하나 현재 Front 오류로 인하여 대회 기능이 잠시 멈춤니다.
+1. 현재 OAuth 로그인은 Https 적용을 해야되어서 해결하고 있습니다.
+- Chrome 버전 80부터 Http에서 Coockie를 전송하기 위하여 sameSite, Secure설정이 필요합니다. ( 현재 최신 Chrome 버전 : 119 )
 
-- 만약에 테스트를 하고 싶으시면 다음 계정을 이용하세요
+- 만약에 테스트를 하고 싶으시면 다음 계정을 이용하세요.
+  
 ID : user99@email.com
 Password : user1234!
 
