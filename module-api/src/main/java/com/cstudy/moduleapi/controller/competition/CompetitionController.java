@@ -97,6 +97,7 @@ public class CompetitionController {
     }
 
 
+
     @Operation(summary = "대회 참여 여부 확인", description = "해당 회원이 대회를 참가를 했는지 아직 불참인지 판단한다./ ROLE_CUSTOM', 'ROLE_ADMIN")
     @GetMapping("/status/{competitionId}")
     @ResponseStatus(HttpStatus.OK)
