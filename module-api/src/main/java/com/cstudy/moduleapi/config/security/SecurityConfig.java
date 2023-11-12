@@ -125,6 +125,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/competitions/{competitionId}").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/competitions/{competitionId}/member/rank").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/competitions").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/competitions/status/{competitionId}").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/competitions/{competitionId}/join").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/competitions/{competitionId}/questions").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/competitions/questions/add").authenticated()
