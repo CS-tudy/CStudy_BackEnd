@@ -70,13 +70,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String redirectUri = FRONT_BASE_URL+"oauth2/login";
 
         Cookie accessToken = new Cookie("accessToken", access);
-        accessToken.setHttpOnly(true);
+//        accessToken.setHttpOnly(true);
         accessToken.setPath("/");
         accessToken.setMaxAge(1800); // 30 minutes
         response.addCookie(accessToken);
 
         Cookie refreshToken = new Cookie("refreshToken", refresh);
-        accessToken.setHttpOnly(true);
+//        refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
         refreshToken.setMaxAge(604800); // 7 days
         response.addCookie(refreshToken);
