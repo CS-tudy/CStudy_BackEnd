@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class CompetitionQuestionDto {
     private Long questionId;
     private String description;
-    private List<ChoiceQuestionResponseDto> choices;
+    private List<ChoiceQuestionResponseDto> choices =new ArrayList<>();
 
     public static CompetitionQuestionDto of(Question question){
         return CompetitionQuestionDto.builder()

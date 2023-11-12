@@ -12,6 +12,7 @@ import com.cstudy.modulecommon.domain.competition.Competition;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
+import com.cstudy.modulecommon.dto.ChoiceQuestionResponseDto;
 import com.cstudy.modulecommon.dto.CompetitionQuestionDto;
 import com.cstudy.modulecommon.error.competition.CompetitionStartException;
 import com.cstudy.modulecommon.error.competition.NotFoundCompetitionId;
@@ -21,14 +22,18 @@ import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CompetitionServiceImpl implements CompetitionService {
 
@@ -146,19 +151,60 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     /**
-     *  회원의 경기 문제를 조회한다.
+     * 회원의 경기 문제를 조회한다.
+     *
+     *  여기서 문제의 보기, 내용을 List 형태로 가져옴
+     *  따로 가져와서 Dto에 Mapping 보다는 List Object[] 로 가져와서 Mapping을 하여 한방 쿼리로 만듬
+     *
+     * 1	자바의 접근 제어자 중에서 부모 클래스에 대해서는 public 멤버처럼 취급되며, 외부에서는 private 멤버처럼 취급됩니다.	1,2,3,4	protected,private,public,default
+     * 2	객체지향의 특징 중에서 객체 내부의 접근을 제어하며 객체 사이의 결합도를 낮출 수 있고, 응집도가 증가하여 유지보수에 좋은 특징은?	1,2,3,4	캡슐화,상속,추상화,다형성
+     * 3	finalize의 설명을 적절하게 설명한 보기를 찾으시오.	1,2,3,4	변수, 메서드 클래스가 변경 불가능 하도록 만든다.,참조 변수가 힙 내의 다른 객체를 가리키도록 변경할 수 없다.,가비지 컬렉터가 더 이상의 참조가 존재하지 않는 객체를 메모리에서 삭제하겠다고 결정하는 순간 호출된다.,try catch 블록 뒤에서 항상 실행될 코드 블록을 정의하기 위해 사용한다.
      */
     @Override
     public List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) {
-
         if (!loginUserDto.getRoles().contains(RoleEnum.ADMIN.getRoleName())) {
             Competition competition = competitionRepository.findById(competitionId)
                     .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
 
             checkTimeAfter(competition.getCompetitionStart());
         }
-        return questionRepository.findQuestionWithCompetitionById(competitionId);
+
+        List<Object[]> questionsWithChoices = competitionRepository.findQuestionsWithChoices(competitionId);
+
+        List<CompetitionQuestionDto> competitionQuestions = new ArrayList<>();
+
+        for (Object[] row : questionsWithChoices) {
+            BigInteger questionIdBigInteger = (BigInteger) row[0];
+
+
+            Long questionId = questionIdBigInteger.longValue();// 문제 아이디
+            String description = (String) row[1];// 문제 설명
+
+            // List []  형태로 가져옴.
+            String[] choiceNumbers = ((String) row[2]).split(",");// 보기 번호
+            String[] choiceContents = ((String) row[3]).split(",");// 보기 내용
+
+            List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
+
+            for (int i = 0; i < choiceNumbers.length; i++) {
+                int number = Integer.parseInt(choiceNumbers[i]);
+                String content = choiceContents[i];
+                choices.add(new ChoiceQuestionResponseDto(number, content));
+            }
+
+            CompetitionQuestionDto competitionQuestionDto = CompetitionQuestionDto.builder()
+                    .questionId(questionId)
+                    .description(description)
+                    .choices(choices)
+                    .build();
+
+            competitionQuestions.add(competitionQuestionDto);
+        }
+
+        return competitionQuestions;
     }
+
+
 
     /**
      * 경기에 대한 문제를 추가할 수 있다.
@@ -180,10 +226,10 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     /**
-     *  경기의 문제를 삭제한다.
-     *     private Long competitionId;
-     *     private List<QuestionIdRequestDto> questionIds;
-     *     경기의 아이디와 LIST의 문제 아이디를 통하여 여러개의 문제를 삭제한다.
+     * 경기의 문제를 삭제한다.
+     * private Long competitionId;
+     * private List<QuestionIdRequestDto> questionIds;
+     * 경기의 아이디와 LIST의 문제 아이디를 통하여 여러개의 문제를 삭제한다.
      */
     @Override
     @Transactional
@@ -199,7 +245,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     /**
-     *  경기 아이디를 받아서 시간을 조회한다.
+     * 경기 아이디를 받아서 시간을 조회한다.
      */
     @Override
     @Transactional
