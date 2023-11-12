@@ -4,6 +4,7 @@ import com.cstudy.moduleapi.application.competition.CompetitionService;
 import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
 import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.competition.*;
+import com.cstudy.modulecommon.domain.competition.CompetitionJoinStatus;
 import com.cstudy.modulecommon.dto.CompetitionQuestionDto;
 import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
@@ -93,6 +94,17 @@ public class CompetitionController {
                 .filter(id -> id >= 0)
                 .orElseThrow(() -> new PositivePatriarchal(competitionId));
         return competitionService.getCompetitionQuestion(competitionId, loginUserDto);
+    }
+
+
+    @Operation(summary = "대회 참여 여부 확인", description = "해당 회원이 대회를 참가를 했는지 아직 불참인지 판단한다./ ROLE_CUSTOM', 'ROLE_ADMIN")
+    @GetMapping("/status/{competitionId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
+    public CompetitionJoinStatus divisionJoinCompetitionStatus(@Parameter(hidden = true) @IfLogin LoginUserDto loginUserDto,
+                                                               @Parameter(name = "competitionId", description = "경기 아이디")
+                                                               @PathVariable Long competitionId) {
+        return competitionService.isJoined(loginUserDto, competitionId);
     }
 
     @Operation(summary = "참여 가능 대회 리스트", description = "참여 가능 대회 리스트 / PermitAll")
