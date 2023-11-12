@@ -99,7 +99,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
     @Override
     public List<CompetitionQuestionDto> findQuestionWithCompetitionById(Long id) {
-        List<CompetitionQuestionDto> content = queryFactory
+        return queryFactory
                 .selectFrom(question)
                 .leftJoin(question.workbookQuestions, workbookQuestion)
                 .leftJoin(workbookQuestion.workbook, workbook)
@@ -118,7 +118,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                                         ))
                         )
                 );
-        return content;
     }
 
 
