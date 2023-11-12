@@ -41,6 +41,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+        default_batch_fetch_size: 100
     open-in-view: false
   mail:
     host: smtp.naver.com
