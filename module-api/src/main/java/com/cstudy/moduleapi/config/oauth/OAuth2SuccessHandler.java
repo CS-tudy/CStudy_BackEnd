@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -67,19 +66,23 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 List.of(RoleEnum.CUSTOM.getRoleName())
         );
 
-        String redirectUri = FRONT_BASE_URL+"oauth2/login";
+        String redirectUri = FRONT_BASE_URL + "oauth2/login";
 
-        Cookie accessToken = new Cookie("accessToken", access);
+//        Cookie accessToken = new Cookie("accessToken", access);
 //        accessToken.setHttpOnly(true);
-        accessToken.setPath("/");
-        accessToken.setMaxAge(1800); // 30 minutes
-        response.addCookie(accessToken);
+//        accessToken.setPath("/");
+//        accessToken.setMaxAge(1800); // 30 minutes
+//        accessToken.setSameSite(1800); // 30 minutes
+//        response.addCookie(accessToken);
 
-        Cookie refreshToken = new Cookie("refreshToken", refresh);
+//        Cookie refreshToken = new Cookie("refreshToken", refresh);
 //        refreshToken.setHttpOnly(true);
-        refreshToken.setPath("/");
-        refreshToken.setMaxAge(604800); // 7 days
-        response.addCookie(refreshToken);
+//        refreshToken.setPath("/");
+//        refreshToken.setMaxAge(604800); // 7 days
+//        response.addCookie(refreshToken);
+
+        response.setHeader("Set-Cookie", "accessToken=" + access + "; Path=/; Max-Age=1800; SameSite=None");
+        response.setHeader("Set-Cookie", "refreshToken=" + refresh + "; Path=/; Max-Age=604800; SameSite=None");
 
         log.info("OAuth 성공");
 
