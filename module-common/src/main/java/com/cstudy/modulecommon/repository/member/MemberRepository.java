@@ -38,4 +38,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m join fetch m.file where m.id =:memberId")
     Optional<Member> findByMemberFetchFile(@Param("memberId") Long memberId);
+
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END " +
+            "FROM Member m JOIN m.memberCompetitions c " +
+            "WHERE m.id = :memberId AND c.competition.id = :competitionId")
+    boolean existsByMemberIdAndCompetitionId(@Param("memberId") Long memberId,
+                                             @Param("competitionId") Long competitionId);
+
 }
