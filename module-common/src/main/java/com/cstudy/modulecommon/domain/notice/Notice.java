@@ -1,14 +1,14 @@
 package com.cstudy.modulecommon.domain.notice;
 
 import com.cstudy.modulecommon.domain.BaseEntity;
+import com.cstudy.modulecommon.domain.comment.Comment;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.dto.NoticeUpdateRequestDto;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,6 +33,11 @@ public class Notice extends BaseEntity {
     @JoinColumn(name = "member_id")
     @ManyToOne(optional = false)
     private Member member;
+
+    @ToString.Exclude
+    @OrderBy("createdDate ASC")
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.REMOVE)
+    private Set<Comment> comments = new LinkedHashSet<>();
 
     @Builder
     public Notice(
