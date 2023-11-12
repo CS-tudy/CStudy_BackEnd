@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class CompetitionQuestionDto {
     private Long questionId;
+    private String questionTitle;
     private String description;
     private List<ChoiceQuestionResponseDto> choices =new ArrayList<>();
 
