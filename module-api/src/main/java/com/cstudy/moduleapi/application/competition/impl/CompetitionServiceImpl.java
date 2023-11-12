@@ -3,12 +3,14 @@ package com.cstudy.moduleapi.application.competition.impl;
 import com.cstudy.moduleapi.application.alarm.AlarmService;
 import com.cstudy.moduleapi.application.competition.CompetitionService;
 import com.cstudy.moduleapi.application.competition.MemberCompetitionService;
+import com.cstudy.moduleapi.application.member.impl.MemberCacheRepository;
 import com.cstudy.moduleapi.application.workbook.WorkbookService;
 import com.cstudy.moduleapi.dto.competition.*;
 import com.cstudy.moduleapi.dto.workbook.WorkbookQuestionRequestDto;
 import com.cstudy.modulecommon.domain.alarm.AlarmArgs;
 import com.cstudy.modulecommon.domain.alarm.AlarmType;
 import com.cstudy.modulecommon.domain.competition.Competition;
+import com.cstudy.modulecommon.domain.competition.CompetitionJoinStatus;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
@@ -19,7 +21,6 @@ import com.cstudy.modulecommon.error.competition.NotFoundCompetitionId;
 import com.cstudy.modulecommon.repository.competition.CompetitionRepository;
 import com.cstudy.modulecommon.repository.competition.MemberCompetitionRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
-import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import com.cstudy.modulecommon.repository.workbook.WorkbookRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
@@ -41,17 +42,18 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     private final CompetitionRepository competitionRepository;
     private final WorkbookRepository workbookRepository;
-    private final QuestionRepository questionRepository;
+    private final MemberCacheRepository memberCacheRepository;
     private final MemberCompetitionRepository memberCompetitionRepository;
     private final MemberCompetitionService memberCompetitionService;
     private final WorkbookService workbookService;
     private final AlarmService alarmService;
     private final MemberRepository memberRepository;
 
-    public CompetitionServiceImpl(CompetitionRepository competitionRepository, WorkbookRepository workbookRepository, QuestionRepository questionRepository, MemberCompetitionRepository memberCompetitionRepository, MemberCompetitionService memberCompetitionService, WorkbookService workbookService, AlarmService alarmService, MemberRepository memberRepository) {
+
+    public CompetitionServiceImpl(CompetitionRepository competitionRepository, WorkbookRepository workbookRepository, MemberCacheRepository memberCacheRepository, MemberCompetitionRepository memberCompetitionRepository, MemberCompetitionService memberCompetitionService, WorkbookService workbookService, AlarmService alarmService, MemberRepository memberRepository) {
         this.competitionRepository = competitionRepository;
         this.workbookRepository = workbookRepository;
-        this.questionRepository = questionRepository;
+        this.memberCacheRepository = memberCacheRepository;
         this.memberCompetitionRepository = memberCompetitionRepository;
         this.memberCompetitionService = memberCompetitionService;
         this.workbookService = workbookService;
@@ -117,6 +119,19 @@ public class CompetitionServiceImpl implements CompetitionService {
         return CompetitionResponseDto.of(competition, participants);
     }
 
+    @Override
+    @Transactional
+    public CompetitionJoinStatus isJoined(LoginUserDto loginUserDto, Long competitionId) {
+        boolean existsByMemberIdAndCompetitionId = memberRepository.existsByMemberIdAndCompetitionId(loginUserDto.getMemberId(), competitionId);
+
+        if (existsByMemberIdAndCompetitionId) {
+            return CompetitionJoinStatus.JOIN;
+        }else {
+            return CompetitionJoinStatus.WAITING;
+        }
+
+    }
+
     /**
      * 대회 리스트 조회
      * 끝난 대회이면 TRUE를 반환하고 진행 전 대회이면 FALSE를 반환한다.
@@ -161,6 +176,7 @@ public class CompetitionServiceImpl implements CompetitionService {
      * 3	finalize의 설명을 적절하게 설명한 보기를 찾으시오.	1,2,3,4	변수, 메서드 클래스가 변경 불가능 하도록 만든다.,참조 변수가 힙 내의 다른 객체를 가리키도록 변경할 수 없다.,가비지 컬렉터가 더 이상의 참조가 존재하지 않는 객체를 메모리에서 삭제하겠다고 결정하는 순간 호출된다.,try catch 블록 뒤에서 항상 실행될 코드 블록을 정의하기 위해 사용한다.
      */
     @Override
+    @Transactional(readOnly = true)
     public List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) {
         if (!loginUserDto.getRoles().contains(RoleEnum.ADMIN.getRoleName())) {
             Competition competition = competitionRepository.findById(competitionId)
@@ -175,14 +191,13 @@ public class CompetitionServiceImpl implements CompetitionService {
 
         for (Object[] row : questionsWithChoices) {
             BigInteger questionIdBigInteger = (BigInteger) row[0];
-
-
             Long questionId = questionIdBigInteger.longValue();// 문제 아이디
-            String description = (String) row[1];// 문제 설명
+            String title = (String) row[1];// 문제 제목
+            String description = (String) row[2];// 문제 설명
 
             // List []  형태로 가져옴.
-            String[] choiceNumbers = ((String) row[2]).split(",");// 보기 번호
-            String[] choiceContents = ((String) row[3]).split(",");// 보기 내용
+            String[] choiceNumbers = ((String) row[3]).split(",");// 보기 번호
+            String[] choiceContents = ((String) row[4]).split(",");// 보기 내용
 
             List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
 
@@ -194,6 +209,7 @@ public class CompetitionServiceImpl implements CompetitionService {
 
             CompetitionQuestionDto competitionQuestionDto = CompetitionQuestionDto.builder()
                     .questionId(questionId)
+                    .questionTitle(title)
                     .description(description)
                     .choices(choices)
                     .build();
@@ -203,6 +219,7 @@ public class CompetitionServiceImpl implements CompetitionService {
 
         return competitionQuestions;
     }
+
 
 
 
