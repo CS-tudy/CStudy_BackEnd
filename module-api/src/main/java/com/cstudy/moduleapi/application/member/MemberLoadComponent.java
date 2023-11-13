@@ -8,8 +8,6 @@ import com.cstudy.modulecommon.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Slf4j
 @Component
 public class MemberLoadComponent {
@@ -21,20 +19,27 @@ public class MemberLoadComponent {
         this.memberRepository = memberRepository;
     }
 
+    public Member loadMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundMemberId(memberId));
+    }
+
     public Member loadMemberByEmail(String memberEmail) {
-        Optional<Member> cachedMember = memberCacheRepository.getMember(memberEmail);
-
-        if (cachedMember.isPresent()) {
-            log.info("Member loaded from Redis: " + memberEmail);
-            return cachedMember.get();
-        } else {
-            Member dbMember = memberRepository.findByEmail(memberEmail)
-                    .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
-            log.info("Member loaded from Database: " + memberEmail);
-            memberCacheRepository.setMember(dbMember);
-
-            return dbMember;
-        }
+        return memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
+//        Optional<Member> cachedMember = memberCacheRepository.getMember(memberEmail);
+//
+//        if (cachedMember.isPresent()) {
+//            log.info("Member loaded from Redis: " + memberEmail);
+//            return cachedMember.get();
+//        } else {
+//            Member dbMember = memberRepository.findByEmail(memberEmail)
+//                    .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
+//            log.info("Member loaded from Database: " + memberEmail);
+//            memberCacheRepository.setMember(dbMember);
+//
+//            return dbMember;
+//        }
     }
 
 }

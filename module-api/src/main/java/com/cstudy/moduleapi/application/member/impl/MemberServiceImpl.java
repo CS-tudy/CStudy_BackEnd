@@ -110,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
         signupWithRole(member);
         Member savedMember = memberRepository.save(member);
         reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
-        saveToRedisAsync(savedMember);
+//        saveToRedisAsync(savedMember);
         return MemberSignupResponse.of(savedMember);
     }
 
@@ -145,7 +145,7 @@ public class MemberServiceImpl implements MemberService {
                 .filter(password -> passwordEncoder.matches(password, member.getPassword()))
                 .orElseThrow(() -> new InvalidMatchPasswordException(request.getPassword()));
 
-        memberCacheRepository.setMember(member);
+//        memberCacheRepository.setMember(member);
         return createToken(member);
     }
 
@@ -165,8 +165,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void changePassword(MemberPasswordChangeRequest request, LoginUserDto loginUserDto) {
-        Member member = memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(()-> new NotFoundMemberId(loginUserDto.getMemberId()));
+        Member member = memberLoadComponent.loadMemberById(loginUserDto.getMemberId());
         if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
             throw new InvalidMatchPasswordException(request.getOldPassword());
         }
@@ -201,8 +200,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Page<AlarmResponseDto> alarmList(LoginUserDto loginUserDto, Pageable pageable) {
-        Member member = memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId()));
+        Member member = memberLoadComponent.loadMemberById(loginUserDto.getMemberId());
         return alarmRepository.findAllByMember(member, pageable)
                 .map(AlarmResponseDto::of);
     }
