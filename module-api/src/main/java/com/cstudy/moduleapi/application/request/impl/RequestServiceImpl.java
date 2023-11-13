@@ -65,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
     public Long createRequest(CreateRequestRequestDto requestDto, LoginUserDto loginUserDto) {
         log.info("요청 문제 제목 {}", requestDto.getTitle());
         log.info("요청 문제 내용 {}", requestDto.getDescription());
-        Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
+        Member member = memberLoadComponent.loadMemberById(loginUserDto.getMemberId());
         requestRepository.save(Request.builder()
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
@@ -102,10 +102,8 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public RequestResponseDto getRequest(Long id) {
         log.info("단일 게시글 아이디 : {}", id);
-        Request request = requestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundRequest(id));
-
-        return RequestResponseDto.of(request);
+        return RequestResponseDto.of(requestRepository.findById(id)
+                .orElseThrow(() -> new NotFoundRequest(id)));
     }
 
     /**
@@ -114,9 +112,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public Page<RequestResponseDto> getRequestList(Pageable pageable) {
-
         Page<Request> requests = requestRepository.findAll(pageable);
-
         return requests.map(RequestResponseDto::of);
     }
 

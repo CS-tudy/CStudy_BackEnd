@@ -46,7 +46,7 @@ public class NoticeServiceImpl implements NoticeService {
         noticeRepository.save(Notice.builder()
                 .title(noticeSaveRequestDto.getTitle())
                 .content(noticeSaveRequestDto.getContent())
-                .member(memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail()))
+                .member(memberLoadComponent.loadMemberById(loginUserDto.getMemberId()))
                 .build());
     }
 
@@ -60,7 +60,8 @@ public class NoticeServiceImpl implements NoticeService {
         log.info("변경을 원하는 제목 : {}", noticeUpdateRequestDto.getTitle());
         log.info("변경을 원하는 내용 : {}", noticeUpdateRequestDto.getContent());
         noticeRepository.findById(noticeId)
-                .orElseThrow(()->new NotFoundNoticeId(noticeId)).updateNotice(noticeUpdateRequestDto);
+                .orElseThrow(()->new NotFoundNoticeId(noticeId))
+                .updateNotice(noticeUpdateRequestDto);
     }
 
     /**
@@ -71,7 +72,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void deleteNotice(Long noticeId, LoginUserDto loginUserDto) {
         log.info("noticeId : {}", noticeId);
-        Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
+        Member member = memberLoadComponent.loadMemberById(loginUserDto.getMemberId());
 
         Optional.of(member.getId())
                 .filter(id -> id.equals(ADMIN_ID))
