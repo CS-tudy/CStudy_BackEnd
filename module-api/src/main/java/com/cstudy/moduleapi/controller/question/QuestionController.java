@@ -5,6 +5,7 @@ import com.cstudy.moduleapi.application.question.QuestionService;
 import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
 import com.cstudy.moduleapi.dto.question.CreateQuestionAndCategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.QuestionAnswerDto;
+import com.cstudy.moduleapi.dto.question.QuestionPagingResponsivenessDto;
 import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -103,6 +106,13 @@ public class QuestionController {
 
 
         return questionService.questionPageWithCategory(searchCondition, page, size, loginUserDto);
+    }
+
+    @GetMapping("/permitAll")
+    @PermitAll
+    @ResponseStatus(HttpStatus.OK)
+    public Page<QuestionPagingResponsivenessDto> questionPageWithCategory_noJoin(@PageableDefault(size = 10) Pageable pageable) {
+        return questionService.questionPageWithCategory_noJoin(pageable);
     }
 
     @Operation(summary = "단일 회원의 문제 찾기", description = "단일 회원의 문제 5개의 사이즈를 가지는 문제 페이징 / ROLE_CUSTOM', 'ROLE_ADMIN")
