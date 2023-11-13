@@ -12,6 +12,7 @@ import com.cstudy.modulecommon.error.notice.NotFoundNoticeId;
 import com.cstudy.modulecommon.error.notice.NotMatchAdminIpException;
 import com.cstudy.modulecommon.repository.notice.NoticeRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
@@ -40,6 +41,8 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void saveNotice(NoticeSaveRequestDto noticeSaveRequestDto, LoginUserDto loginUserDto) {
+        log.info("제목 : {}", noticeSaveRequestDto.getTitle());
+        log.info("내용 : {}", noticeSaveRequestDto.getContent());
         noticeRepository.save(Notice.builder()
                 .title(noticeSaveRequestDto.getTitle())
                 .content(noticeSaveRequestDto.getContent())
@@ -53,6 +56,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void updateNotice(Long noticeId, NoticeUpdateRequestDto noticeUpdateRequestDto, LoginUserDto loginUserDto) {
+        log.info("noticeId : {}", noticeId);
+        log.info("변경을 원하는 제목 : {}", noticeUpdateRequestDto.getTitle());
+        log.info("변경을 원하는 내용 : {}", noticeUpdateRequestDto.getContent());
         noticeRepository.findById(noticeId)
                 .orElseThrow(()->new NotFoundNoticeId(noticeId)).updateNotice(noticeUpdateRequestDto);
     }
@@ -64,6 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void deleteNotice(Long noticeId, LoginUserDto loginUserDto) {
+        log.info("noticeId : {}", noticeId);
         Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
 
         Optional.of(member.getId())

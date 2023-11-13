@@ -12,7 +12,10 @@ import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
-import com.cstudy.modulecommon.error.member.*;
+import com.cstudy.modulecommon.error.member.EmailDuplication;
+import com.cstudy.modulecommon.error.member.InvalidMatchPasswordException;
+import com.cstudy.modulecommon.error.member.NameDuplication;
+import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
 import com.cstudy.modulecommon.repository.alarm.AlarmRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.role.RoleRepository;
@@ -61,8 +64,8 @@ public class MemberServiceImpl implements MemberService {
     @Value("${spring.mail.username}")
     private String EMAIL;
     private final static String RANKING_KEY = "MemberRank";
-    private final static String ADMIN_EMAIL ="admin@admin.com";
-    private final static String EMAIL_SUBJECT ="회원가입 코드 메일";
+    private final static String ADMIN_EMAIL = "admin@admin.com";
+    private final static String EMAIL_SUBJECT = "회원가입 코드 메일";
 
     public MemberServiceImpl(MemberRepository memberRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, JavaMailSender javaMailSender, RefreshTokenService refreshTokenService, DuplicateServiceFinder duplicateServiceFinder, ReviewService reviewNoteService, EmailComponent emailComponent, StringRedisTemplate redisTemplate, AlarmRepository alarmRepository, MemberCacheRepository memberCacheRepository, MemberLoadComponent memberLoadComponent) {
         this.memberRepository = memberRepository;
@@ -86,11 +89,10 @@ public class MemberServiceImpl implements MemberService {
      * 1. 유저를 생성한다.
      * 2. 유저에 대한 권한을 생성한다.
      * 3.  MongoDB의 ReviewUser를 생성한다.
-     *
+     * <p>
      * 다음과 같은 체크를 한다.
      * 1. 이메일에 대한 중복을 체크한다.
      * 2. 이메일에 대한 로직을 체크한다.
-     *
      */
     @Override
     @Transactional
@@ -116,31 +118,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    @Async
-    public void saveToRedisAsync(Member member) {
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        zSetOps.add(RANKING_KEY, member.getName(), 0);
-    }
-
-    /**
-     * 테스트 코드를 작성하면서 호원가입에 관한에서 중복을 막기 위한 로직의 불편함으로 새롭게 작성
-     * 물론 mock을 통해서 문제를 해결할 수 있지만 관련 mock을 작성하기 너무 많기 때문에 JUnit을 사용하는 classic 방식에서
-     * 이 문제를 해결할 수 있는 방식을 찾아보는게 좋겠음
-     */
-    @Override
-    @Transactional
-    public MemberSignupResponse signUpForTest(MemberSignupRequest request) {
-        return getMemberSignupResponse(request);
-    }
-
-
     /**
      * 회원 로그인을 처리한다. 이때 비밀번호를 일치하는지 확인하고 만약에 일치하지 않으면 exception이 발생한다.
      */
     @Override
     @Transactional
     public MemberLoginResponse login(MemberLoginRequest request) {
-
+        log.info("Request email : {} ", request.getEmail());
+        log.info("Request passwordEmpty : {} ", request.getPassword().isEmpty());
+        log.info("=====================================");
         // 관리자가 로그인을 하면 db와 접근하고 일반 회원이 접근하면 redis에 캐싱된 데이터를 접근한다.
         Member member = Optional.of(request.getEmail())
                 .filter(ADMIN_EMAIL::equals)
@@ -173,8 +159,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void changePassword(MemberPasswordChangeRequest request, LoginUserDto loginUserDto) {
         Member member = memberLoadComponent.loadMemberById(loginUserDto.getMemberId());
-
-
+        log.info("새로운 비밀번호 : {}", request.getNewPassword());
         if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
             throw new InvalidMatchPasswordException(request.getOldPassword());
         }
@@ -215,6 +200,22 @@ public class MemberServiceImpl implements MemberService {
                 .map(AlarmResponseDto::of);
     }
 
+    @Async
+    public void saveToRedisAsync(Member member) {
+        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
+        zSetOps.add(RANKING_KEY, member.getName(), 0);
+    }
+
+    /**
+     * 테스트 코드를 작성하면서 호원가입에 관한에서 중복을 막기 위한 로직의 불편함으로 새롭게 작성
+     * 물론 mock을 통해서 문제를 해결할 수 있지만 관련 mock을 작성하기 너무 많기 때문에 JUnit을 사용하는 classic 방식에서
+     * 이 문제를 해결할 수 있는 방식을 찾아보는게 좋겠음
+     */
+    @Override
+    @Transactional
+    public MemberSignupResponse signUpForTest(MemberSignupRequest request) {
+        return getMemberSignupResponse(request);
+    }
 
     private void signupWithRole(Member member) {
         Optional<Role> userRole = roleRepository.findByName(RoleEnum.CUSTOM.getRoleName());
@@ -244,16 +245,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void checkEmailAndNameDuplication(MemberSignupRequest request) {
+        log.info("memberSign request email : {}", request.getEmail());
+        log.info("memberSign request name : {}", request.getName());
+        log.info("=============================================");
         DuplicateResponseDto email = duplicateServiceFinder.getVerifyResponseDto("email", request.getEmail());
         Optional.of(email)
                 .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
                 .ifPresent(duplicateResponseDto -> {
+                    log.info("중복 이메일");
                     throw new EmailDuplication("중복 이메일");
                 });
         DuplicateResponseDto name = duplicateServiceFinder.getVerifyResponseDto("name", request.getName());
         Optional.of(name)
                 .filter(duplicateResponseDto -> duplicateResponseDto.getVerify().equals(DuplicateResult.FALSE.getDivisionResult()))
                 .ifPresent(duplicateResponseDto -> {
+                    log.info("중복 이메일");
                     throw new NameDuplication("중복 이름");
                 });
     }

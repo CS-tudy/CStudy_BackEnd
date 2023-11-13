@@ -19,9 +19,11 @@ import com.cstudy.modulecommon.repository.competition.CompetitionScoreRepository
 import com.cstudy.modulecommon.repository.competition.MemberCompetitionRepository;
 import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompetitionScoreServiceImpl implements CompetitionScoreService {
@@ -38,6 +40,8 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
     @Override
     @Transactional
     public void scoring(CompetitionScoreRequestDto requestDto, LoginUserDto userDto) {
+        log.info("경기 아이디 : {}",requestDto.getCompetitionId());
+        log.info("끝나는 시간 : {}",requestDto.getEndTime());
         MemberCompetition memberCompetition = memberCompetitionRepository
                 .findByMemberIdAndCompetitionId(userDto.getMemberId(), requestDto.getCompetitionId())
                 .orElseThrow(NotFoundMemberCompetition::new);
@@ -57,6 +61,7 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
 
             if(questionDto.getChoiceNumber() != null){
                 boolean correct = isCorrectAnswer(question, questionDto.getChoiceNumber());
+                log.info("정답 유무 : {}", correct);
                 if (correct) {
                     competitionScore.setSuccess(true);
                     score++;
@@ -74,9 +79,12 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
     @Transactional(readOnly = true)
     public CompetitionScoreResponseDto getAnswer(Long memberId, Long competitionId) {
         if(!memberCompetitionRepository.existsByMemberIdAndCompetitionId(memberId, competitionId)){
+            log.error("회원은 지금 해당 경기에 참여하고 있습니다.");
             throw new NotFoundMemberCompetition();
         }
 
+        log.info("memberId : {}", memberId);
+        log.info("competitionId : {}", competitionId);
         List<CompetitionScore> memberScores = competitionScoreRepository
                 .findByCompetitionIdAndMemberId(memberId, competitionId);
 
@@ -93,6 +101,7 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
 
             if(competitionScore.isSuccess()){
                 score++;
+                log.info("성공");
             }
         }
         return CompetitionScoreResponseDto.builder()
@@ -105,6 +114,8 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
     @Override
     @Transactional(readOnly = true)
     public int getScore(Long memberId, Long competitionId) {
+        log.info("memberId : {}", memberId);
+        log.info("competitionId : {}", competitionId);
         MemberCompetition memberCompetition = memberCompetitionRepository.findByMemberIdAndCompetitionId(memberId, competitionId)
                 .orElseThrow(NotFoundMemberCompetition::new);
         return memberCompetition.getScore();
@@ -114,6 +125,7 @@ public class CompetitionScoreServiceImpl implements CompetitionScoreService {
     public boolean isCorrectAnswer(Question question, int number) {
         Choice choice = choiceRepository.findByQuestionAndNumber(question, number)
                 .orElseThrow(() -> new NotFoundChoiceWithQuestionAndNumber(question.getId(), number));
+        log.info("choice 성공유무 : {}", choice.isAnswer());
         return choice.isAnswer();
     }
 }

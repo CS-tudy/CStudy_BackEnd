@@ -23,6 +23,7 @@ public class MemberCacheRepository {
 
     public void setMember(Member member) {
         String key = getKey(member.getEmail());
+        log.info("key : {}", key);
         Member existingMember = redisTemplate.opsForValue().get(key);
 
         if (existingMember == null || !existingMember.getPassword().equals(member.getPassword())) {
@@ -33,6 +34,7 @@ public class MemberCacheRepository {
 
     public void modifyMemberRankingPoint(Member member, ChoiceAnswerRequestDto choiceAnswerRequestDto, boolean answer) {
         String key = getKey(member.getEmail());
+        log.info("key : {}", key);
         Member existingMember = redisTemplate.opsForValue().get(key);
 
         Objects.requireNonNull(existingMember, "멤버를 찾을 수 없습니다.");
@@ -48,6 +50,7 @@ public class MemberCacheRepository {
 
     public void updateMember(Member member) {
         String key = getKey(member.getEmail());
+        log.info("key : {}", key);
         Member existingMember = redisTemplate.opsForValue().get(key);
 
         Objects.requireNonNull(existingMember, "멤버를 찾을 수 없습니다.");
@@ -59,6 +62,7 @@ public class MemberCacheRepository {
 
     public Optional<Member> getMember(String memberEmail) {
         String key = getKey(memberEmail);
+        log.info("key : {}", key);
         Member member = redisTemplate.opsForValue().get(key);
         log.info("Get Redis Key:{}, {}", key, member);
         return Optional.ofNullable(member);
@@ -70,6 +74,7 @@ public class MemberCacheRepository {
 
     public void deleteMember(Member member) {
         String memberEmail = member.getEmail();
+        log.info("member Email : {}", memberEmail);
         String key = getKey(memberEmail);
         Boolean isDeleted = redisTemplate.delete(key);
         log.info("Delete Redis Key: {}, Deleted: {}", key, isDeleted);

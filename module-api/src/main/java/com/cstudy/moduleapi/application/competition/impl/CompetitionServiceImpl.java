@@ -50,7 +50,16 @@ public class CompetitionServiceImpl implements CompetitionService {
     private final MemberRepository memberRepository;
 
 
-    public CompetitionServiceImpl(CompetitionRepository competitionRepository, WorkbookRepository workbookRepository, MemberCacheRepository memberCacheRepository, MemberCompetitionRepository memberCompetitionRepository, MemberCompetitionService memberCompetitionService, WorkbookService workbookService, AlarmService alarmService, MemberRepository memberRepository) {
+    public CompetitionServiceImpl(
+            CompetitionRepository competitionRepository,
+            WorkbookRepository workbookRepository,
+            MemberCacheRepository memberCacheRepository,
+            MemberCompetitionRepository memberCompetitionRepository,
+            MemberCompetitionService memberCompetitionService,
+            WorkbookService workbookService,
+            AlarmService alarmService,
+            MemberRepository memberRepository
+    ) {
         this.competitionRepository = competitionRepository;
         this.workbookRepository = workbookRepository;
         this.memberCacheRepository = memberCacheRepository;
@@ -62,17 +71,17 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     /**
-     *  경기를 생성을 한다.
-     *  시간에 따라서 생성의 조건을 처리한다.
-     *  이후 문제집을 만들어서 경기에 사용하는 문제를 추가한다.
-     *  이때 경기에서 시작과 끝나는 TIME을 지정한다.
+     * 경기를 생성을 한다.
+     * 시간에 따라서 생성의 조건을 처리한다.
+     * 이후 문제집을 만들어서 경기에 사용하는 문제를 추가한다.
+     * 이때 경기에서 시작과 끝나는 TIME을 지정한다.
      */
     @Override
     @Transactional
     public Long createCompetition(CreateCompetitionRequestDto createCompetitionRequestDto) {
 
-        if(createCompetitionRequestDto.getCompetitionStart()
-                .isAfter(createCompetitionRequestDto.getCompetitionEnd())){
+        if (createCompetitionRequestDto.getCompetitionStart().isAfter(createCompetitionRequestDto.getCompetitionEnd())) {
+            log.error("CompetitionStartException");
             throw new CompetitionStartException();
         }
 
@@ -94,6 +103,7 @@ public class CompetitionServiceImpl implements CompetitionService {
         competitionRepository.save(competition);
         workbook.setCompetition(competition);
 
+        log.info("모든 회원에게 알림 보내기");
         for (Member member : memberRepository.findAll()) {
             Long allMemberId = member.getId();
             alarmService.send(AlarmType.CREATE_COMPETITION, new AlarmArgs(allMemberId, allMemberId, competition.getCompetitionTitle()), allMemberId);
@@ -110,7 +120,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     @Transactional(readOnly = true)
     public CompetitionResponseDto getCompetition(Long competitionId) {
-
+        log.info("competitionId : {}", competitionId);
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
 
@@ -122,11 +132,14 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     @Transactional
     public CompetitionJoinStatus isJoined(LoginUserDto loginUserDto, Long competitionId) {
+        log.info("competitionId : {}", competitionId);
         boolean existsByMemberIdAndCompetitionId = memberRepository.existsByMemberIdAndCompetitionId(loginUserDto.getMemberId(), competitionId);
 
         if (existsByMemberIdAndCompetitionId) {
+            log.info("CompetitionJoinStatus.JOIN");
             return CompetitionJoinStatus.JOIN;
-        }else {
+        } else {
+            log.info("CompetitionJoinStatus.WAITING");
             return CompetitionJoinStatus.WAITING;
         }
 
@@ -141,11 +154,14 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     @Transactional(readOnly = true)
     public Page<CompetitionListResponseDto> getCompetitionList(boolean finish, Pageable pageable, LocalDateTime now) {
+        log.info("경기 끝나는 유무 : {}", finish);
 
         Page<Competition> competitions = null;
         if (finish) {
+            log.info("경기 finish");
             competitions = competitionRepository.findByCompetitionEndBefore(now, pageable);
         } else {
+            log.info("경기 not finish");
             competitions = competitionRepository.findByCompetitionEndAfter(now, pageable);
         }
 
@@ -167,10 +183,10 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     /**
      * 회원의 경기 문제를 조회한다.
-     *
-     *  여기서 문제의 보기, 내용을 List 형태로 가져옴
-     *  따로 가져와서 Dto에 Mapping 보다는 List Object[] 로 가져와서 Mapping을 하여 한방 쿼리로 만듬
-     *
+     * <p>
+     * 여기서 문제의 보기, 내용을 List 형태로 가져옴
+     * 따로 가져와서 Dto에 Mapping 보다는 List Object[] 로 가져와서 Mapping을 하여 한방 쿼리로 만듬
+     * <p>
      * 1	자바의 접근 제어자 중에서 부모 클래스에 대해서는 public 멤버처럼 취급되며, 외부에서는 private 멤버처럼 취급됩니다.	1,2,3,4	protected,private,public,default
      * 2	객체지향의 특징 중에서 객체 내부의 접근을 제어하며 객체 사이의 결합도를 낮출 수 있고, 응집도가 증가하여 유지보수에 좋은 특징은?	1,2,3,4	캡슐화,상속,추상화,다형성
      * 3	finalize의 설명을 적절하게 설명한 보기를 찾으시오.	1,2,3,4	변수, 메서드 클래스가 변경 불가능 하도록 만든다.,참조 변수가 힙 내의 다른 객체를 가리키도록 변경할 수 없다.,가비지 컬렉터가 더 이상의 참조가 존재하지 않는 객체를 메모리에서 삭제하겠다고 결정하는 순간 호출된다.,try catch 블록 뒤에서 항상 실행될 코드 블록을 정의하기 위해 사용한다.
@@ -178,6 +194,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     @Transactional(readOnly = true)
     public List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) {
+        log.info("competitionId : {}", competitionId);
         if (!loginUserDto.getRoles().contains(RoleEnum.ADMIN.getRoleName())) {
             Competition competition = competitionRepository.findById(competitionId)
                     .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
@@ -194,10 +211,15 @@ public class CompetitionServiceImpl implements CompetitionService {
             Long questionId = questionIdBigInteger.longValue();// 문제 아이디
             String title = (String) row[1];// 문제 제목
             String description = (String) row[2];// 문제 설명
+            log.info("문제 아이디 >> {}", questionId);
+            log.info("문제 제목 >> {}", title);
+            log.info("문제 설명 >> {}", description);
 
             // List []  형태로 가져옴.
             String[] choiceNumbers = ((String) row[3]).split(",");// 보기 번호
             String[] choiceContents = ((String) row[4]).split(",");// 보기 내용
+            log.info("보기 개수 4개가 아니면 문제 >>> : {}", choiceNumbers.length);
+            log.info("내용 개수 4개가 아니면 문제 >>> : {}", choiceContents.length);
 
             List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
 
@@ -221,8 +243,6 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
 
-
-
     /**
      * 경기에 대한 문제를 추가할 수 있다.
      * 이때 문제를 추가하여 경기의 문제를 선정할 수 있다.
@@ -232,6 +252,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     @Transactional
     public void addCompetitionQuestion(CompetitionQuestionRequestDto requestDto) {
+        log.info("경기 아이디 >>> {}", requestDto.getCompetitionId());
         Competition competition = competitionRepository.findById(requestDto.getCompetitionId())
                 .orElseThrow(() -> new NotFoundCompetitionId(requestDto.getCompetitionId()));
 
@@ -251,10 +272,12 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     @Transactional
     public void deleteCompetitionQuestion(CompetitionQuestionRequestDto requestDto) {
+        log.info("경기 아이디 >>> {}", requestDto.getCompetitionId());
         Competition competition = competitionRepository.findById(requestDto.getCompetitionId())
                 .orElseThrow(() -> new NotFoundCompetitionId(requestDto.getCompetitionId()));
 
         Long workbookId = competition.getWorkbook().getId();
+        log.info("문제집 아이디 >>> {}", workbookId);
         WorkbookQuestionRequestDto questionDto = WorkbookQuestionRequestDto.builder()
                 .questionIds(requestDto.getQuestionIds())
                 .workbookId(workbookId).build();

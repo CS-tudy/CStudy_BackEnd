@@ -37,6 +37,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -111,6 +112,17 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void createQuestionChoice(CreateQuestionAndCategoryRequestDto requestDto) {
 
+        Objects.requireNonNull(requestDto, "문제에 관련된 데이터가 없습니다.");
+
+        Objects.requireNonNull(requestDto.getCategoryRequestDto(), " 카테고리가 없습니다.");
+
+        Objects.requireNonNull(requestDto.getCreateQuestionRequestDto().getQuestionTitle(), " 제목 없습니다.");
+        Objects.requireNonNull(requestDto.getCreateQuestionRequestDto().getQuestionDesc(), " 문제 설명 없습니다.");
+        Objects.requireNonNull(requestDto.getCreateQuestionRequestDto().getQuestionExplain(), " 문제 정답 설명 없습니다.");
+
+        int size = requestDto.getCreateChoicesAboutQuestionDto().size();
+        log.info("문제 보기 개수  :{}", size);
+
         List<Choice> choices = new ArrayList<>();
 
         String findCategoryTitle = requestDto.getCategoryRequestDto().getCategory();
@@ -122,7 +134,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         for (CreateChoicesAboutQuestionDto choiceDto : requestDto.getCreateChoicesAboutQuestionDto()) {
             boolean answer = isCollectAnswer(choiceDto.getAnswer());
-
+            log.info("정답, 실패 여부 : {}", answer);
             Choice choice = createChoice(choiceDto, question, answer);
 
             choices.add(choice);
@@ -165,7 +177,7 @@ public class QuestionServiceImpl implements QuestionService {
                 CreateQuestionAndCategoryRequestDto questionDto = requestDtos.get(i);
 
                 Long categoryId = getCategoryIdByTitle(questionDto.getCategoryRequestDto().getCategory());
-
+                log.info("categoryId : {}", categoryId);
                 preparedStatement.setLong(1, categoryId);
                 preparedStatement.setString(2, questionDto.getCreateQuestionRequestDto().getQuestionDesc());
                 preparedStatement.setString(3, questionDto.getCreateQuestionRequestDto().getQuestionExplain());
@@ -254,8 +266,8 @@ public class QuestionServiceImpl implements QuestionService {
                 .filter(Choice::isAnswer)
                 .map(Choice::getNumber)
                 .findFirst().orElseThrow();
-
-        log.warn("정답 info {}",choiceAnswerNumber);
+        Objects.requireNonNull(choiceAnswerNumber , "4지선다 문제가 없습니다.");
+        log.info("정답 info {}",choiceAnswerNumber);
 
 
         //현재 MySQL 부분에서 문제에 대한 정답 및 오답을 처리한다.
@@ -334,7 +346,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public Page<QuestionPagingResponsivenessDto> questionPageWithCategory_noJoin(Pageable pageable) {
-        return questionRepository.findAll(pageable).map(QuestionPagingResponsivenessDto::of);
+        return questionRepository.findAll(pageable)
+                .map(QuestionPagingResponsivenessDto::of);
     }
 
     private Question createQuestion(

@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 public class RequestServiceImpl implements RequestService {
 
     private final static Long ADMIN_ID = 1L;
@@ -40,7 +40,14 @@ public class RequestServiceImpl implements RequestService {
     private final MemberLoadComponent memberLoadComponent;
     private final AlarmService alarmService;
 
-    public RequestServiceImpl(RequestRepository requestRepository, MemberRepository memberRepository, RedisPublisher redisPublisher, AlarmRepository alarmRepository, MemberLoadComponent memberLoadComponent, AlarmService alarmService) {
+    public RequestServiceImpl(
+            RequestRepository requestRepository,
+            MemberRepository memberRepository,
+            RedisPublisher redisPublisher,
+            AlarmRepository alarmRepository,
+            MemberLoadComponent memberLoadComponent,
+            AlarmService alarmService
+    ) {
         this.requestRepository = requestRepository;
         this.memberRepository = memberRepository;
         this.redisPublisher = redisPublisher;
@@ -55,9 +62,9 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public Long createRequest(
-            CreateRequestRequestDto requestDto,
-            LoginUserDto loginUserDto) {
+    public Long createRequest(CreateRequestRequestDto requestDto, LoginUserDto loginUserDto) {
+        log.info("요청 문제 제목 {}", requestDto.getTitle());
+        log.info("요청 문제 내용 {}", requestDto.getDescription());
         Member member = memberLoadComponent.loadMemberByEmail(loginUserDto.getMemberEmail());
         requestRepository.save(Request.builder()
                 .title(requestDto.getTitle())
@@ -65,7 +72,9 @@ public class RequestServiceImpl implements RequestService {
                 .member(member)
                 .build());
 
+        log.info("알람 발송 관리자 전송");
         alarmService.send(AlarmType.NEW_REQUEST_USER, new AlarmArgs(loginUserDto.getMemberId(), ADMIN_ID, requestDto.getTitle()), ADMIN_ID);
+        log.info("알람 발송 성공");
 
         member.addRequest(Request.builder()
                 .title(requestDto.getTitle())
@@ -92,7 +101,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public RequestResponseDto getRequest(Long id) {
-
+        log.info("단일 게시글 아이디 : {}", id);
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundRequest(id));
 
@@ -120,9 +129,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public Page<RequestResponseDto> getRequestList(Long memberId, Pageable pageable) {
-
         Page<Request> request = requestRepository.findRequestByMemberId(memberId, pageable);
-
         return request.map(RequestResponseDto::of);
     }
 
@@ -132,6 +139,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public void updateFlag(FlagRequestDto flagDto) {
+        log.info("허용할 아이디 : {}", flagDto.getId());
         requestRepository.findById(flagDto.getId())
                 .orElseThrow(() -> new NotFoundRequest(flagDto.getId()))
                 .updateFlag(flagDto.isFlag());
@@ -154,6 +162,9 @@ public class RequestServiceImpl implements RequestService {
     @AuthCheck
     @Transactional
     public void updateRequest(UpdateRequestRequestDto updateRequestRequestDto, LoginUserDto loginUserDto) {
+        log.info("updateRequest 아이디: {}",updateRequestRequestDto.getId());
+        log.info("updateRequest 제목: {}", updateRequestRequestDto.getTitle());
+        log.info("updateRequest 내용: {}", updateRequestRequestDto.getDescription());
         requestRepository.findById(updateRequestRequestDto.getId())
                 .orElseThrow(() -> new NotFoundRequest(updateRequestRequestDto.getId()))
                 .updateRequest(updateRequestRequestDto);

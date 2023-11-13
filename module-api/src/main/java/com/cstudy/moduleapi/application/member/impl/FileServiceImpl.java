@@ -73,7 +73,6 @@ public class FileServiceImpl implements FileService {
     }
 
 
-
     @Override
     @Transactional(readOnly = true)
     public String getMemberImagePath(LoginUserDto loginUserDto) {
@@ -81,7 +80,7 @@ public class FileServiceImpl implements FileService {
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-
+            log.info("BASE_CLOUD_FRONT : {}", BASE_CLOUD_FRONT);
             return BASE_CLOUD_FRONT + member.getFile().stream()
                     .max(Comparator.comparing(File::getCreatedDate))
                     .map(File::getFileName)

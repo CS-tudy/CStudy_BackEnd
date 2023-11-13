@@ -54,8 +54,9 @@ public class AlarmService {
                 .args(new AlarmArgs(args.getFromMemberId(), args.getTargetId(), args.getAlarmData()))
                 .build());
 
-        log.warn("args from member: {}", args.getFromMemberId());
-        log.warn("args target id: {}", args.getTargetId());
+        log.info("args from member: {}", args.getFromMemberId());
+        log.info("args target id: {}", args.getTargetId());
+
         String alarmData = alarmFactory.alarmFactory(type, args);
         emitterRepository.get(memberId).ifPresentOrElse(sseEmitter -> {
             try {

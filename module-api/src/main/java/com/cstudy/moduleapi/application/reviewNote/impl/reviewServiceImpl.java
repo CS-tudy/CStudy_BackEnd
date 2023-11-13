@@ -36,7 +36,12 @@ public class reviewServiceImpl implements ReviewService {
     private final QuestionRepository questionRepository;
 
 
-    public reviewServiceImpl(ReviewUserRepository userRepository, ReviewNoteRepository reviewNoteRepository, MemberRepository memberRepository, QuestionRepository questionRepository) {
+    public reviewServiceImpl(
+            ReviewUserRepository userRepository,
+            ReviewNoteRepository reviewNoteRepository,
+            MemberRepository memberRepository,
+            QuestionRepository questionRepository
+    ) {
         this.userRepository = userRepository;
         this.reviewNoteRepository = reviewNoteRepository;
         this.memberRepository = memberRepository;
@@ -46,8 +51,8 @@ public class reviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void createUserWhenSignupSaveMongodb(String userName) {
-
         Objects.requireNonNull(userName, "유저 이름이 Null 입니다.");
+        log.info("userName : {}", userName);
 
         ReviewUser reviewUser = ReviewUser.builder()
                 .userName(userName)
@@ -60,38 +65,37 @@ public class reviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void solveQuestionWithValid(
-            long questionId,
-            int choiceNumber,
-            boolean isAnswer,
-            LoginUserDto loginUserDto,
-            Integer choiceAnswerNumber
-    ) {
+    public void solveQuestionWithValid(long questionId, int choiceNumber, boolean isAnswer,
+                                       LoginUserDto loginUserDto, Integer choiceAnswerNumber) {
 
 
         LocalDateTime now = LocalDateTime.now();
 
         ReviewUser byName = userRepository.findByUserName(memberRepository.findById(loginUserDto.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())).getName())
+                        .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())).getName())
                 .orElseThrow(RuntimeException::new);
+        log.info("mongodb에서 유저  : {}", byName);
 
         boolean questionExistsInFailList = byName.getFailQuestion().stream()
                 .anyMatch(failQuestionId -> failQuestionId.equals(String.valueOf(questionId)));
-
+        log.info("questionExistsInFailList  :{}", questionExistsInFailList);
 
         boolean questionExistsInSuccessList = byName.getSuccessQuestion().stream()
                 .anyMatch(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));
+        log.info("questionExistsInSuccessList:{}", questionExistsInSuccessList);
 
         divisionListSuccessOrFail(questionId, questionExistsInSuccessList, byName, questionExistsInFailList);
 
         if (questionExistsInFailList || questionExistsInSuccessList) {
+            log.info("기존에 관련된 내용이 있으면 삭제한다. ");
             ReviewNote match = byName.getReviewNotes().stream()
                     .filter(reviewNote -> reviewNote.getQuestionId() == questionId)
                     .findFirst().orElseThrow(() -> new RuntimeException("mongodb"));
 
+            // mongodb는 objectId로 매핑을 해야지 제거 가능
             ObjectId objectId = new ObjectId(match.getId());
-
             reviewNoteRepository.deleteById(objectId.toString());
+            log.info("==============삭제 완료===============");
         }
 
         updateQuestionStatus(questionId, isAnswer, byName);
@@ -131,7 +135,7 @@ public class reviewServiceImpl implements ReviewService {
         byName.getReviewNotes().add(reviewNote);
     }
 
-    private  void updateQuestionStatus(long questionId, boolean isAnswer, ReviewUser byName) {
+    private void updateQuestionStatus(long questionId, boolean isAnswer, ReviewUser byName) {
         if (isAnswer) {
             byName.getSuccessQuestion().add(String.valueOf(questionId));
         } else {
@@ -139,7 +143,7 @@ public class reviewServiceImpl implements ReviewService {
         }
     }
 
-    private  void divisionListSuccessOrFail(long questionId, boolean questionExistsInSuccessList, ReviewUser byName, boolean questionExistsInFailList) {
+    private void divisionListSuccessOrFail(long questionId, boolean questionExistsInSuccessList, ReviewUser byName, boolean questionExistsInFailList) {
         if (questionExistsInSuccessList) {
             List<String> successQuestion = byName.getSuccessQuestion();
             successQuestion.removeIf(successQuestionId -> successQuestionId.equals(String.valueOf(questionId)));

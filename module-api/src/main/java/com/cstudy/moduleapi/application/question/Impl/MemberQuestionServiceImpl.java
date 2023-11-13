@@ -9,6 +9,7 @@ import com.cstudy.modulecommon.domain.question.MemberQuestion;
 import com.cstudy.modulecommon.domain.question.Question;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.error.member.NotFoundMemberId;
+import com.cstudy.modulecommon.error.question.NotFoundQuestionId;
 import com.cstudy.modulecommon.error.question.existByMemberQuestionDataException;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.question.MemberQuestionRepository;
@@ -58,10 +59,11 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
                 .orElseThrow(() -> new NotFoundMemberId(memberId));
 
         Question question = questionRepository.findById(questionId)
-                .orElseThrow();
+                .orElseThrow(()->new NotFoundQuestionId(questionId));
 
 
         if (memberQuestionRepository.existsByMemberAndQuestionAndSuccess(memberId, questionId, choiceAnswerRequestDto.getChoiceNumber())) {
+            log.error("이미 관련 데이터가 있습니다. : excection : {}", existByMemberQuestionDataException.class);
             throw new existByMemberQuestionDataException(memberId, questionId, choiceAnswerRequestDto.getChoiceNumber());
         }
 
@@ -93,9 +95,10 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
                 .orElseThrow(() -> new NotFoundMemberId(memberId));
 
         Question question = questionRepository.findById(questionId)
-                .orElseThrow();
+                .orElseThrow(()->new NotFoundQuestionId(questionId));
 
         if (memberQuestionRepository.existsByMemberAndQuestionAndFail(memberId, questionId, choiceAnswerRequestDto.getChoiceNumber())) {
+            log.error("이미 관련 데이터가 있습니다. : excection : {}", existByMemberQuestionDataException.class);
             throw new existByMemberQuestionDataException(memberId, questionId, choiceAnswerRequestDto.getChoiceNumber());
         }
 
@@ -117,6 +120,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     @Transactional
     public void findByQuestionAboutMemberIdAndQuestionIdSuccess(Long memberId, Long questionId) {
         long count = memberQuestionRepository.countByMemberIdAndQuestionIdAndSuccessZero(memberId, questionId);
+        log.info("기존에 있는지 성공 count : {} / memberId : {}, questionId : {}", count, memberId, questionId);
         if (count != 0) {
             Optional<MemberQuestion> questionOptional = memberQuestionRepository
                     .findByQuestionAboutMemberIdAndQuestionId(memberId, questionId);
@@ -132,6 +136,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     @Transactional
     public void findByQuestionAboutMemberIdAndQuestionIdFail(Long memberId, Long questionId) {
         long count = memberQuestionRepository.countByMemberIdAndQuestionIdAndFailZero(memberId, questionId);
+        log.info("기존에 있는지 실패 count: {} / memberId : {}, questionId : {}", count, memberId, questionId);
         if (count != 0) {
             Optional<MemberQuestion> questionOptional = memberQuestionRepository.findByQuestionAboutMemberIdAndQuestionId(memberId, questionId);
             questionOptional.ifPresent(question -> memberQuestionRepository.deleteById(question.getId()));
@@ -145,6 +150,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     @Override
     public QuestionAnswerDto isCorrectAnswer(Long memberId, Long questionId, ChoiceAnswerRequestDto requestDto) {
         boolean answer = memberQuestionRepository.existsByMemberAndQuestionAndSuccess(memberId, questionId, requestDto.getChoiceNumber());
+        log.info("문제의 성공 실패 여부 : {}", answer);
         return QuestionAnswerDto.builder()
                 .answer(answer)
                 .build();
