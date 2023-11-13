@@ -90,6 +90,7 @@ public class SecurityConfig {
 
                 //QuestionController
                 .antMatchers(HttpMethod.GET, "/api/questions").permitAll() // 전체 문제 탐색하게 페이징 처리
+                .antMatchers(HttpMethod.GET, "/api/questions/permitAll").permitAll() // 전체 문제 탐색하게 페이징 처리
                 .antMatchers(HttpMethod.GET, "/api/questions/*").permitAll() // 단일 문제 탐색하기
                 .antMatchers(HttpMethod.GET, "/api/questions/my-questions").authenticated() // 내가 해결한 문제 조회하기
                 .antMatchers(HttpMethod.POST, "/api/questions").authenticated()// 관리자가 문제 생성하기
