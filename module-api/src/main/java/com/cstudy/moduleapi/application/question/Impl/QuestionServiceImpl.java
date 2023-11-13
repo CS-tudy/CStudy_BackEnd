@@ -7,6 +7,7 @@ import com.cstudy.moduleapi.config.redis.RedisPublisher;
 import com.cstudy.moduleapi.dto.choice.CreateChoicesAboutQuestionDto;
 import com.cstudy.moduleapi.dto.question.CreateQuestionAndCategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.CreateQuestionRequestDto;
+import com.cstudy.moduleapi.dto.question.QuestionPagingResponsivenessDto;
 import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.domain.choice.Choice;
 import com.cstudy.modulecommon.domain.question.Category;
@@ -328,6 +329,12 @@ public class QuestionServiceImpl implements QuestionService {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return questionRepository.findQuestionPageWithCategory(pageable, searchCondition, loginUserDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<QuestionPagingResponsivenessDto> questionPageWithCategory_noJoin(Pageable pageable) {
+        return questionRepository.findAll(pageable).map(QuestionPagingResponsivenessDto::of);
     }
 
     private Question createQuestion(

@@ -8,6 +8,7 @@ import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import com.cstudy.modulecommon.dto.QuestionPageWithCategoryAndTitle;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface QuestionService {
     void choiceQuestion(LoginUserDto loginUserDto, Long questionId, ChoiceAnswerRequestDto choiceNumber);
 
     Page<QuestionPageWithCategoryAndTitle> questionPageWithCategory(QuestionSearchCondition searchCondition, int page, int size, LoginUserDto loginUserDto);
+
+    Page<QuestionPagingResponsivenessDto> questionPageWithCategory_noJoin(Pageable pageable);
 }
