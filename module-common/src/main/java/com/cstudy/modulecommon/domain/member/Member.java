@@ -30,7 +30,7 @@ import java.util.Set;
 //        @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
 //        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
-public class Member {
+public class Member extends BaseEntity{
 
     /********************************* PK 필드 *********************************/
     @Id
