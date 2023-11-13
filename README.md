@@ -8,8 +8,8 @@
 
 - 만약에 테스트를 하고 싶으시면 다음 계정을 이용하세요.
   
-ID : user99@email.com
-Password : user1234!
+ID : ctudy245@gmail.com
+Password : test1234!
 
 
   <br/>
