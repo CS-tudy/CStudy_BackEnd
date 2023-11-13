@@ -63,6 +63,7 @@ public class Member extends BaseEntity{
 
     /********************************* 연관관계 매핑 *********************************/
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "member",
             fetch = FetchType.LAZY,
