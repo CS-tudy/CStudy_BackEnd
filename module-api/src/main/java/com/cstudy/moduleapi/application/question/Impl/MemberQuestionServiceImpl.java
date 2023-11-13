@@ -1,5 +1,7 @@
 package com.cstudy.moduleapi.application.question.Impl;
 
+import com.cstudy.moduleapi.application.member.MemberLoadComponent;
+import com.cstudy.moduleapi.application.member.impl.MemberCacheRepository;
 import com.cstudy.moduleapi.application.question.MemberQuestionService;
 import com.cstudy.moduleapi.dto.question.QuestionAnswerDto;
 import com.cstudy.modulecommon.domain.member.Member;
@@ -11,6 +13,7 @@ import com.cstudy.modulecommon.error.question.existByMemberQuestionDataException
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.question.MemberQuestionRepository;
 import com.cstudy.modulecommon.repository.question.QuestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 
+@Slf4j
 @Service
 public class MemberQuestionServiceImpl implements MemberQuestionService {
 
@@ -28,17 +32,16 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final StringRedisTemplate redisTemplate;
+    private final MemberLoadComponent memberLoadComponent;
+    private final MemberCacheRepository memberCacheRepository;
 
-    public MemberQuestionServiceImpl(
-            MemberQuestionRepository memberQuestionRepository,
-            MemberRepository memberRepository,
-            QuestionRepository questionRepository,
-            StringRedisTemplate redisTemplate
-    ) {
+    public MemberQuestionServiceImpl(MemberQuestionRepository memberQuestionRepository, MemberRepository memberRepository, QuestionRepository questionRepository, StringRedisTemplate redisTemplate, MemberLoadComponent memberLoadComponent, MemberCacheRepository memberCacheRepository) {
         this.memberQuestionRepository = memberQuestionRepository;
         this.memberRepository = memberRepository;
         this.questionRepository = questionRepository;
         this.redisTemplate = redisTemplate;
+        this.memberLoadComponent = memberLoadComponent;
+        this.memberCacheRepository = memberCacheRepository;
     }
 
     /**
@@ -148,15 +151,8 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     }
 
     private void modifyScoreForMember(Member member, ChoiceAnswerRequestDto choiceAnswerRequestDto, boolean answer) {
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        Double currentScore = zSetOps.score(RANKING_KEY, member.getName());
-
-        double newScore;
-        if (answer) {
-            newScore = currentScore + 3L + (1 - (choiceAnswerRequestDto.getTime() / 1000.0));
-        } else {
-            newScore = currentScore - 2;
-        }
-        zSetOps.add(RANKING_KEY, member.getName(), newScore);
+        log.info("member email : {}", member.getEmail());
+        Member redisCacheMember = memberLoadComponent.loadMemberByEmail(member.getEmail());
+        memberCacheRepository.modifyMemberRankingPoint(redisCacheMember, choiceAnswerRequestDto, answer);
     }
 }

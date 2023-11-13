@@ -1,7 +1,7 @@
 package com.cstudy.moduleapi.application.member.impl;
 
 import com.cstudy.modulecommon.domain.member.Member;
-import com.cstudy.modulecommon.error.member.NotFoundMemberEmail;
+import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +31,27 @@ public class MemberCacheRepository {
         }
     }
 
+    public void modifyMemberRankingPoint(Member member, ChoiceAnswerRequestDto choiceAnswerRequestDto, boolean answer) {
+        String key = getKey(member.getEmail());
+        Member existingMember = redisTemplate.opsForValue().get(key);
+
+        Objects.requireNonNull(existingMember, "멤버를 찾을 수 없습니다.");
+
+        if (answer) {
+            existingMember.addRankingPoint(choiceAnswerRequestDto);
+        } else {
+            existingMember.minusRankingPoint(choiceAnswerRequestDto.getChoiceNumber());
+        }
+
+        redisTemplate.opsForValue().set(key, existingMember);
+    }
+
     public void updateMember(Member member) {
         String key = getKey(member.getEmail());
         Member existingMember = redisTemplate.opsForValue().get(key);
-        assert existingMember != null;
+
         Objects.requireNonNull(existingMember, "멤버를 찾을 수 없습니다.");
+
         existingMember.changePassword(member.getPassword());
 
         redisTemplate.opsForValue().set(key, existingMember);
