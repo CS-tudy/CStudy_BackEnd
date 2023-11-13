@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -26,8 +27,18 @@ public class MemberCacheRepository {
 
         if (existingMember == null || !existingMember.getPassword().equals(member.getPassword())) {
             log.info("Set Member to Redis: {}, {}", key, member);
-            redisTemplate.opsForValue().set(key, member, Member_Cache_TTL);
+            redisTemplate.opsForValue().set(key, member);
         }
+    }
+
+    public void updateMember(Member member) {
+        String key = getKey(member.getEmail());
+        Member existingMember = redisTemplate.opsForValue().get(key);
+        assert existingMember != null;
+        Objects.requireNonNull(existingMember, "멤버를 찾을 수 없습니다.");
+        existingMember.changePassword(member.getPassword());
+
+        redisTemplate.opsForValue().set(key, existingMember);
     }
 
     public Optional<Member> getMember(String memberEmail) {

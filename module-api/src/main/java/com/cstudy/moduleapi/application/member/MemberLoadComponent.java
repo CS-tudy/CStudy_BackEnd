@@ -8,6 +8,7 @@ import com.cstudy.modulecommon.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+
 @Slf4j
 @Component
 public class MemberLoadComponent {
@@ -25,9 +26,9 @@ public class MemberLoadComponent {
     }
 
     public Member loadMemberByEmail(String memberEmail) {
-        return memberRepository.findByEmail(memberEmail)
-                .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
-//        Optional<Member> cachedMember = memberCacheRepository.getMember(memberEmail);
+         return memberCacheRepository.getMember(memberEmail).orElseThrow(()-> new NotFoundMemberEmail("cache e"));
+//        return memberRepository.findByEmail(memberEmail)
+//                .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
 //
 //        if (cachedMember.isPresent()) {
 //            log.info("Member loaded from Redis: " + memberEmail);

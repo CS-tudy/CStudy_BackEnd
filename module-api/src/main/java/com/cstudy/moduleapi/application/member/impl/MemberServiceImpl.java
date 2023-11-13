@@ -12,10 +12,7 @@ import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.domain.role.RoleEnum;
-import com.cstudy.modulecommon.error.member.EmailDuplication;
-import com.cstudy.modulecommon.error.member.InvalidMatchPasswordException;
-import com.cstudy.modulecommon.error.member.NameDuplication;
-import com.cstudy.modulecommon.error.member.NotFoundMemberId;
+import com.cstudy.modulecommon.error.member.*;
 import com.cstudy.modulecommon.repository.alarm.AlarmRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
 import com.cstudy.modulecommon.repository.role.RoleRepository;
@@ -38,6 +35,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -63,6 +61,8 @@ public class MemberServiceImpl implements MemberService {
     @Value("${spring.mail.username}")
     private String EMAIL;
     private final static String RANKING_KEY = "MemberRank";
+    private final static String ADMIN_EMAIL ="admin@admin.com";
+    private final static String EMAIL_SUBJECT ="회원가입 코드 메일";
 
     public MemberServiceImpl(MemberRepository memberRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, JavaMailSender javaMailSender, RefreshTokenService refreshTokenService, DuplicateServiceFinder duplicateServiceFinder, ReviewService reviewNoteService, EmailComponent emailComponent, StringRedisTemplate redisTemplate, AlarmRepository alarmRepository, MemberCacheRepository memberCacheRepository, MemberLoadComponent memberLoadComponent) {
         this.memberRepository = memberRepository;
@@ -98,6 +98,7 @@ public class MemberServiceImpl implements MemberService {
             MemberSignupRequest request
 //            GeoLocationDto geoLocationDto
     ) {
+        Objects.requireNonNull(request, "멤버를 찾을 수 없습니다.");
         checkEmailAndNameDuplication(request);
 
         Member member = Member.builder()
@@ -110,7 +111,7 @@ public class MemberServiceImpl implements MemberService {
         signupWithRole(member);
         Member savedMember = memberRepository.save(member);
         reviewNoteService.createUserWhenSignupSaveMongodb(request.getName());
-//        saveToRedisAsync(savedMember);
+        memberCacheRepository.setMember(savedMember);
         return MemberSignupResponse.of(savedMember);
     }
 
@@ -139,13 +140,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberLoginResponse login(MemberLoginRequest request) {
-        Member member = memberLoadComponent.loadMemberByEmail(request.getEmail());
+
+        // 관리자가 로그인을 하면 db와 접근하고 일반 회원이 접근하면 redis에 캐싱된 데이터를 접근한다.
+        Member member = Optional.of(request.getEmail())
+                .filter(ADMIN_EMAIL::equals)
+                .map(email -> memberRepository.findByEmail(email)
+                        .orElseThrow(() -> new NotFoundMemberEmail(email)))
+                .orElseGet(() -> memberLoadComponent.loadMemberByEmail(request.getEmail()));
 
         Optional.of(request.getPassword())
                 .filter(password -> passwordEncoder.matches(password, member.getPassword()))
                 .orElseThrow(() -> new InvalidMatchPasswordException(request.getPassword()));
 
-//        memberCacheRepository.setMember(member);
         return createToken(member);
     }
 
@@ -161,16 +167,20 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 비밀번호를 변경한다.
+     * 이때 회원의 캐싱된 데이터의 비밀번호를 변경한다.
      */
     @Override
     @Transactional
     public void changePassword(MemberPasswordChangeRequest request, LoginUserDto loginUserDto) {
         Member member = memberLoadComponent.loadMemberById(loginUserDto.getMemberId());
+
+
         if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
             throw new InvalidMatchPasswordException(request.getOldPassword());
         }
+
         member.changePassword(passwordEncoder.encode(request.getNewPassword()));
-        memberCacheRepository.deleteMember(member);
+        memberCacheRepository.updateMember(member);
     }
 
     @Async
@@ -185,7 +195,7 @@ public class MemberServiceImpl implements MemberService {
 
         helper.setFrom(EMAIL);
         helper.setTo(recipientEmail);
-        helper.setSubject("회원가입 코드 메일");
+        helper.setSubject(EMAIL_SUBJECT);
         helper.setText(emailComponent.emailHtml(key), true);
 
         try {
