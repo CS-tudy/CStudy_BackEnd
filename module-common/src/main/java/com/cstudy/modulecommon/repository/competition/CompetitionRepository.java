@@ -25,30 +25,31 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
 
 
     @Query(value = "SELECT " +
-            "    question.question_id as question_id, " +
-            "    question.question_title as question_title, " +
-            "    question.question_description as question_description, " +
-            "    JSON_ARRAYAGG(choices.choice_number) as choice_numbers, " +
-            "    JSON_ARRAYAGG(choices.content) as choice_contents " +
+            "    q.question_id as question_id, " +
+            "    q.question_title as question_title, " +
+            "    q.question_description as question_description, " +
+            "    CONCAT('[', GROUP_CONCAT(c.choice_number ORDER BY c.choice_number SEPARATOR ','), ']') as choice_numbers, " +
+            "    JSON_ARRAYAGG(c.content)  as choice_contents " +
             "FROM " +
-            "    question " +
-            "LEFT OUTER JOIN " +
-            "    workbook_question workbook_question_alias " +
-            "        ON question.question_id=workbook_question_alias.question_id " +
-            "LEFT OUTER JOIN " +
-            "    workbook workbook_alias " +
-            "        ON workbook_question_alias.workbook_id=workbook_alias.workbook_id " +
-            "LEFT OUTER JOIN " +
-            "    competition competition_alias " +
-            "        ON workbook_alias.workbook_id=competition_alias.workbook_id " +
-            "LEFT OUTER JOIN " +
-            "    choice choices " +
-            "        ON question.question_id=choices.question_id " +
+            "    question q " +
+            "INNER JOIN " +
+            "    workbook_question wq " +
+            "        ON q.question_id = wq.question_id " +
+            "INNER JOIN " +
+            "    workbook w " +
+            "        ON wq.workbook_id = w.workbook_id " +
+            "INNER JOIN " +
+            "    competition comp " +
+            "        ON w.workbook_id = comp.workbook_id " +
+            "INNER JOIN " +
+            "    choice c " +
+            "        ON q.question_id = c.question_id " +
             "WHERE " +
-            "    competition_alias.competition_id=:competitionId " +
+            "    comp.competition_id = :competitionId " +
             "GROUP BY " +
-            "    question.question_id", nativeQuery = true)
+            "    q.question_id", nativeQuery = true)
     List<Object[]> findQuestionsWithChoices(@Param("competitionId") Long competitionId);
+
 
 
 }
