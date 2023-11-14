@@ -65,13 +65,13 @@ public class QuestionController {
     @Operation(summary = "단일 문제 탐색하기", description = "문제 아이디를 받아서 단일 문제 탐색하기 / PermitAll")
     @GetMapping("/{questionId}")
     @ResponseStatus(HttpStatus.OK)
-    @PermitAll
+    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public QuestionResponseDto findQuestionPathId(@Parameter(name = "문제 아이디", description = "문제 아이디")
-                                                  @PathVariable Long questionId) {
+                                                  @PathVariable Long questionId,@IfLogin LoginUserDto loginUserDto) {
         Optional.of(questionId)
                 .filter(id -> id >= 0)
                 .orElseThrow(() -> new PositivePatriarchal(questionId));
-        return questionService.findQuestionWithChoiceAndCategory(questionId);
+        return questionService.findQuestionWithChoiceAndCategory(questionId, loginUserDto);
     }
 
     @Operation(summary = "단일 문제에 대한 정답 선택하기", description = "4지선다 문제에 대해서 단일 문제 선택하기 / ROLE_CUSTOM', 'ROLE_ADMIN")

@@ -17,7 +17,7 @@ public interface QuestionService {
 
     void bulkCreateQuestionChoice(List<CreateQuestionAndCategoryRequestDto> requestDtos);
 
-    QuestionResponseDto findQuestionWithChoiceAndCategory(Long questionId);
+    QuestionResponseDto findQuestionWithChoiceAndCategory(Long questionId, LoginUserDto loginUserDto);
 
     void choiceQuestion(LoginUserDto loginUserDto, Long questionId, ChoiceAnswerRequestDto choiceNumber);
 

@@ -20,6 +20,7 @@ import com.cstudy.modulecommon.error.question.NotFoundQuestionId;
 import com.cstudy.modulecommon.error.question.NotFoundQuestionWithChoicesAndCategoryById;
 import com.cstudy.modulecommon.repository.choice.ChoiceRepository;
 import com.cstudy.modulecommon.repository.question.CategoryRepository;
+import com.cstudy.modulecommon.repository.question.MemberQuestionRepository;
 import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import com.cstudy.modulecommon.util.LoginUserDto;
 import lombok.extern.slf4j.Slf4j;
@@ -49,16 +50,9 @@ public class QuestionServiceImpl implements QuestionService {
     private final RedisPublisher redisPublisher;
     private final JdbcTemplate jdbcTemplate;
     private final ReviewService reviewService;
+    private final MemberQuestionRepository memberQuestionRepository;
 
-    public QuestionServiceImpl(
-            QuestionRepository questionRepository,
-            CategoryRepository categoryRepository,
-            ChoiceRepository choiceRepository,
-            MemberQuestionService memberQuestionService,
-            RedisPublisher redisPublisher,
-            JdbcTemplate jdbcTemplate,
-            ReviewService reviewService
-    ) {
+    public QuestionServiceImpl(QuestionRepository questionRepository, CategoryRepository categoryRepository, ChoiceRepository choiceRepository, MemberQuestionService memberQuestionService, RedisPublisher redisPublisher, JdbcTemplate jdbcTemplate, ReviewService reviewService, MemberQuestionRepository memberQuestionRepository) {
         this.questionRepository = questionRepository;
         this.categoryRepository = categoryRepository;
         this.choiceRepository = choiceRepository;
@@ -66,6 +60,7 @@ public class QuestionServiceImpl implements QuestionService {
         this.redisPublisher = redisPublisher;
         this.jdbcTemplate = jdbcTemplate;
         this.reviewService = reviewService;
+        this.memberQuestionRepository = memberQuestionRepository;
     }
 
     private static final String COLLECT_ANSWER = "정답";
@@ -233,12 +228,21 @@ public class QuestionServiceImpl implements QuestionService {
 
     /**
      *  문제에 대한 카테고리를 조회한다.
+     *  계속 문제를 실패 <-> 성공을 할 수 있기 때문에 이 문제를 해결하기 위하여 Front에서 만약에 성공이면 정답을 처리를 했으면 제출 버튼을 안보이게
+     *  status가 false면 버튼을 보이게 true이면 안보이게 설정을 한다.
      */
     @Override
     @Transactional
-    public QuestionResponseDto findQuestionWithChoiceAndCategory(Long questionId) {
-        return QuestionResponseDto.of(questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
-                .orElseThrow(() -> new NotFoundQuestionWithChoicesAndCategoryById(questionId)));
+    public QuestionResponseDto findQuestionWithChoiceAndCategory(Long questionId, LoginUserDto loginUserDto) {
+        long countedByMemberIdAndQuestionIdAndSuccessZero = memberQuestionRepository.countByMemberIdAndQuestionIdAndFailZero(loginUserDto.getMemberId(), questionId);
+        log.info("회원이 문제를 성공을 했는지 유무 : {}", countedByMemberIdAndQuestionIdAndSuccessZero);
+        Question question = questionRepository.findQuestionWithChoicesAndCategoryById(questionId)
+                .orElseThrow(() -> new NotFoundQuestionWithChoicesAndCategoryById(questionId));
+
+        boolean isCountNonZero = countedByMemberIdAndQuestionIdAndSuccessZero != 0;
+        log.info("status를 보여주는 여부 : {}", isCountNonZero);
+        log.info("true이면 문제 제출 버튼이 안보이고 false이면 문제 제풀 버튼이 보임");
+        return QuestionResponseDto.of(question, isCountNonZero);
     }
 
     /**

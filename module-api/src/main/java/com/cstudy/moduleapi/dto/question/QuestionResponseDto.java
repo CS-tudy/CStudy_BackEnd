@@ -20,10 +20,12 @@ public class QuestionResponseDto {
     private String title;
     private String description;
     private String explain;
+    private boolean status;
+
     @Builder.Default
     List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
 
-    public static QuestionResponseDto of(Question question) {
+    public static QuestionResponseDto of(Question question, boolean isAnswer) {
         return QuestionResponseDto.builder()
                 .title(question.getTitle())
                 .description(question.getDescription())
@@ -32,6 +34,7 @@ public class QuestionResponseDto {
                 .choices(question.getChoices().stream()
                         .map(ChoiceQuestionResponseDto::new)
                         .collect(Collectors.toList()))
+                .status(isAnswer)
                 .build();
     }
 }
