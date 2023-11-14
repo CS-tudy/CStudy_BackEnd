@@ -28,8 +28,8 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
             "    question.question_id as question_id, " +
             "    question.question_title as question_title, " +
             "    question.question_description as question_description, " +
-            "    GROUP_CONCAT(choices.choice_number) as choice_numbers, " +
-            "    GROUP_CONCAT(choices.content) as choice_contents " +
+            "    JSON_ARRAYAGG(choices.choice_number) as choice_numbers, " +
+            "    JSON_ARRAYAGG(choices.content) as choice_contents " +
             "FROM " +
             "    question " +
             "LEFT OUTER JOIN " +

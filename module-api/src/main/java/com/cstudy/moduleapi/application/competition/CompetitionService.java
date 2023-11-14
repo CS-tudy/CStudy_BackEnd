@@ -4,6 +4,7 @@ import com.cstudy.moduleapi.dto.competition.*;
 import com.cstudy.modulecommon.domain.competition.CompetitionJoinStatus;
 import com.cstudy.modulecommon.dto.CompetitionQuestionDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,7 +22,7 @@ public interface CompetitionService {
 
     Page<CompetitionRankingResponseDto> getCompetitionRanking(Long id, Pageable pageable);
 
-    List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto);
+    List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) throws JsonProcessingException;
 
     void addCompetitionQuestion(CompetitionQuestionRequestDto requestDto);
 

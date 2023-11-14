@@ -8,6 +8,7 @@ import com.cstudy.modulecommon.domain.competition.CompetitionJoinStatus;
 import com.cstudy.modulecommon.dto.CompetitionQuestionDto;
 import com.cstudy.modulecommon.error.pathvariable.PositivePatriarchal;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -89,7 +90,7 @@ public class CompetitionController {
     public List<CompetitionQuestionDto> getCompetitionQuestion(@Parameter(name = "competitionId", description = "경기 아이디")
                                                                @PathVariable Long competitionId,
                                                                @Parameter(hidden = true)
-                                                               @IfLogin LoginUserDto loginUserDto) {
+                                                               @IfLogin LoginUserDto loginUserDto) throws JsonProcessingException {
         Optional.of(competitionId)
                 .filter(id -> id >= 0)
                 .orElseThrow(() -> new PositivePatriarchal(competitionId));
