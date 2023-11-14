@@ -86,7 +86,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .secure(true)
                 .maxAge(1800)
                 .sameSite("None")
-//                .httpOnly(false)
+                .httpOnly(false)
                 .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
                 .build();
 
@@ -95,7 +95,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .secure(true)
                 .maxAge(604800)
                 .sameSite("None")
-//                .httpOnly(false)
+                .httpOnly(false)
                 .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
                 .build();
 
