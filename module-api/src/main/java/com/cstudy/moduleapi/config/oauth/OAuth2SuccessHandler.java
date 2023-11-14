@@ -8,6 +8,7 @@ import com.cstudy.modulecommon.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -68,21 +69,35 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String redirectUri = FRONT_BASE_URL + "oauth2/login";
 
-//        Cookie accessToken = new Cookie("accessToken", access);
+//        ResponseCookie accessToken = new Cookie("accessToken", access);
 //        accessToken.setHttpOnly(true);
 //        accessToken.setPath("/");
 //        accessToken.setMaxAge(1800); // 30 minutes
-//        accessToken.setSameSite(1800); // 30 minutes
 //        response.addCookie(accessToken);
-
+//
 //        Cookie refreshToken = new Cookie("refreshToken", refresh);
 //        refreshToken.setHttpOnly(true);
 //        refreshToken.setPath("/");
 //        refreshToken.setMaxAge(604800); // 7 days
 //        response.addCookie(refreshToken);
 
-        response.setHeader("Set-Cookie", "accessToken=" + access + "; Path=/; Max-Age=1800; SameSite=None");
-        response.setHeader("Set-Cookie", "refreshToken=" + refresh + "; Path=/; Max-Age=604800; SameSite=None");
+        ResponseCookie cookie = ResponseCookie.from("accessToken", access)
+                .path("/")
+                .secure(true)
+                .maxAge(1800)
+                .sameSite("None")
+//                .httpOnly(false)
+                .domain(FRONT_BASE_URL)
+                .build();
+
+        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
+                .path("/")
+                .secure(true)
+                .maxAge(604800)
+                .sameSite("None")
+//                .httpOnly(false)
+                .domain(FRONT_BASE_URL)
+                .build();
 
         log.info("OAuth 성공");
 
@@ -90,6 +105,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("refresh token : {}", refresh);
 
         log.info("redirect url : {}", redirectUri);
+        response.setHeader("Set-Cookie", cookie.toString());
+        response.addHeader("Set-Cookie", cookie2.toString());
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
