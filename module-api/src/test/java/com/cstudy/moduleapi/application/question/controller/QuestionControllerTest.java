@@ -323,7 +323,7 @@ class QuestionControllerTest extends ControllerTestBase {
                         .build()))
                 .build();
 
-        given(questionService.findQuestionWithChoiceAndCategory(eq(questionId))).willReturn(questionResponseDto);
+        given(questionService.findQuestionWithChoiceAndCategory(eq(questionId),any(LoginUserDto.class))).willReturn(questionResponseDto);
         // when
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/questions/{questionId}", questionId)
@@ -337,7 +337,7 @@ class QuestionControllerTest extends ControllerTestBase {
                 .andExpect(jsonPath("$.explain").value("설명"))
                 .andDo(print());
         //then
-        verify(questionService).findQuestionWithChoiceAndCategory(any(Long.class));
+        verify(questionService).findQuestionWithChoiceAndCategory(any(Long.class),any(LoginUserDto.class));
     }
 
     @Test
@@ -366,7 +366,7 @@ class QuestionControllerTest extends ControllerTestBase {
                         .build()))
                 .build();
 
-        given(questionService.findQuestionWithChoiceAndCategory(eq(questionId))).willReturn(questionResponseDto);
+        given(questionService.findQuestionWithChoiceAndCategory(eq(questionId),any(LoginUserDto.class))).willReturn(questionResponseDto);
         // when
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/questions/{questionId}", questionId)

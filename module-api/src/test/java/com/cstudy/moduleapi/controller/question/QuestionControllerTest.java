@@ -722,10 +722,10 @@ class QuestionControllerTest extends ControllerTest {
                     .build();
 
 
-            given(questionService.findQuestionWithChoiceAndCategory(eq(1L)))
+            given(questionService.findQuestionWithChoiceAndCategory(eq(1L),any(LoginUserDto.class)))
                     .willReturn(responseDto);
 
-            given(questionService.findQuestionWithChoiceAndCategory(eq(2L)))
+            given(questionService.findQuestionWithChoiceAndCategory(eq(2L),any(LoginUserDto.class)))
                     .willThrow(NotFoundQuestionWithChoicesAndCategoryById.class);
         }
 

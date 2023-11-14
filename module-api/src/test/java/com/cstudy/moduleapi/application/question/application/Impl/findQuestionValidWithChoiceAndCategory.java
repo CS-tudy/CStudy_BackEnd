@@ -6,11 +6,15 @@ import com.cstudy.moduleapi.dto.question.CategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.CreateQuestionAndCategoryRequestDto;
 import com.cstudy.moduleapi.dto.question.CreateQuestionRequestDto;
 import com.cstudy.moduleapi.dto.question.QuestionResponseDto;
+import com.cstudy.moduleapi.enums.MemberTestEnum;
+import com.cstudy.modulecommon.domain.role.RoleEnum;
+import com.cstudy.modulecommon.util.LoginUserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,7 +118,7 @@ public class findQuestionValidWithChoiceAndCategory extends ServiceTestBase {
 
         questionService.createQuestionChoice(createQuestionAndCategoryRequestDto);
         //when
-        QuestionResponseDto result = questionService.findQuestionWithChoiceAndCategory(1L);
+        QuestionResponseDto result = questionService.findQuestionWithChoiceAndCategory(1L, new LoginUserDto(1L, MemberTestEnum.ADMIN_EMAIL.getMessage(), Collections.singletonList(RoleEnum.ADMIN.getRoleName())));
         //Then
         assertAll(
                 () -> assertThat(result.getTitle()).isEqualTo("문제 제목"),
