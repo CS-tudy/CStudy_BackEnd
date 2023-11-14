@@ -87,7 +87,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .maxAge(1800)
                 .sameSite("None")
 //                .httpOnly(false)
-                .domain(FRONT_BASE_URL)
+                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
                 .build();
 
         ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
@@ -96,7 +96,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .maxAge(604800)
                 .sameSite("None")
 //                .httpOnly(false)
-                .domain(FRONT_BASE_URL)
+                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
                 .build();
 
         log.info("OAuth 성공");
