@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -69,35 +70,37 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String redirectUri = FRONT_BASE_URL + "oauth2/login";
 
-//        ResponseCookie accessToken = new Cookie("accessToken", access);
+        Cookie accessToken = new Cookie("accessToken", access);
 //        accessToken.setHttpOnly(true);
-//        accessToken.setPath("/");
-//        accessToken.setMaxAge(1800); // 30 minutes
-//        response.addCookie(accessToken);
+        accessToken.setPath("/");
+        accessToken.setDomain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com");
+        accessToken.setMaxAge(1800); // 30 minutes
+        response.addCookie(accessToken);
+
+        Cookie refreshToken = new Cookie("refreshToken", refresh);
+        refreshToken.setHttpOnly(true);
+        refreshToken.setPath("/");
+        refreshToken.setDomain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com");
+        refreshToken.setMaxAge(604800); // 7 days
+        response.addCookie(refreshToken);
 //
-//        Cookie refreshToken = new Cookie("refreshToken", refresh);
-//        refreshToken.setHttpOnly(true);
-//        refreshToken.setPath("/");
-//        refreshToken.setMaxAge(604800); // 7 days
-//        response.addCookie(refreshToken);
-
-        ResponseCookie cookie = ResponseCookie.from("accessToken", access)
-                .path("/")
-                .secure(true)
-                .maxAge(1800)
-                .sameSite("None")
-                .httpOnly(false)
-                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
-                .build();
-
-        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
-                .path("/")
-                .secure(true)
-                .maxAge(604800)
-                .sameSite("None")
-                .httpOnly(false)
-                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
-                .build();
+//        ResponseCookie cookie = ResponseCookie.from("accessToken", access)
+//                .path("/")
+//                .secure(true)
+//                .maxAge(1800)
+//                .sameSite("None")
+//                .httpOnly(false)
+//                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
+//                .build();
+//
+//        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
+//                .path("/")
+//                .secure(true)
+//                .maxAge(604800)
+//                .sameSite("None")
+//                .httpOnly(false)
+//                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
+//                .build();
 
         log.info("OAuth 성공");
 
@@ -105,8 +108,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("refresh token : {}", refresh);
 
         log.info("redirect url : {}", redirectUri);
-        response.setHeader("Set-Cookie", cookie.toString());
-        response.addHeader("Set-Cookie", cookie2.toString());
+//        response.setHeader("Set-Cookie", cookie.toString());
+//        response.addHeader("Set-Cookie", cookie2.toString());
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
