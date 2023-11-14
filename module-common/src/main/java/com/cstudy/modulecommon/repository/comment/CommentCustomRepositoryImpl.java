@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;
 
+import static com.cstudy.modulecommon.domain.comment.QComment.*;
+
 
 public class CommentCustomRepositoryImpl implements CommentCustomRepository {
 
@@ -17,12 +19,12 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
 
     @Override
     public List<Comment> findNoticePage(Long noticeId) {
-        return queryFactory.selectFrom(QComment.comment)
-                .join(QComment.comment.notice).fetchJoin()
-                .where(QComment.comment.notice.id.eq(noticeId))
+        return queryFactory.selectFrom(comment)
+                .join(comment.notice).fetchJoin()
+                .where(comment.notice.id.eq(noticeId))
                 .orderBy(
-                        QComment.comment.parentCommentId.asc().nullsFirst(),
-                        QComment.comment.createdDate.asc()
+                        comment.parentCommentId.asc().nullsFirst(),
+                        comment.createdDate.asc()
                 )
                 .fetch();
     }

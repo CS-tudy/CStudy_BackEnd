@@ -35,7 +35,12 @@ public class MemberCompetitionServiceImpl implements MemberCompetitionService {
     private final CompetitionRepository competitionRepository;
     private final AlarmService alarmService;
 
-    public MemberCompetitionServiceImpl(MemberCompetitionRepository memberCompetitionRepository, MemberRepository memberRepository, CompetitionRepository competitionRepository, AlarmService alarmService) {
+    public MemberCompetitionServiceImpl(
+            MemberCompetitionRepository memberCompetitionRepository,
+            MemberRepository memberRepository,
+            CompetitionRepository competitionRepository,
+            AlarmService alarmService
+    ) {
         this.memberCompetitionRepository = memberCompetitionRepository;
         this.memberRepository = memberRepository;
         this.competitionRepository = competitionRepository;
