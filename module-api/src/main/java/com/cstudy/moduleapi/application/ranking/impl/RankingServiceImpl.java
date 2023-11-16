@@ -27,14 +27,18 @@ public class RankingServiceImpl implements RankingService {
     private final MemberLoadComponent memberLoadComponent;
 
 
-    public RankingServiceImpl(RedisTemplate<String, String> redisTemplate, MemberRepository memberRepository, MemberLoadComponent memberLoadComponent) {
+    public RankingServiceImpl(
+            RedisTemplate<String, String> redisTemplate,
+            MemberRepository memberRepository,
+            MemberLoadComponent memberLoadComponent
+    ) {
         this.redisTemplate = redisTemplate;
         this.memberRepository = memberRepository;
         this.memberLoadComponent = memberLoadComponent;
     }
 
     /**
-     *  redis에 회원의 정보를 가져와 포인트를 0~10까지 가져온다.
+     * redis에 회원의 정보를 가져와 포인트를 0~10까지 가져온다.
      */
     @Cacheable(key = "1", value = RedisCacheKey.Ranking, cacheManager = "redisCacheManager")
     @Transactional(readOnly = true)
@@ -53,7 +57,7 @@ public class RankingServiceImpl implements RankingService {
     }
 
     /**
-     *  랭킹에서 자신의 랭킹을 조회한다.
+     * 랭킹에서 자신의 랭킹을 조회한다.
      */
     @Override
     @Transactional(readOnly = true)
@@ -64,7 +68,7 @@ public class RankingServiceImpl implements RankingService {
     }
 
     /**
-     *  랭킹의 범위를 선정하여 동적으로 랭킹 보드를 조작할 수 있다.
+     * 랭킹의 범위를 선정하여 동적으로 랭킹 보드를 조작할 수 있다.
      */
     @Override
     @Transactional(readOnly = true)

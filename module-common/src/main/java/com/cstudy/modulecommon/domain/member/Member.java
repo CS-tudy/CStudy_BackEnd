@@ -67,8 +67,7 @@ public class Member extends BaseEntity{
     @JsonManagedReference
     @OneToMany(
             mappedBy = "member",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            fetch = FetchType.LAZY
     )
     private List<File> file = new ArrayList<>();
 

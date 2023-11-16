@@ -9,7 +9,6 @@ import com.cstudy.modulecommon.error.member.NotFoundMemberId;
 import com.cstudy.modulecommon.repository.alarm.AlarmRepository;
 import com.cstudy.modulecommon.repository.alarm.EmitterRepository;
 import com.cstudy.modulecommon.repository.member.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class AlarmService {
 
     private final static Long ADMIN_ID = 1L;
@@ -32,17 +30,28 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
     private final AlarmFactory alarmFactory;
 
+    public AlarmService(
+            MemberRepository memberRepository,
+            EmitterRepository emitterRepository,
+            AlarmRepository alarmRepository,
+            AlarmFactory alarmFactory
+    ) {
+        this.memberRepository = memberRepository;
+        this.emitterRepository = emitterRepository;
+        this.alarmRepository = alarmRepository;
+        this.alarmFactory = alarmFactory;
+    }
 
     /**
-     *  새로운 알림을 보낸다. 현재 알림은 3가지가 있다.
-     *  1. 새로운 문제 요청을 보냈을 때
-     *  - 일반 회원이 새로운 문제를 관리자에게 요청하면 관리자에게 요청 알림을 보낸다.
-     *
-     *  2. 관리자가 새로운 경기를 생성한다.
-     *  - 관리자가 새로운 경기를 만들면 모든 회원에게 알림을 발송한다.
-     *
-     *  3. 일반 회원이 경기에 참가를 하면 관리자에게 알림을 보낸다.
-     *  - 일반 회원이 경기에 참가를 하면 관리자에게 n번 회원이 경기에 참가를 하였습니다.
+     * 새로운 알림을 보낸다. 현재 알림은 3가지가 있다.
+     * 1. 새로운 문제 요청을 보냈을 때
+     * - 일반 회원이 새로운 문제를 관리자에게 요청하면 관리자에게 요청 알림을 보낸다.
+     * <p>
+     * 2. 관리자가 새로운 경기를 생성한다.
+     * - 관리자가 새로운 경기를 만들면 모든 회원에게 알림을 발송한다.
+     * <p>
+     * 3. 일반 회원이 경기에 참가를 하면 관리자에게 알림을 보낸다.
+     * - 일반 회원이 경기에 참가를 하면 관리자에게 n번 회원이 경기에 참가를 하였습니다.
      */
     public void send(AlarmType type, AlarmArgs args, Long memberId) {
         Member member = memberRepository.findById(memberId)

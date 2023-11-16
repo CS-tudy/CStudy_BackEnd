@@ -29,7 +29,11 @@ public class CommentServiceImpl implements CommentService {
     private final NoticeRepository noticeRepository;
     private final MemberLoadComponent memberLoadComponent;
 
-    public CommentServiceImpl(CommentRepository commentRepository, NoticeRepository noticeRepository, MemberLoadComponent memberLoadComponent) {
+    public CommentServiceImpl(
+            CommentRepository commentRepository,
+            NoticeRepository noticeRepository,
+            MemberLoadComponent memberLoadComponent
+    ) {
         this.commentRepository = commentRepository;
         this.noticeRepository = noticeRepository;
         this.memberLoadComponent = memberLoadComponent;

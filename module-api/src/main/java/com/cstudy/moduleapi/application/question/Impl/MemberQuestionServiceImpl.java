@@ -16,7 +16,6 @@ import com.cstudy.modulecommon.repository.question.MemberQuestionRepository;
 import com.cstudy.modulecommon.repository.question.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,14 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
     private final MemberLoadComponent memberLoadComponent;
     private final MemberCacheRepository memberCacheRepository;
 
-    public MemberQuestionServiceImpl(MemberQuestionRepository memberQuestionRepository, MemberRepository memberRepository, QuestionRepository questionRepository, StringRedisTemplate redisTemplate, MemberLoadComponent memberLoadComponent, MemberCacheRepository memberCacheRepository) {
+    public MemberQuestionServiceImpl(
+            MemberQuestionRepository memberQuestionRepository,
+            MemberRepository memberRepository,
+            QuestionRepository questionRepository,
+            StringRedisTemplate redisTemplate,
+            MemberLoadComponent memberLoadComponent,
+            MemberCacheRepository memberCacheRepository
+    ) {
         this.memberQuestionRepository = memberQuestionRepository;
         this.memberRepository = memberRepository;
         this.questionRepository = questionRepository;
@@ -59,7 +65,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
                 .orElseThrow(() -> new NotFoundMemberId(memberId));
 
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(()->new NotFoundQuestionId(questionId));
+                .orElseThrow(() -> new NotFoundQuestionId(questionId));
 
 
         if (memberQuestionRepository.existsByMemberAndQuestionAndSuccess(memberId, questionId, choiceAnswerRequestDto.getChoiceNumber())) {
@@ -68,7 +74,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         }
 
         member.addRankingPoint(choiceAnswerRequestDto);
-        modifyScoreForMember(member,choiceAnswerRequestDto, true);
+        modifyScoreForMember(member, choiceAnswerRequestDto, true);
 
 
         memberQuestionRepository.save(MemberQuestion.builder()
@@ -78,7 +84,6 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
                 .solveTime(choiceAnswerRequestDto.getTime())
                 .build());
     }
-
 
 
     /**
@@ -95,7 +100,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
                 .orElseThrow(() -> new NotFoundMemberId(memberId));
 
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(()->new NotFoundQuestionId(questionId));
+                .orElseThrow(() -> new NotFoundQuestionId(questionId));
 
         if (memberQuestionRepository.existsByMemberAndQuestionAndFail(memberId, questionId, choiceAnswerRequestDto.getChoiceNumber())) {
             log.error("이미 관련 데이터가 있습니다. : excection : {}", existByMemberQuestionDataException.class);
@@ -114,7 +119,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
 
 
     /**
-     *  MEMBERQUESTION 테이블에 기존의 정보가 있다면 삭제한다. 그리고 새로운 데이터를 삽입한다.
+     * MEMBERQUESTION 테이블에 기존의 정보가 있다면 삭제한다. 그리고 새로운 데이터를 삽입한다.
      */
     @Override
     @Transactional
@@ -148,6 +153,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
      * 4지선다의 문제에서 정답의 유무를 판단한다.
      */
     @Override
+    @Transactional
     public QuestionAnswerDto isCorrectAnswer(Long memberId, Long questionId, ChoiceAnswerRequestDto requestDto) {
         boolean answer = memberQuestionRepository.existsByMemberAndQuestionAndSuccess(memberId, questionId, requestDto.getChoiceNumber());
         log.info("문제의 성공 실패 여부 : {}", answer);
