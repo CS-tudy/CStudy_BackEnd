@@ -1,6 +1,6 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
-🧸 배포 사이트 : [http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/](http://cstudy-projects.s3-website.ap-northeast-2.amazonaws.com/)
+🧸 [배포 사이트 바로가기 - cstudying.site](https://cstudying.site/)
 
 ### 📢 현재 배포 사이트 문제점 공지 ( 빠르게 수정하겠습니다. )
 1. 현재 OAuth 로그인은 Https 적용을 해야되어서 해결하고 있습니다.
