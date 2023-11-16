@@ -66,12 +66,12 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * 해당 공지사항에 대한 아이디에 대한 댓글을 조회를 한다.
-     * private Long id;
-     * private String content;
-     * private Long memberId;
-     * private String author;
-     * private Long parentCommentId;
-     * private List<NoticeCommentResponse> childComments = new ArrayList<>();
+     * Long id;
+     * String content;
+     * Long memberId;
+     * String author;
+     * Long parentCommentId;
+     * List<NoticeCommentResponse> childComments = new ArrayList<>();
      * <p>
      * 해당 구조에서 NoticeCommentResponse의 List에 child comments를 같이 보여주어서 한번에 조회가 가능하다.
      * <p>

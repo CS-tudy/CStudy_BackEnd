@@ -86,20 +86,20 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ResponseCookie cookie = ResponseCookie.from("accessToken", access)
                 .path("/")
-//                .secure(true)
+                .secure(false)
                 .maxAge(1800)
                 .sameSite("None")
                 .httpOnly(false)
-                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
+                .domain(FRONT_BASE_URL)
                 .build();
 
         ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
                 .path("/")
-//                .secure(true)
+                .secure(false)
                 .maxAge(604800)
                 .sameSite("None")
                 .httpOnly(false)
-                .domain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com")
+                .domain(FRONT_BASE_URL)
                 .build();
 
         log.info("OAuth 성공");

@@ -83,7 +83,32 @@ public class CompetitionServiceImpl implements CompetitionService {
      * 2	객체지향의 특징 중에서 객체 내부의 접근을 제어하며 객체 사이의 결합도를 낮출 수 있고, 응집도가 증가하여 유지보수에 좋은 특징은?	1,2,3,4	캡슐화,상속,추상화,다형성
      * 3	finalize의 설명을 적절하게 설명한 보기를 찾으시오.	1,2,3,4	변수, 메서드 클래스가 변경 불가능 하도록 만든다.,참조 변수가 힙 내의 다른 객체를 가리키도록 변경할 수 없다.,가비지 컬렉터가 더 이상의 참조가 존재하지 않는 객체를 메모리에서 삭제하겠다고 결정하는 순간 호출된다.,try catch 블록 뒤에서 항상 실행될 코드 블록을 정의하기 위해 사용한다.
      */
-
+    /**
+     *              "SELECT " +
+     *             "    q.question_id as question_id, " +
+     *             "    q.question_title as question_title, " +
+     *             "    q.question_description as question_description, " +
+     *             "    CONCAT('[', GROUP_CONCAT(c.choice_number ORDER BY c.choice_number SEPARATOR ','), ']') as choice_numbers, " +
+     *             "    JSON_ARRAYAGG(c.content)  as choice_contents " +
+     *             "FROM " +
+     *             "    question q " +
+     *             "INNER JOIN " +
+     *             "    workbook_question wq " +
+     *             "        ON q.question_id = wq.question_id " +
+     *             "INNER JOIN " +
+     *             "    workbook w " +
+     *             "        ON wq.workbook_id = w.workbook_id " +
+     *             "INNER JOIN " +
+     *             "    competition comp " +
+     *             "        ON w.workbook_id = comp.workbook_id " +
+     *             "INNER JOIN " +
+     *             "    choice c " +
+     *             "        ON q.question_id = c.question_id " +
+     *             "WHERE " +
+     *             "    comp.competition_id = :competitionId " +
+     *             "GROUP BY " +
+     *             "    q.question_id", nativeQuery = true)
+     */
 // ...
 
     @Override
