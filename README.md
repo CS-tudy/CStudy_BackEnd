@@ -1,18 +1,8 @@
 # 📖 취업 CS 걱정하지마, CS;tudy
 
-🧸 [배포 사이트 바로가기 - cstudying.site](https://cstudying.site/)
 
-### 📢 현재 배포 사이트 문제점 공지 ( 빠르게 수정하겠습니다. )
-1. 현재 OAuth 로그인은 Https 적용을 해야되어서 해결하고 있습니다.
-- Chrome 버전 80부터 Http에서 Coockie를 전송하기 위하여 sameSite, Secure설정이 필요합니다. ( 현재 최신 Chrome 버전 : 119 )
+### 📢 [배포 사이트 바로가기 - [ 바로가기 ]](https://cstudying.site/)
 
-- 만약에 테스트를 하고 싶으시면 다음 계정을 이용하세요.
-  
-ID : ctudy245@gmail.com
-Password : test1234!
-
-
-  <br/>
 
 ## ✨ 프로젝트 소개
 
@@ -101,7 +91,7 @@ Password : test1234!
 
 ## 🎨 ERD Diagram
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/d4cf09ff-9a03-4eee-b02c-eacd4cfd84fa)
+![img.png](image/erd.png)
 
 <br>
 
@@ -134,13 +124,6 @@ Password : test1234!
 - 테스트 코드는 단순히 데이터의 정합성을 검증하는 로직이 아니라 내 코드를 읽는 상대방에게 설명하는 코드라고 생각합니다.
 - ``Controller``의 테스트는 Mock을 통하여 HTTP 요청, 검증에서 책임, 주요 관심사를 분리하여 ``요청,검증``을 분리를 하였습니다.
 
-```bash
-test 
-└── com.cstudy.moduleapi 
-    ├── apiCaller # 도메인별 HTTP 요청 
-    ├── controller # 도메일별 HTTP 검증
-    └── config     # application context를 재활용 하기 위하여 상속 
-```
 
 ### Service
 
@@ -184,7 +167,7 @@ test
 
 ![img.png](image/GITACTION.png)
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/650a1a91-5f20-41b3-b41b-8a39d717e9f5)
+![img.png](image/infra.png)
 
 
 블로그 : [Github Actions CI + CodeDeploy로 CI/CD 구현하기](https://velog.io/@geon_km/Github-Actions-CI-CodeDeploy%EB%A1%9C-CICD-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-vum9u82d)
