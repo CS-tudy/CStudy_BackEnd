@@ -67,7 +67,21 @@ public class MemberServiceImpl implements MemberService {
     private final static String ADMIN_EMAIL = "admin@admin.com";
     private final static String EMAIL_SUBJECT = "회원가입 코드 메일";
 
-    public MemberServiceImpl(MemberRepository memberRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, JavaMailSender javaMailSender, RefreshTokenService refreshTokenService, DuplicateServiceFinder duplicateServiceFinder, ReviewService reviewNoteService, EmailComponent emailComponent, StringRedisTemplate redisTemplate, AlarmRepository alarmRepository, MemberCacheRepository memberCacheRepository, MemberLoadComponent memberLoadComponent) {
+    public MemberServiceImpl(
+            MemberRepository memberRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenizer jwtTokenizer,
+            JavaMailSender javaMailSender,
+            RefreshTokenService refreshTokenService,
+            DuplicateServiceFinder duplicateServiceFinder,
+            ReviewService reviewNoteService,
+            EmailComponent emailComponent,
+            StringRedisTemplate redisTemplate,
+            AlarmRepository alarmRepository,
+            MemberCacheRepository memberCacheRepository,
+            MemberLoadComponent memberLoadComponent
+    ) {
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
