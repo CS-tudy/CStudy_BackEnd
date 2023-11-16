@@ -9,6 +9,7 @@ import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class Member extends BaseEntity{
 
     /********************************* 연관관계 매핑 *********************************/
 
-    @JsonIgnore
+//    @JsonManagedReference
     @OneToMany(
             mappedBy = "member",
             fetch = FetchType.LAZY,

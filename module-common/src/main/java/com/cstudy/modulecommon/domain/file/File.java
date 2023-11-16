@@ -3,6 +3,7 @@ package com.cstudy.modulecommon.domain.file;
 import com.cstudy.modulecommon.domain.BaseEntity;
 import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.workbook.Workbook;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,11 +38,12 @@ public class File extends BaseEntity {
     @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST
-    )
-    @JoinColumn(name = "member_id")
-    private Member member;
+//    @JsonBackReference
+//    @ManyToOne(
+//            fetch = FetchType.LAZY,
+//            cascade = CascadeType.PERSIST
+//    )
+//    @JoinColumn(name = "member_id")
+//    private Member member;
 
 }
