@@ -38,12 +38,12 @@ public class File extends BaseEntity {
     @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 
-//    @JsonBackReference
-//    @ManyToOne(
-//            fetch = FetchType.LAZY,
-//            cascade = CascadeType.PERSIST
-//    )
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @JsonBackReference
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST
+    )
+    @JoinColumn(name = "member_id")
+    private Member member;
 
 }
