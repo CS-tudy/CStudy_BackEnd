@@ -68,48 +68,31 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 List.of(RoleEnum.CUSTOM.getRoleName())
         );
 
-        String redirectUri = FRONT_BASE_URL + "oauth2/login";
+        String redirectUri = FRONT_BASE_URL + "/oauth2/login";
 
-        Cookie accessToken = new Cookie("accessToken", access);
-        accessToken.setPath("/");
-//        accessToken.setDomain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com");
-        accessToken.setMaxAge(1800); // 30 min
-//        accessToken.setSameSite("None");// utes
-        response.addCookie(accessToken);
+        ResponseCookie cookie = ResponseCookie.from("accessToken", access)
+                .path("/")
+                .secure(true)
+                .maxAge(1800)
+                .sameSite("None")
+                .httpOnly(false)
+                .build();
 
-        Cookie refreshToken = new Cookie("refreshToken", refresh);
-//        refreshToken.setHttpOnly(true);
-        refreshToken.setPath("/");
-//        refreshToken.setDomain("cstudy-projects.s3-website.ap-northeast-2.amazonaws.com");
-        refreshToken.setMaxAge(604800); // 7 days
-        response.addCookie(refreshToken);
-
-//        ResponseCookie cookie = ResponseCookie.from("accessToken", access)
-//                .path("/")
-//                .secure(false)
-//                .maxAge(1800)
-//                .sameSite("None")
-//                .httpOnly(false)
-//                .domain(FRONT_BASE_URL)
-//                .build();
-//
-//        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
-//                .path("/")
-//                .secure(false)
-//                .maxAge(604800)
-//                .sameSite("None")
-//                .httpOnly(false)
-//                .domain(FRONT_BASE_URL)
-//                .build();
+        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
+                .path("/")
+                .secure(true)
+                .maxAge(604800)
+                .sameSite("None")
+                .httpOnly(false)
+                .build();
 
         log.info("OAuth 성공");
-
         log.info("access token : {}", access);
         log.info("refresh token : {}", refresh);
-
         log.info("redirect url : {}", redirectUri);
-//        response.setHeader("Set-Cookie", cookie.toString());
-//        response.addHeader("Set-Cookie", cookie2.toString());
+
+        response.setHeader("Set-Cookie", cookie.toString());
+        response.addHeader("Set-Cookie", cookie2.toString());
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
