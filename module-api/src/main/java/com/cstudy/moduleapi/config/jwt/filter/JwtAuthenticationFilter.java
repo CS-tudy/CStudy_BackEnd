@@ -54,9 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (UnsupportedJwtException e) {//지원되지 않는 JWT 토큰 형식이나 구조를 사용했을 때 발생하는 오류입니다.
             handleJwtException(request, JwtExceptionCode.UNSUPPORTED_TOKEN, "Unsupported Token // token : {}", token, "throw new unsupported token exception");
         } catch (Exception e) {
-            log.error("JwtFilter - doFilterInternal() 오류 발생");
-            log.error("token : {}", token);
-            log.error("Exception Message : {}", e.getMessage());
+//            log.error("JwtFilter - doFilterInternal() 오류 발생");
+//            log.error("token : {}", token);
+//            log.error("Exception Message : {}", e.getMessage());
             //throw new BadCredentialsException("throw new exception");
         }
         filterChain.doFilter(request, response);
@@ -64,8 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static void handleJwtException(HttpServletRequest request, JwtExceptionCode notFoundToken, String format, String token, String msg) {
         request.setAttribute("exception", notFoundToken.getCode());
-        log.error(format, token);
-        log.error("Set Request Exception Code : {}", request.getAttribute("exception"));
+//        log.error(format, token);
+//        log.error("Set Request Exception Code : {}", request.getAttribute("exception"));
         //throw new BadCredentialsException(msg);
     }
 
