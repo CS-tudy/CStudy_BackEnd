@@ -1,12 +1,12 @@
 package com.cstudy.modulecommon.repository.question;
 
+import com.cstudy.modulecommon.domain.question.MemberQuestion;
+import com.cstudy.modulecommon.domain.question.QMemberQuestion;
 import com.cstudy.modulecommon.dto.*;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -53,7 +53,8 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus())
+                        statusEq(questionSearchCondition.getStatus()),
+                        memberIdEqForMemberQuestion(loginUserDto.getMemberId())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -69,9 +70,14 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus())
+                        statusEq(questionSearchCondition.getStatus()),
+                        memberIdEqForMemberQuestion(loginUserDto.getMemberId())
                 );
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
+
+    private BooleanExpression memberIdEqForMemberQuestion( Long memberId) {
+        return memberId != null ? memberQuestion.member.id.eq(memberId) : null;
     }
 
 
@@ -139,8 +145,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 return memberQuestion.success.ne(0);
             } else if (status.equals(2)) {
                 return memberQuestion.fail.ne(0);
-            } else if (status.equals(0)) {
-                return memberQuestion.success.ne(0).and(memberQuestion.fail.ne(0));
             }
         }
         return null;
