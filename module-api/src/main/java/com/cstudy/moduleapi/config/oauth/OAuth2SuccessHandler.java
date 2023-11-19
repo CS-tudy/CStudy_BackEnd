@@ -68,13 +68,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 List.of(RoleEnum.CUSTOM.getRoleName())
         );
 
-        String redirectUri = FRONT_BASE_URL + "/oauth2/login";
+        String redirectUri = FRONT_BASE_URL + "oauth2/login";
 
         ResponseCookie cookie = ResponseCookie.from("accessToken", access)
                 .path("/")
                 .secure(true)
                 .maxAge(1800)
                 .sameSite("None")
+                .domain("cstudying.site")
                 .httpOnly(false)
                 .build();
 
@@ -83,6 +84,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .secure(true)
                 .maxAge(604800)
                 .sameSite("None")
+                .domain("cstudying.site")
                 .httpOnly(false)
                 .build();
 
