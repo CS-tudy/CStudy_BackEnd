@@ -64,7 +64,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_SECRET}
-            redirect-uri: https://api.cstudy.site/oauth2/code/google
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
             scope: profile,email
           naver:
             client-id: ${NAVER_CLIENT_ID}
@@ -75,7 +75,7 @@ spring:
             client-name: Naver
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: ${KAKAO_REDIRECT_URI}
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email

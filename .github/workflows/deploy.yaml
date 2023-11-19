@@ -43,11 +43,13 @@ jobs:
 
           spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
           spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.GOOGLE_SECRET }}
+          spring.security.oauth2.client.registration.google.redirect-uri: ${{ secrets.GOOGLE_REDIRECT_URI }}
 
           spring.security.oauth2.client.registration.naver.client-id: ${{ secrets.NAVER_CLIENT_ID }}
           spring.security.oauth2.client.registration.naver.client-secret: ${{ secrets.NAVER_SECRET }}
 
           spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }}
+          spring.security.oauth2.client.registration.kakao.redirect-uri: ${{ secrets.KAKAO_REDIRECT_URI }}
 
           discord.bot.token: ${{ secrets.DISCORD_BOT }}
 
