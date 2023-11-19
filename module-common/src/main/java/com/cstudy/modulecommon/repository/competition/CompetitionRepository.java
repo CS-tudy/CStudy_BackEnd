@@ -51,5 +51,17 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
     List<Object[]> findQuestionsWithChoices(@Param("competitionId") Long competitionId);
 
 
-
+    @Query(nativeQuery = true, value =
+            "SELECT q.question_id as question_id, " +
+                    "       q.question_title as question_title, " +
+                    "       q.question_description as question_description, " +
+                    "       c.choice_number as choice_numbers, " +
+                    "       c.content as choice_contents " +
+                    "FROM question q " +
+                    "INNER JOIN workbook_question wq ON q.question_id = wq.question_id " +
+                    "INNER JOIN workbook w ON wq.workbook_id = w.workbook_id " +
+                    "INNER JOIN competition comp ON w.workbook_id = comp.workbook_id " +
+                    "INNER JOIN choice c ON q.question_id = c.question_id " +
+                    "WHERE comp.competition_id = :competitionId")
+    List<Object[]> findQuestionsWithChoices2(@Param("competitionId") Long competitionId);
 }
