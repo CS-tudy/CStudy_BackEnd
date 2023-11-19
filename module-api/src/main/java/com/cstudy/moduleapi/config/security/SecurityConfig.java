@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .authorizeRequests()
 
+                .antMatchers ("/api/**", "/login/**").permitAll ()
                 //swagger
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/swagger-resources").permitAll()
