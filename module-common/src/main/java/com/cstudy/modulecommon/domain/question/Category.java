@@ -1,5 +1,6 @@
 package com.cstudy.modulecommon.domain.question;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class Category {
     private String categoryTitle;
 
     /********************************* 연관관계 매핑 *********************************/
-
+    @JsonBackReference
     @OneToMany(mappedBy = "category")
     Set<Question> questions = new HashSet<>();
 

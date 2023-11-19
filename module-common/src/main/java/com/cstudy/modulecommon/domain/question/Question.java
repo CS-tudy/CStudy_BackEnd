@@ -57,6 +57,7 @@ public class Question {
     )
     List<Choice> choices = new ArrayList<>();
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
