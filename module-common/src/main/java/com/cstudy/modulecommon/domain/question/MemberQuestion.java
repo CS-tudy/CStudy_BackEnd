@@ -1,6 +1,8 @@
 package com.cstudy.modulecommon.domain.question;
 
 import com.cstudy.modulecommon.domain.member.Member;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,7 @@ public class MemberQuestion {
     private Long solveTime;
 
     /********************************* 연관관계 매핑 *********************************/
-
+    @JsonBackReference
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST
@@ -34,6 +36,7 @@ public class MemberQuestion {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @JsonManagedReference
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST

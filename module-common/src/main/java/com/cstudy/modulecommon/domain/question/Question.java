@@ -2,6 +2,7 @@ package com.cstudy.modulecommon.domain.question;
 
 import com.cstudy.modulecommon.domain.choice.Choice;
 import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,7 @@ public class Question {
     private String explain;
 
     /********************************* 연관관계 매핑 *********************************/
-
+    @JsonBackReference
     @OneToMany(
             mappedBy = "question",
             fetch = FetchType.LAZY,
