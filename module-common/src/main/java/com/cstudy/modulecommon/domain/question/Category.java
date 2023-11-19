@@ -30,7 +30,7 @@ public class Category {
     private String categoryTitle;
 
     /********************************* 연관관계 매핑 *********************************/
-    @JsonBackReference
+//    @JsonBackReference
     @OneToMany(mappedBy = "category")
     Set<Question> questions = new HashSet<>();
 

@@ -64,14 +64,14 @@ public class Member extends BaseEntity{
 
     /********************************* 연관관계 매핑 *********************************/
 
-    @JsonManagedReference
+//    @JsonManagedReference
     @OneToMany(
             mappedBy = "member",
             fetch = FetchType.LAZY
     )
     private List<File> file = new ArrayList<>();
 
-    @JsonManagedReference
+//    @JsonManagedReference
     @OneToMany(
             mappedBy = "member",
             fetch = FetchType.LAZY,

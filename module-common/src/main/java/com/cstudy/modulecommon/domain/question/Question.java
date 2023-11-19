@@ -41,7 +41,7 @@ public class Question {
     private String explain;
 
     /********************************* 연관관계 매핑 *********************************/
-    @JsonBackReference
+//    @JsonBackReference
     @OneToMany(
             mappedBy = "question",
             fetch = FetchType.LAZY,
@@ -49,7 +49,7 @@ public class Question {
     )
     Set<MemberQuestion> questions = new HashSet<>();
 
-    @JsonManagedReference
+//    @JsonManagedReference
     @OneToMany(
             mappedBy = "question",
             fetch = FetchType.LAZY,
@@ -57,7 +57,7 @@ public class Question {
     )
     List<Choice> choices = new ArrayList<>();
 
-    @JsonManagedReference
+//    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
