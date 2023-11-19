@@ -48,13 +48,13 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .distinct()
                 .leftJoin(question.category, category)
                 .leftJoin(question.questions, memberQuestion)
+                .where(memberQuestion.member.id.eq(loginUserDto.getMemberId()))
                 .leftJoin(memberQuestion.member, member)
                 .where(
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus()),
-                        memberIdEqForMemberQuestion(loginUserDto.getMemberId())
+                        statusEq(questionSearchCondition.getStatus())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -65,13 +65,13 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .from(question)
                 .leftJoin(question.category, category)
                 .leftJoin(question.questions, memberQuestion)
+                .where(memberQuestion.member.id.eq(loginUserDto.getMemberId()))
                 .leftJoin(memberQuestion.member, member)
                 .where(
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus()),
-                        memberIdEqForMemberQuestion(loginUserDto.getMemberId())
+                        statusEq(questionSearchCondition.getStatus())
                 );
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
