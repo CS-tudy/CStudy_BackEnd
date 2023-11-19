@@ -8,14 +8,21 @@ import com.cstudy.moduleapi.config.oauth.CustomOAuth2UserService;
 import com.cstudy.moduleapi.config.oauth.OAuth2FailureHandler;
 import com.cstudy.moduleapi.config.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 
 @Configuration
@@ -23,6 +30,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    @Value("${front.baseURL}")
+    String FRONT_BASE_URL;
 
     private final AuthenticationManagerConfig authenticationManagerConfig;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -165,5 +175,23 @@ public class SecurityConfig {
                 .failureHandler(failureHandler);
 
         return http.build();
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(FRONT_BASE_URL));
+        configuration.setAllowedMethods(List.of(HttpMethod.HEAD.name(),
+                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name(), HttpMethod.PATCH.name(),
+                HttpMethod.OPTIONS.name()));
+
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(
+                List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL,
+                        HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT));
+
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
