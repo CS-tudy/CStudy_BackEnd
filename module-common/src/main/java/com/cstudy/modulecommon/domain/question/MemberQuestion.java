@@ -28,7 +28,7 @@ public class MemberQuestion {
     private Long solveTime;
 
     /********************************* 연관관계 매핑 *********************************/
-    @JsonBackReference
+//    @JsonBackReference
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST
@@ -36,7 +36,7 @@ public class MemberQuestion {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @JsonManagedReference
+//    @JsonManagedReference
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST

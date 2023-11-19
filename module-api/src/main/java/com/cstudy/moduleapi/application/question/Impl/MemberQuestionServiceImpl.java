@@ -74,7 +74,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         }
 
         member.addRankingPoint(choiceAnswerRequestDto);
-        modifyScoreForMember(member, choiceAnswerRequestDto, true);
+//        modifyScoreForMember(member, choiceAnswerRequestDto, true);
 
 
         memberQuestionRepository.save(MemberQuestion.builder()
@@ -108,7 +108,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
         }
 
         member.minusRankingPoint(member.getRankingPoint());
-        modifyScoreForMember(member, choiceAnswerRequestDto, false);
+//        modifyScoreForMember(member, choiceAnswerRequestDto, false);
         memberQuestionRepository.save(MemberQuestion.builder()
                 .member(member)
                 .question(question)
@@ -164,7 +164,7 @@ public class MemberQuestionServiceImpl implements MemberQuestionService {
 
     private void modifyScoreForMember(Member member, ChoiceAnswerRequestDto choiceAnswerRequestDto, boolean answer) {
         log.info("member email : {}", member.getEmail());
-        Member redisCacheMember = memberLoadComponent.loadMemberByEmail(member.getEmail());
-        memberCacheRepository.modifyMemberRankingPoint(redisCacheMember, choiceAnswerRequestDto, answer);
+//        Member redisCacheMember = memberLoadComponent.loadMemberByEmail(member.getEmail());
+//        memberCacheRepository.modifyMemberRankingPoint(redisCacheMember, choiceAnswerRequestDto, answer);
     }
 }
