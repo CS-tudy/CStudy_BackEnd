@@ -75,24 +75,15 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
     }
 
 
-    @Override
-    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
-        return queryFactory
-                .select(Wildcard.count)
-                .from(member)
-                .fetch().get(0);
-    }
-
-
     private static NumberExpression<Integer> divisionStatusAboutMemberId(LoginUserDto loginUserDto) {
         return Expressions.cases()
-//                .when(memberQuestion.member.id.eq(loginUserDto.getMemberId())).then(
-//                        Expressions.cases()
+                .when(memberQuestion.member.id.eq(loginUserDto.getMemberId())).then(
+                        Expressions.cases()
                                 .when(memberQuestion.success.ne(0)).then(1)
                                 .when(memberQuestion.fail.ne(0)).then(2)
                                 .otherwise(Expressions.constant(0))
-//                )
-//                .otherwise(Expressions.constant(0))
+                )
+                .otherwise(Expressions.constant(0))
                 .as("status");
     }
 
@@ -142,6 +133,15 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
             }
         }
         return null;
+    }
+
+
+    @Override
+    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
+        return queryFactory
+                .select(Wildcard.count)
+                .from(member)
+                .fetch().get(0);
     }
 
 
