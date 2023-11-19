@@ -3,6 +3,7 @@ package com.cstudy.modulecommon.domain.question;
 import com.cstudy.modulecommon.domain.choice.Choice;
 import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +49,7 @@ public class Question {
     )
     Set<MemberQuestion> questions = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(
             mappedBy = "question",
             fetch = FetchType.LAZY,

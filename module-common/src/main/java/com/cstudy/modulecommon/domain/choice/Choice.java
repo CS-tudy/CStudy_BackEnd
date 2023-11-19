@@ -1,6 +1,7 @@
 package com.cstudy.modulecommon.domain.choice;
 
 import com.cstudy.modulecommon.domain.question.Question;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class Choice {
 
     /********************************* 연관관계 매핑 *********************************/
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")
     private Question question;
