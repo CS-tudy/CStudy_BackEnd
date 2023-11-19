@@ -85,10 +85,11 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
 
     private static NumberExpression<Integer> divisionStatusAboutMemberId(LoginUserDto loginUserDto) {
-        return Expressions.cases().when(memberQuestion.success.ne(0)).then(1)
+        return Expressions.cases()
+                .when(memberQuestion.success.ne(0).and(memberQuestion.fail.ne(0))).then(0)
+                .when(memberQuestion.success.ne(0)).then(1)
                 .when(memberQuestion.fail.ne(0)).then(2)
-                .otherwise(Expressions.constant(0))
-                .as("status");
+                .otherwise((Integer) null);
     }
 
 
