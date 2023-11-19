@@ -2,7 +2,6 @@ package com.cstudy.modulecommon.repository.question;
 
 import com.cstudy.modulecommon.dto.*;
 import com.cstudy.modulecommon.util.LoginUserDto;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -89,12 +88,11 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         return Expressions.cases()
                 .when(memberQuestion.member.id.eq(loginUserDto.getMemberId())).then(
                         Expressions.cases()
-                                .when(memberQuestion.success.ne(0).and(memberQuestion.fail.ne(0))).then(0)
                                 .when(memberQuestion.success.ne(0)).then(1)
                                 .when(memberQuestion.fail.ne(0)).then(2)
-                                .otherwise((Integer) null)
+                                .otherwise(Expressions.constant(0))
                 )
-                .otherwise((Expression<Integer>) null)
+                .otherwise(Expressions.constant(0))
                 .as("status");
     }
 
@@ -141,6 +139,8 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 return memberQuestion.success.ne(0);
             } else if (status.equals(2)) {
                 return memberQuestion.fail.ne(0);
+            } else if (status.equals(0)) {
+                return memberQuestion.success.ne(0).and(memberQuestion.fail.ne(0));
             }
         }
         return null;
