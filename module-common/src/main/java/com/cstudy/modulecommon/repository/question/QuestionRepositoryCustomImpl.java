@@ -38,26 +38,49 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
     @Override
     public Page<QuestionPageWithCategoryAndTitle> findQuestionPageWithCategory(Pageable pageable, QuestionSearchCondition questionSearchCondition, LoginUserDto loginUserDto) {
 
-        List<QuestionPageWithCategoryAndTitle> content = queryFactory.select(
-                        new QQuestionPageWithCategoryAndTitle(
-                                question.id.as("questionId"),
-                                question.title.as("questionTitle"),
-                                category.categoryTitle.as("categoryTitle"),
-                                divisionStatusAboutMemberId(loginUserDto)
-                        )).from(question)
-                .distinct()
-                .leftJoin(question.category, category)
-                .leftJoin(question.questions, memberQuestion)
-                .leftJoin(memberQuestion.member, member)
-                .where(
-                        questionTitleEq(questionSearchCondition.getQuestionTitle()),
-                        categoryTitleEq(questionSearchCondition.getCategoryTitle()),
-                        memberIdEq(questionSearchCondition.getMemberId()),
-                        statusEq(questionSearchCondition.getStatus())
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        List<QuestionPageWithCategoryAndTitle> content;
+        if (questionSearchCondition.getStatus() == null) {
+            content = queryFactory.select(
+                            new QQuestionPageWithCategoryAndTitle(
+                                    question.id.as("questionId"),
+                                    question.title.as("questionTitle"),
+                                    category.categoryTitle.as("categoryTitle"),
+                                    Expressions.constant(0)
+                            )).from(question)
+                    .distinct()
+                    .leftJoin(question.category, category)
+                    .leftJoin(question.questions, memberQuestion)
+                    .leftJoin(memberQuestion.member, member)
+                    .where(
+                            questionTitleEq(questionSearchCondition.getQuestionTitle()),
+                            categoryTitleEq(questionSearchCondition.getCategoryTitle()),
+                            memberIdEq(questionSearchCondition.getMemberId())
+                    )
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+        } else {
+            content = queryFactory.select(
+                            new QQuestionPageWithCategoryAndTitle(
+                                    question.id.as("questionId"),
+                                    question.title.as("questionTitle"),
+                                    category.categoryTitle.as("categoryTitle"),
+                                    divisionStatusAboutMemberId(loginUserDto)
+                            )).from(question)
+                    .distinct()
+                    .leftJoin(question.category, category)
+                    .leftJoin(question.questions, memberQuestion)
+                    .leftJoin(memberQuestion.member, member)
+                    .where(
+                            questionTitleEq(questionSearchCondition.getQuestionTitle()),
+                            categoryTitleEq(questionSearchCondition.getCategoryTitle()),
+                            memberIdEq(questionSearchCondition.getMemberId()),
+                            statusEq(questionSearchCondition.getStatus())
+                    )
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+        }
 
         JPAQuery<Long> countQuery = queryFactory
                 .select(question.count())
@@ -88,6 +111,40 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
     }
 
 
+
+    private BooleanExpression categoryTitleEq(String categoryTitle) {
+        return StringUtils.hasText(categoryTitle) ? category.categoryTitle.eq(categoryTitle) : null;
+    }
+
+    private BooleanExpression questionTitleEq(String questionTitle) {
+        return StringUtils.hasText(questionTitle) ? question.title.contains(questionTitle) : null;
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId != null ? member.id.eq(memberId) : null;
+    }
+
+    private BooleanExpression statusEq(Integer status) {
+        if (status != null) {
+            if (status.equals(1))
+                return memberQuestion.success.ne(0);
+             else if (status.equals(2)) {
+                return memberQuestion.fail.ne(0);
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
+        return queryFactory
+                .select(Wildcard.count)
+                .from(member)
+                .fetch().get(0);
+    }
+
+
     @Override
     public List<CompetitionQuestionDto> findQuestionWithCompetitionById(Long id) {
         return queryFactory
@@ -110,39 +167,4 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         )
                 );
     }
-
-
-    private BooleanExpression categoryTitleEq(String categoryTitle) {
-        return StringUtils.hasText(categoryTitle) ? category.categoryTitle.eq(categoryTitle) : null;
-    }
-
-    private BooleanExpression questionTitleEq(String questionTitle) {
-        return StringUtils.hasText(questionTitle) ? question.title.contains(questionTitle) : null;
-    }
-
-    private BooleanExpression memberIdEq(Long memberId) {
-        return memberId != null ? member.id.eq(memberId) : null;
-    }
-
-    private BooleanExpression statusEq(Integer status) {
-        if (status != null) {
-            if (status.equals(1)) {
-                return memberQuestion.success.ne(0);
-            } else if (status.equals(2)) {
-                return memberQuestion.fail.ne(0);
-            }
-        }
-        return null;
-    }
-
-
-    @Override
-    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
-        return queryFactory
-                .select(Wildcard.count)
-                .from(member)
-                .fetch().get(0);
-    }
-
-
 }
