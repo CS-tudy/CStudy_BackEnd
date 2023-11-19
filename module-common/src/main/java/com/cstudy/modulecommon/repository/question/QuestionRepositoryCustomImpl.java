@@ -47,8 +47,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         )).from(question)
                 .distinct()
                 .leftJoin(question.category, category)
-                .leftJoin(question.questions, memberQuestion)
-                .where(memberQuestion.member.id.eq(loginUserDto.getMemberId()))
+                .leftJoin(question.questions, memberQuestion).on(memberQuestion.member.id.eq(loginUserDto.getMemberId()))
                 .leftJoin(memberQuestion.member, member)
                 .where(
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
@@ -76,9 +75,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
-    private BooleanExpression memberIdEqForMemberQuestion( Long memberId) {
-        return memberId != null ? memberQuestion.member.id.eq(memberId) : null;
-    }
 
 
     @Override
