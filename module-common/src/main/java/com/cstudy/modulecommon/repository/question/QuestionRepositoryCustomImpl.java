@@ -86,13 +86,13 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
     private static NumberExpression<Integer> divisionStatusAboutMemberId(LoginUserDto loginUserDto) {
         return Expressions.cases()
-                .when(memberQuestion.member.id.eq(loginUserDto.getMemberId())).then(
-                        Expressions.cases()
+//                .when(memberQuestion.member.id.eq(loginUserDto.getMemberId())).then(
+//                        Expressions.cases()
                                 .when(memberQuestion.success.ne(0)).then(1)
                                 .when(memberQuestion.fail.ne(0)).then(2)
                                 .otherwise(Expressions.constant(0))
-                )
-                .otherwise(Expressions.constant(0))
+//                )
+//                .otherwise(Expressions.constant(0))
                 .as("status");
     }
 
