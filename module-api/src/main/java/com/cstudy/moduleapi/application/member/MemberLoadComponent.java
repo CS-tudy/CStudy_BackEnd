@@ -28,18 +28,20 @@ public class MemberLoadComponent {
     }
 
     public Member loadMemberByEmail(String memberEmail) {
-        Optional<Member> member = memberCacheRepository.getMember(memberEmail);
-        log.info("member email is present: {}" , memberEmail);
-        if (member.isEmpty()) {
-            log.info("member 캐싱된 파일이 없다.");
-            Member mysql_member = memberRepository.findByEmail(memberEmail)
-                    .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
-            memberCacheRepository.setMember(mysql_member);
-            return mysql_member;
-        } else {
-            log.info("Redis에서 캐싱된 회원을 가져온다.");
-            return member.orElseThrow(()-> new RuntimeException("Member Cache Not Found"));
-        }
+        return memberRepository.findByEmail(memberEmail)
+                .orElseThrow(()-> new NotFoundMemberEmail(memberEmail));
+//        Optional<Member> member = memberCacheRepository.getMember(memberEmail);
+//        log.info("member email is present: {}" , memberEmail);
+//        if (member.isEmpty()) {
+//            log.info("member 캐싱된 파일이 없다.");
+//            Member mysql_member = memberRepository.findByEmail(memberEmail)
+//                    .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
+//            memberCacheRepository.setMember(mysql_member);
+//            return mysql_member;
+//        } else {
+//            log.info("Redis에서 캐싱된 회원을 가져온다.");
+//            return member.orElseThrow(()-> new RuntimeException("Member Cache Not Found"));
+//        }
 //        return memberRepository.findByEmail(memberEmail)
 //                .orElseThrow(() -> new NotFoundMemberEmail(memberEmail));
 //
