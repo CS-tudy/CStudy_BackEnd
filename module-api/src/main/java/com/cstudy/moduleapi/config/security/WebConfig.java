@@ -16,19 +16,21 @@ public class WebConfig implements WebMvcConfigurer {
 
 //    SecurityConfig에서 처리
 
-//    @Value("${front.baseURL}")
-//    String FRONT_BASE_URL;
-//
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins(FRONT_BASE_URL)
-//                .allowCredentials(true)
-//                .allowedMethods(String.valueOf(List.of(HttpMethod.HEAD.name(),
-//                        HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-//                        HttpMethod.DELETE.name(), HttpMethod.PATCH.name(),
-//                        HttpMethod.OPTIONS.name())));
-//    }
+    @Value("${front.baseURL}")
+    String FRONT_BASE_URL;
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(FRONT_BASE_URL)
+                .allowCredentials(true)
+                .allowedHeaders("*")
+                .exposedHeaders("Set-Cookie")
+                .allowedMethods(String.valueOf(List.of(HttpMethod.HEAD.name(),
+                        HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+                        HttpMethod.DELETE.name(), HttpMethod.PATCH.name(),
+                        HttpMethod.OPTIONS.name())));
+    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

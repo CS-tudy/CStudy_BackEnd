@@ -176,22 +176,22 @@ public class SecurityConfig {
 
         return http.build();
     }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(FRONT_BASE_URL));
-        configuration.setAllowedMethods(List.of(HttpMethod.HEAD.name(),
-                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name(), HttpMethod.PATCH.name(),
-                HttpMethod.OPTIONS.name()));
-
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(
-                List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL,
-                        HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT));
-
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        final CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of(FRONT_BASE_URL));
+//        configuration.setAllowedMethods(List.of(HttpMethod.HEAD.name(),
+//                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+//                HttpMethod.DELETE.name(), HttpMethod.PATCH.name(),
+//                HttpMethod.OPTIONS.name()));
+//
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedHeaders(
+//                List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL,
+//                        HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT));
+//
+//        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }

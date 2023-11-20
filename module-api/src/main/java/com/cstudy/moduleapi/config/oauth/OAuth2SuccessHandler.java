@@ -70,6 +70,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String redirectUri = FRONT_BASE_URL + "oauth2/login";
 
+
         ResponseCookie cookie = ResponseCookie.from("accessToken", access)
                 .path("/")
                 .secure(true)
