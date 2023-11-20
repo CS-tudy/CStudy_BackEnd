@@ -76,7 +76,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .secure(true)
                 .maxAge(1800)
                 .sameSite("None")
-                .domain("cstudying.site")
                 .httpOnly(false)
                 .build();
 
@@ -85,7 +84,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .secure(true)
                 .maxAge(604800)
                 .sameSite("None")
-                .domain("cstudying.site")
                 .httpOnly(false)
                 .build();
 
