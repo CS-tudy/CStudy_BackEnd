@@ -27,15 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .exposedHeaders("Set-Cookie")
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE");
-//        registry.addMapping("/**")
-//                .allowedOrigins(FRONT_BASE_URL)
-//                .allowCredentials(true)
-//                .allowedHeaders("*")
-//                .exposedHeaders("Set-Cookie")
-//                .allowedMethods(String.valueOf(List.of(HttpMethod.HEAD.name(),
-//                        HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-//                        HttpMethod.DELETE.name(), HttpMethod.PATCH.name(),
-//                        HttpMethod.OPTIONS.name())));
     }
 
     @Override
