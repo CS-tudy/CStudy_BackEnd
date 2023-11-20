@@ -24,7 +24,7 @@
 
 ### [ 처음만난 사람들을 리딩하여 성공적으로 프로젝트를 완성할 수 있었던 이유 ]
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/91ace11d-dfba-459d-8641-4b1fa085b883)
+![img.png](image/1.png)
 
 - 프로젝트를 하면서 `협업`을 가장 중요하게 생각을 하였습니다. `클라이언트`와 `서버`의 이해도, 인지의 차이가 있다고 생각하여 최대한 간단하게 설명 ( 글, 그림을 통하여 )하고, 이를 기반으로 긍정적인 커뮤니케이션을 하기 위하여 노력하였습니다.
 
@@ -91,14 +91,14 @@
 
 ## 🎨 ERD Diagram
 
-![img.png](image/erd.png)
+![img.png](image/2.png)
 
 <br>
 
 ## 🖥 모니터링
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/383ced45-7d62-40f9-9a6d-611a1c0ac9cc)
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/2a88b3d5-4eae-4caf-adbf-4b30a8feeb53)
+![img.png](image/3.png)
+![img.png](image/4.png)
 
 [ 현재 서비스 운영 문제점 ] 
 - 서버를 운영하면서 CPU 100%가 되어서 시스템의 오류가 발생.
@@ -124,6 +124,7 @@
 - 테스트 코드는 단순히 데이터의 정합성을 검증하는 로직이 아니라 내 코드를 읽는 상대방에게 설명하는 코드라고 생각합니다.
 - ``Controller``의 테스트는 Mock을 통하여 HTTP 요청, 검증에서 책임, 주요 관심사를 분리하여 ``요청,검증``을 분리를 하였습니다.
 
+![img.png](image/5.png)
 
 ### Service
 
@@ -133,9 +134,7 @@
 - 제어할 수 없는 코드인 경우에만 Test Double을 사용을 하였습니다.
 - ``LocalDateTime.now()``의 테스트 코드는 항상 일관성을 보장하기 힘들어 Service에 변수를 넘겨주는 방식으로 변경
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/cb0a17d2-31b3-43d6-bec1-27a5e71465c4)
-
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/be95e586-3c28-4974-87b6-c389bf100795)
+![img.png](image/6.png)
 
 
 <br>
@@ -146,7 +145,7 @@
 
 ## 📕CStudy의 여정의 기능을 소개할게요.
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/4b3a3265-9e7e-43c2-8bd9-da8732ebbf8b)
+![img.png](image/7.png)
 
 
 <br>
@@ -155,7 +154,7 @@
 
 ### 1. 기존에 Jenkins를 통하여 배포 자동화
 
-![image](https://github.com/CS-tudy/CStudy_BackEnd/assets/103854287/498a3c20-3c9b-46a0-8d83-0cacdd350479)
+![img.png](image/8.png)
 
 블로그 : [Jenkins Pipeline을 이용한 CI/CD + SSHAgent](https://pos04167.tistory.com/195)
 
@@ -165,7 +164,7 @@
 
 ### 2. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화 변경)
 
-![img.png](image/GITACTION.png)
+![img.png](image/9.png)
 
 ![img.png](image/infra.png)
 
