@@ -1,12 +1,12 @@
 package com.cstudy.modulecommon.repository.question;
 
-import com.cstudy.modulecommon.domain.question.MemberQuestion;
-import com.cstudy.modulecommon.domain.question.QMemberQuestion;
 import com.cstudy.modulecommon.dto.*;
 import com.cstudy.modulecommon.util.LoginUserDto;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.*;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -76,16 +76,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
     }
 
 
-
-    @Override
-    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
-        return queryFactory
-                .select(Wildcard.count)
-                .from(member)
-                .fetch().get(0);
-    }
-
-
     private static NumberExpression<Integer> divisionStatusAboutMemberId(LoginUserDto loginUserDto) {
         return Expressions.cases()
                 .when(memberQuestion.member.id.eq(loginUserDto.getMemberId())).then(
@@ -96,30 +86,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 )
                 .otherwise(Expressions.constant(0))
                 .as("status");
-    }
-
-
-    @Override
-    public List<CompetitionQuestionDto> findQuestionWithCompetitionById(Long id) {
-        return queryFactory
-                .selectFrom(question)
-                .leftJoin(question.workbookQuestions, workbookQuestion)
-                .leftJoin(workbookQuestion.workbook, workbook)
-                .leftJoin(workbook.competition, competition)
-                .leftJoin(question.choices, choice)
-                .where(competition.id.eq(id))
-                .transform(
-                        groupBy(question.id).list(
-                                Projections.constructor(CompetitionQuestionDto.class,
-                                        question.id,
-                                        question.description,
-                                        list(
-                                                Projections.constructor(ChoiceQuestionResponseDto.class,
-                                                        choice.number, choice.content
-                                                )
-                                        ))
-                        )
-                );
     }
 
 
@@ -146,5 +112,36 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         return null;
     }
 
+
+    @Override
+    public List<CompetitionQuestionDto> findQuestionWithCompetitionById(Long id) {
+        return queryFactory
+                .selectFrom(question)
+                .leftJoin(question.workbookQuestions, workbookQuestion)
+                .leftJoin(workbookQuestion.workbook, workbook)
+                .leftJoin(workbook.competition, competition)
+                .leftJoin(question.choices, choice)
+                .where(competition.id.eq(id))
+                .transform(
+                        groupBy(question.id).list(
+                                Projections.constructor(CompetitionQuestionDto.class,
+                                        question.id,
+                                        question.description,
+                                        list(
+                                                Projections.constructor(ChoiceQuestionResponseDto.class,
+                                                        choice.number, choice.content
+                                                )
+                                        ))
+                        )
+                );
+    }
+
+    @Override
+    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
+        return queryFactory
+                .select(Wildcard.count)
+                .from(member)
+                .fetch().get(0);
+    }
 
 }
