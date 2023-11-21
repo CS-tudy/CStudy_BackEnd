@@ -75,7 +75,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         ResponseCookie accResponseCookie = ResponseCookie.from("accessToken", access)
                 .path("/")
                 .secure(true)
-                .domain(".cstudying.site")
+                .domain("cstudying.site")
                 .maxAge(1800)
                 .sameSite("None")
                 .httpOnly(false)
