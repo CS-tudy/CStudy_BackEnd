@@ -63,8 +63,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .select(question.count())
                 .from(question)
                 .leftJoin(question.category, category)
-                .leftJoin(question.questions, memberQuestion)
-                .where(memberQuestion.member.id.eq(loginUserDto.getMemberId()))
+                .leftJoin(question.questions, memberQuestion).on(memberQuestion.member.id.eq(loginUserDto.getMemberId()))
                 .leftJoin(memberQuestion.member, member)
                 .where(
                         questionTitleEq(questionSearchCondition.getQuestionTitle()),
