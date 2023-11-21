@@ -8,6 +8,7 @@ import com.cstudy.modulecommon.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -71,17 +72,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String redirectUri = FRONT_BASE_URL + "oauth2/login";
 
 
-        ResponseCookie cookie = ResponseCookie.from("accessToken", access)
+        ResponseCookie accResponseCookie = ResponseCookie.from("accessToken", access)
                 .path("/")
                 .secure(true)
+                .domain(".cstudying.site")
                 .maxAge(1800)
                 .sameSite("None")
                 .httpOnly(false)
                 .build();
 
-        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", refresh)
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refresh)
                 .path("/")
                 .secure(true)
+                .domain(".cstudying.site")
                 .maxAge(604800)
                 .sameSite("None")
                 .httpOnly(false)
@@ -92,8 +95,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("refresh token : {}", refresh);
         log.info("redirect url : {}", redirectUri);
 
-        response.setHeader("Set-Cookie", cookie.toString());
-        response.addHeader("Set-Cookie", cookie2.toString());
+//        response.setHeader("Set-Cookie", cookie.toString());
+//        response.addHeader("Set-Cookie", cookie2.toString());
+        response.setHeader(HttpHeaders.SET_COOKIE, accResponseCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
