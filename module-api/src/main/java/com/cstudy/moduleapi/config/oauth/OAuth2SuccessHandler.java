@@ -78,6 +78,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .sameSite("None")
                 .httpOnly(false)
                 .build();
+        response.setHeader(HttpHeaders.SET_COOKIE, accResponseCookie.toString());
 
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refresh)
                 .path("/")
@@ -86,8 +87,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .sameSite("None")
                 .httpOnly(false)
                 .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
-        String redirectUri = FRONT_BASE_URL + "oauth2/login/test?accessToken="+accResponseCookie+"refreshToken="+responseCookie;
+        String redirectUri = FRONT_BASE_URL + "oauth2/login?accessToken="+access+"&refreshToken="+refresh;
 
         log.info("OAuth 성공");
         log.info("access token : {}", access);
@@ -96,8 +98,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 //        response.setHeader("Set-Cookie", cookie.toString());
 //        response.addHeader("Set-Cookie", cookie2.toString());
-        response.setHeader(HttpHeaders.SET_COOKIE, accResponseCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .build().toUriString();
