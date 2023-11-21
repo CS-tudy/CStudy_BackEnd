@@ -1,6 +1,7 @@
 package com.cstudy.moduleapi.config.oauth;
 
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
+import com.cstudy.moduleapi.application.reviewNote.ReviewService;
 import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.moduleapi.config.security.auth.OAuthAttributes;
 import com.cstudy.modulecommon.domain.member.Member;
@@ -29,16 +30,25 @@ import java.util.Optional;
 @Service
 @Transactional
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
     private final MemberRepository memberRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenizer jwtTokenizer;
     private final RoleRepository roleRepository;
+    private final ReviewService reviewService;
 
-    public CustomOAuth2UserService(MemberRepository memberRepository, RefreshTokenService refreshTokenService, JwtTokenizer jwtTokenizer, RoleRepository roleRepository) {
+    public CustomOAuth2UserService(
+            MemberRepository memberRepository,
+            RefreshTokenService refreshTokenService,
+            JwtTokenizer jwtTokenizer,
+            RoleRepository roleRepository,
+            ReviewService reviewService
+    ) {
         this.memberRepository = memberRepository;
         this.refreshTokenService = refreshTokenService;
         this.jwtTokenizer = jwtTokenizer;
         this.roleRepository = roleRepository;
+        this.reviewService = reviewService;
     }
 
     @Override
@@ -51,8 +61,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .getUserInfoEndpoint().getUserNameAttributeName();
 
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        log.info("attributes name : {}", attributes.getName());
 
         Member member = saveOrUpdate(attributes);
+        log.info("mysql에 회원 저장");
+
+        reviewService.createUserWhenSignupSaveMongodb(attributes.getName());
+        log.info("mongodb 회원 저장");
 
         refreshTokenService.addRefreshToken(jwtTokenizer
                 .createRefreshToken(member.getId(), member.getEmail(), List.of(RoleEnum.CUSTOM.getRoleName())));
@@ -68,7 +83,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Optional<Member> existingMember = memberRepository.findByEmail(attributes.getEmail());
 
         if (existingMember.isPresent()) {
-            return existingMember.orElseThrow(()-> new NotFoundMemberEmail(attributes.getEmail()));
+            return existingMember.orElseThrow(() -> new NotFoundMemberEmail(attributes.getEmail()));
         } else {
             Member member = Member.builder()
                     .email(attributes.getEmail())
