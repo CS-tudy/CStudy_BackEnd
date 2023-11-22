@@ -9,6 +9,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -27,6 +28,7 @@ import static com.cstudy.modulecommon.domain.workbook.QWorkbookQuestion.workbook
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.types.Projections.list;
 
+@Slf4j
 public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
@@ -71,6 +73,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         memberIdEq(questionSearchCondition.getMemberId()),
                         statusEq(questionSearchCondition.getStatus())
                 );
+        log.info("countQuery : {}" , countQuery);
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
 
