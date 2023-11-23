@@ -57,7 +57,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         memberIdEq(questionSearchCondition.getMemberId()),
                         statusEq(questionSearchCondition.getStatus())
                 )
-                .orderBy(question.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -73,7 +72,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         categoryTitleEq(questionSearchCondition.getCategoryTitle()),
                         memberIdEq(questionSearchCondition.getMemberId()),
                         statusEq(questionSearchCondition.getStatus())
-                ).orderBy(question.id.desc());
+                );
         log.info("countQuery : {}", countQuery);
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
     }
