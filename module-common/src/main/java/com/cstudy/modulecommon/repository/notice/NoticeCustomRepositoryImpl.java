@@ -55,10 +55,10 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
 
 
     private BooleanExpression noticeContentEq(String content) {
-        return StringUtils.hasText(content) ? QNotice.notice.content.eq(content) : null;
+        return StringUtils.hasText(content) ? QNotice.notice.content.contains(content) : null;
     }
 
     private BooleanExpression noticeTitleEq(String title) {
-        return StringUtils.hasText(title) ? QNotice.notice.title.eq(title) : null;
+        return StringUtils.hasText(title) ? QNotice.notice.title.contains(title) : null;
     }
 }
