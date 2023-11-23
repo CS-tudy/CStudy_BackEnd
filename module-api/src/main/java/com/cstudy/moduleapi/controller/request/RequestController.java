@@ -58,10 +58,11 @@ public class RequestController {
         }
     }
 
-    @PermitAll
+
     @Operation(summary = "게시판 글 조회", description = "게시글 id를 이용해 게시글을 조회 / PermitAll")
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_CUSTOM', 'ROLE_ADMIN')")
     public RequestResponseDto getRequest(@Parameter(description = "게시글 id", name = "requestId")
                                          @PathVariable Long requestId) {
         Optional.of(requestId)
