@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static com.cstudy.modulecommon.domain.notice.QNotice.*;
+
 
 public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
 
@@ -29,23 +31,24 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
         List<NoticeResponseDto> content = queryFactory
                 .select(
                         new QNoticeResponseDto(
-                                QNotice.notice.id,
-                                QNotice.notice.title.as("noticeTitle"),
-                                QNotice.notice.content.as("noticeContent"),
-                                QNotice.notice.createdDate.as("createdDate")
+                                notice.id,
+                                notice.title.as("noticeTitle"),
+                                notice.content.as("noticeContent"),
+                                notice.createdDate.as("createdDate")
                         )
                 )
-                .from(QNotice.notice)
+                .from(notice)
                 .where(
                         noticeTitleEq(noticeSearchRequestDto.getTitle()),
                         noticeContentEq(noticeSearchRequestDto.getContent())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(notice.createdDate.desc())
                 .fetch();
 
         JPAQuery<Notice> countQuery = queryFactory
-                .selectFrom(QNotice.notice)
+                .selectFrom(notice)
                 .where(
                         noticeTitleEq(noticeSearchRequestDto.getTitle()),
                         noticeContentEq(noticeSearchRequestDto.getContent())
@@ -55,10 +58,10 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
 
 
     private BooleanExpression noticeContentEq(String content) {
-        return StringUtils.hasText(content) ? QNotice.notice.content.contains(content) : null;
+        return StringUtils.hasText(content) ? notice.content.contains(content) : null;
     }
 
     private BooleanExpression noticeTitleEq(String title) {
-        return StringUtils.hasText(title) ? QNotice.notice.title.contains(title) : null;
+        return StringUtils.hasText(title) ? notice.title.contains(title) : null;
     }
 }
