@@ -1,6 +1,7 @@
 package com.cstudy.modulecommon.domain.question;
 
 import com.cstudy.modulecommon.domain.choice.Choice;
+import com.cstudy.modulecommon.domain.member.Member;
 import com.cstudy.modulecommon.domain.workbook.WorkbookQuestion;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -90,6 +91,21 @@ public class Question {
         this.category = category;
     }
 
+    public static Question of(String title, String description,String explain, List<Choice> choice) {
+        return Question.builder()
+                .title(title)
+                .description(description)
+                .explain(explain)
+                .choices(choice)
+                .build();
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+        if (category != null) {
+            category.getQuestions().add(this);
+        }
+    }
     /********************************* 비즈니스 로직 *********************************/
 
     public void setChoices(List<Choice> choices) {

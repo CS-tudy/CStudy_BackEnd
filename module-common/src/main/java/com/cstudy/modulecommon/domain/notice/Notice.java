@@ -53,6 +53,14 @@ public class Notice extends BaseEntity {
         this.member = member;
     }
 
+    public static Notice of(String title, String content, Member member) {
+        return Notice.builder()
+                .title(title)
+                .content(content)
+                .member(member)
+                .build();
+    }
+
     /********************************* 비니지스 로직 *********************************/
 
     public void updateNotice(NoticeUpdateRequestDto noticeUpdateRequestDto) {

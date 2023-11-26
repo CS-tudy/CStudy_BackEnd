@@ -39,8 +39,14 @@ public class File extends BaseEntity {
     private Workbook workbook;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    public static File of(String fileName, Member member) {
+        return File.builder()
+                .fileName(fileName)
+                .member(member)
+                .build();
+    }
 }

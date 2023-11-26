@@ -41,4 +41,11 @@ public class Category {
         this.categoryTitle = categoryTitle;
         this.questions = questions;
     }
+
+
+    public static Category of(String categoryTitle) {
+        return Category.builder()
+                .categoryTitle(categoryTitle)
+                .build();
+    }
 }
