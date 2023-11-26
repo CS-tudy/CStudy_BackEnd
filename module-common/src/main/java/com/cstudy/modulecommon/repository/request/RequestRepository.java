@@ -16,8 +16,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
         "select r from Request r " +
         "where r.member.id = :id"
     )
-    Page<Request> findRequestByMemberId(@Param("id") Long id,
-                                        Pageable pageable);
+    Page<Request> findRequestByMemberId(@Param("id") Long id, Pageable pageable);
 
     @Query("SELECT R FROM Request R WHERE R.flag= FALSE")
     List<Request> findByNotAcceptRequestList();

@@ -11,8 +11,5 @@ import java.util.List;
 
 public interface QuestionRepositoryCustom {
     Page<QuestionPageWithCategoryAndTitle> findQuestionPageWithCategory(Pageable pageable, QuestionSearchCondition questionSearchCondition, LoginUserDto loginUserDto);
-
     List<CompetitionQuestionDto> findQuestionWithCompetitionById(Long id);
-
-    long getTotalCount(QuestionSearchCondition condition, Pageable pageable);
 }

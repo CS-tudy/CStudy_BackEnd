@@ -12,23 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-
-    boolean existsByEmail(String email);
-
     Optional<Member> findByEmail(String email);
-
-    @Query(
-        "select m from Member m " +
-        "join fetch m.requests " +
-        "where m.id = :id"
-    )
-    Member findMemberFetchRequest(@Param("id") Long id);
 
     @Query("SELECT DISTINCT m FROM Member m JOIN FETCH m.questions")
     List<Member> findAllWithQuestions();
 
-    @Query("SELECT m FROM Member m JOIN FETCH m.roles WHERE m.email = :email")
-    Optional<Member> findByEmailWithRoles(@Param("email") String email);
 
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select m from Member m where m.id = :memberId")

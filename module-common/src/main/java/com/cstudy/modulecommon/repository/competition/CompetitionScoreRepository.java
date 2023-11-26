@@ -10,9 +10,10 @@ import java.util.List;
 public interface CompetitionScoreRepository extends JpaRepository<CompetitionScore, Long> {
 
     @Query(
-        "SELECT CS FROM CompetitionScore CS " +
-        "LEFT JOIN CS.memberCompetition MC " +
-        "WHERE MC.member.id = :memberId AND MC.competition.id = :competitionId"
+            "SELECT CS FROM CompetitionScore CS " +
+                    "LEFT JOIN CS.memberCompetition MC " +
+                    "WHERE MC.member.id = :memberId AND" +
+                    " MC.competition.id = :competitionId"
     )
     List<CompetitionScore> findByCompetitionIdAndMemberId(@Param("memberId") Long memberId, @Param("competitionId") Long competitionId);
 }
