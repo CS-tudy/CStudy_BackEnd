@@ -39,6 +39,13 @@ public class Alarm extends BaseEntity {
         this.args = args;
     }
 
+    public static Alarm of(Member member, AlarmType alarmType) {
+        return Alarm.builder()
+                .member(member)
+                .alarmType(alarmType)
+                .build();
+    }
+
     @Builder
     public Alarm(Member member, AlarmType alarmType, AlarmArgs args) {
         this.member = member;
