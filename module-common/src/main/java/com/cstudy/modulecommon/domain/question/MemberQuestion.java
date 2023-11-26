@@ -59,4 +59,14 @@ public class MemberQuestion {
         this.member = member;
         this.question = question;
     }
+
+    public static MemberQuestion of(int success, int fail , Long solveTime, Member member, Question question) {
+        return MemberQuestion.builder()
+                .success(success)
+                .fail(fail)
+                .solveTime(solveTime)
+                .member(member)
+                .question(question)
+                .build();
+    }
 }
