@@ -138,12 +138,5 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 );
     }
 
-    @Override
-    public long getTotalCount(QuestionSearchCondition condition, Pageable pageable) {
-        return queryFactory
-                .select(Wildcard.count)
-                .from(member)
-                .fetch().get(0);
-    }
 
 }
