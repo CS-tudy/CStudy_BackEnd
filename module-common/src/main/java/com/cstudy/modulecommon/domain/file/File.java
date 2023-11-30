@@ -31,10 +31,7 @@ public class File extends BaseEntity {
 
     /********************************* 연관관계 매핑 *********************************/
 
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST
-    )
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 

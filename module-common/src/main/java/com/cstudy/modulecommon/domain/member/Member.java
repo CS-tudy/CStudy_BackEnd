@@ -9,11 +9,7 @@ import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,7 +27,6 @@ import static javax.persistence.CascadeType.REMOVE;
 @AllArgsConstructor
 @Table(name = "MEMBER", uniqueConstraints = {
         @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
-//        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
 public class Member extends BaseEntity{
 
