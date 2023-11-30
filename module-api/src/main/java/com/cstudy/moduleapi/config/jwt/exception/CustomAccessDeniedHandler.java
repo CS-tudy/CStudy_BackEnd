@@ -41,7 +41,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         HashMap<String, Object> errorInfo = new HashMap<>();
-        errorInfo.put("code", HttpStatus.UNAUTHORIZED);
+        errorInfo.put("code", HttpStatus.UNAUTHORIZED.value());
         errorInfo.put("message", JwtExceptionCode.NO_AUTHORITY.getMessage());
 
         Gson gson = new Gson();
