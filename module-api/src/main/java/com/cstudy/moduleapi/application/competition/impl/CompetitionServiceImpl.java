@@ -155,7 +155,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Transactional
     public Long createCompetition(CreateCompetitionRequestDto createCompetitionRequestDto) {
 
-        if (createCompetitionRequestDto.getCompetitionStart().isAfter(createCompetitionRequestDto.getCompetitionEnd())) {
+        if (isAfter(createCompetitionRequestDto)) {
             log.error("CompetitionStartException");
             throw new CompetitionStartException();
         }
@@ -185,6 +185,10 @@ public class CompetitionServiceImpl implements CompetitionService {
         }
 
         return competition.getId();
+    }
+
+    private static boolean isAfter(CreateCompetitionRequestDto createCompetitionRequestDto) {
+        return createCompetitionRequestDto.getCompetitionStart().isAfter(createCompetitionRequestDto.getCompetitionEnd());
     }
 
     /**
