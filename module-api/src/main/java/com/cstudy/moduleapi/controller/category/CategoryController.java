@@ -26,6 +26,7 @@ public class CategoryController {
         this.categoryRepository = categoryRepository;
     }
 
+
     @Operation(summary = "카테고리 전체 조회", description = "카테고리 전체 조회 @permitALL")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
