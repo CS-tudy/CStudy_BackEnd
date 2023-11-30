@@ -31,16 +31,19 @@ public class File extends BaseEntity {
 
     /********************************* 연관관계 매핑 *********************************/
 
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST
-    )
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "workbook_id")
     private Workbook workbook;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    public static File of(String fileName, Member member) {
+        return File.builder()
+                .fileName(fileName)
+                .member(member)
+                .build();
+    }
 }

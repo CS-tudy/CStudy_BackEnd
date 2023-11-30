@@ -5,9 +5,11 @@ import com.cstudy.moduleapi.application.member.FileService;
 import com.cstudy.moduleapi.application.member.MemberService;
 import com.cstudy.moduleapi.application.refershToken.RefreshTokenService;
 import com.cstudy.moduleapi.config.argumentResolver.IfLogin;
+import com.cstudy.moduleapi.config.jwt.util.JwtTokenizer;
 import com.cstudy.moduleapi.dto.member.*;
 import com.cstudy.moduleapi.dto.refresh.RefreshTokenDto;
 import com.cstudy.modulecommon.util.LoginUserDto;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,18 +34,13 @@ public class MemberController {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
     private final FileService fileService;
-//    private final GeoService geoService;
+    private final JwtTokenizer jwtTokenizer;
 
-    public MemberController(
-            MemberService memberService,
-            RefreshTokenService refreshTokenService
-            , FileService fileService
-//            GeoService geoService
-    ) {
+    public MemberController(MemberService memberService, RefreshTokenService refreshTokenService, FileService fileService, JwtTokenizer jwtTokenizer) {
         this.memberService = memberService;
         this.refreshTokenService = refreshTokenService;
         this.fileService = fileService;
-//        this.geoService = geoService;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     @Operation(summary = "회원가입", description = "Email, Password, Name을 이용하여 회원가입을 합니다. / @PermitAll")
@@ -87,6 +84,15 @@ public class MemberController {
     public MemberLoginResponse refreshTokenWithAccessToken(@Parameter(name = "RefreshTokenDto", description = "refresh Token")
                                                            @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         log.info(String.format("Refresh Token:>>{%s}", refreshTokenDto));
+        Claims claims = jwtTokenizer.parseRefreshToken(refreshTokenDto.getRefreshToken());
+
+        long currentTimeInSeconds = System.currentTimeMillis() / 1000;
+        long expirationTimeInSeconds = (Long) claims.get("exp");
+
+        if (currentTimeInSeconds >= expirationTimeInSeconds) {
+            throw new RuntimeException("AccessToken has expired");
+        }
+
         return refreshTokenService.AccessTokenWithRefreshToken(refreshTokenDto);
     }
 

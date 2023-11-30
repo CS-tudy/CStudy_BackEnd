@@ -1,7 +1,5 @@
 package com.cstudy.modulecommon.repository.role;
 
-
-
 import com.cstudy.modulecommon.domain.role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 

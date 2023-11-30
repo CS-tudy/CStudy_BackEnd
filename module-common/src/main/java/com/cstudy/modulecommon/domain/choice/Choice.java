@@ -43,5 +43,13 @@ public class Choice {
         this.question = question;
     }
 
+    public static Choice of(int number, String content, boolean isAnswer) {
+        return Choice.builder()
+                .number(number)
+                .content(content)
+                .answer(isAnswer)
+                .build();
+    }
+
 
 }

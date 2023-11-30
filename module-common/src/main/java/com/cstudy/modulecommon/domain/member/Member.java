@@ -9,17 +9,16 @@ import com.cstudy.modulecommon.domain.request.Request;
 import com.cstudy.modulecommon.domain.role.Role;
 import com.cstudy.modulecommon.dto.ChoiceAnswerRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.REMOVE;
 
 @Getter
 @Entity
@@ -28,8 +27,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "MEMBER", uniqueConstraints = {
         @UniqueConstraint(name = "MEMBER_EMAIL", columnNames = {"email"}),
-//        @UniqueConstraint(name = "memberIpAddress", columnNames = {"memberIpAddress"}),
-//        @UniqueConstraint(name = "name", columnNames = {"name"}),
 })
 public class Member extends BaseEntity{
 
@@ -41,12 +38,10 @@ public class Member extends BaseEntity{
 
     /********************************* PK가 아닌 필드 *********************************/
 
-    @Column(nullable = false, length = 100)
     private String email;
 
     private String password;
 
-    @Column(nullable = false)
     private String name;
 
     private double rankingPoint = 0L;
@@ -64,44 +59,24 @@ public class Member extends BaseEntity{
 
     /********************************* 연관관계 매핑 *********************************/
 
-//    @JsonManagedReference
-    @OneToMany(
-            mappedBy = "member",
-            fetch = FetchType.LAZY
-    )
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = ALL)
     private List<File> file = new ArrayList<>();
 
-//    @JsonManagedReference
-    @OneToMany(
-            mappedBy = "member",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = ALL)
     Set<MemberQuestion> questions = new HashSet<>();
 
-    @OneToMany(
-            mappedBy = "member",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = REMOVE)
     List<MemberCompetition> memberCompetitions = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = REMOVE)
     private List<Notice> notices = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "member",
-            fetch = FetchType.LAZY
-    )
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     List<Request> requests = new ArrayList<>();
 
-
     @ManyToMany
-    @JoinTable(name = "member_role",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "member_role", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
 
@@ -121,6 +96,13 @@ public class Member extends BaseEntity{
 
     public void minusRankingPoint(double choiceAnswerRequestDto) {
         rankingPoint -= 2L;
+    }
+
+    public static Member of(String name, String email) {
+        return Member.builder()
+                .name(name)
+                .email(email)
+                .build();
     }
 
     @Builder

@@ -43,26 +43,6 @@ public interface MemberQuestionRepository extends JpaRepository<MemberQuestion, 
     long countByMemberIdAndQuestionIdAndFailZero(@Param("memberId") Long memberId,
                                                     @Param("questionId") Long questionId);
 
-//    @Query("SELECT CASE WHEN EXISTS (" +
-//            "SELECT 1 FROM MemberQuestion MQ " +
-//            "WHERE MQ.member.id = :memberId " +
-//            "AND MQ.question.id = :questionId " +
-//            "AND MQ.success = 0) " +
-//            "THEN true ELSE false END")
-//    boolean existsByMemberIdAndQuestionIdAndSuccessZero(@Param("memberId") Long memberId,
-//                                                        @Param("questionId") Long questionId);
-//
-//
-//    @Query("SELECT CASE WHEN EXISTS (" +
-//            "SELECT 1 FROM MemberQuestion MQ " +
-//            "WHERE MQ.member.id = :memberId " +
-//            "AND MQ.question.id = :questionId " +
-//            "AND MQ.fail = 0) " +
-//            "THEN true ELSE false END")
-//    boolean existsByMemberIdAndQuestionIdAndFailZero(@Param("memberId") Long memberId,
-//                                                     @Param("questionId") Long questionId);
-
-
     @Query("SELECT MQ FROM MemberQuestion MQ " +
             "WHERE MQ.member.id = :memberId " +
             "AND MQ.question.id = :questionId")

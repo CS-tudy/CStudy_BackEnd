@@ -154,6 +154,10 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/alarm").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/alarm/**").authenticated()
 
+                //CategoryController
+                .antMatchers(HttpMethod.GET, "/api/category").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/category").authenticated()
+
 
                 .anyRequest().permitAll()
                 .and()

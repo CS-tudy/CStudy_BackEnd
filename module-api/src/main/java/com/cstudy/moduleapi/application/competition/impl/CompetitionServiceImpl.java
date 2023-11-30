@@ -45,81 +45,44 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     private final CompetitionRepository competitionRepository;
     private final WorkbookRepository workbookRepository;
-    private final MemberCacheRepository memberCacheRepository;
     private final MemberCompetitionRepository memberCompetitionRepository;
     private final MemberCompetitionService memberCompetitionService;
     private final WorkbookService workbookService;
     private final AlarmService alarmService;
     private final MemberRepository memberRepository;
-
+    private final ObjectMapper objectMapper;
 
     public CompetitionServiceImpl(
             CompetitionRepository competitionRepository,
             WorkbookRepository workbookRepository,
-            MemberCacheRepository memberCacheRepository,
             MemberCompetitionRepository memberCompetitionRepository,
             MemberCompetitionService memberCompetitionService,
             WorkbookService workbookService,
             AlarmService alarmService,
-            MemberRepository memberRepository
+            MemberRepository memberRepository,
+            ObjectMapper objectMapper
     ) {
         this.competitionRepository = competitionRepository;
         this.workbookRepository = workbookRepository;
-        this.memberCacheRepository = memberCacheRepository;
         this.memberCompetitionRepository = memberCompetitionRepository;
         this.memberCompetitionService = memberCompetitionService;
         this.workbookService = workbookService;
         this.alarmService = alarmService;
         this.memberRepository = memberRepository;
+        this.objectMapper = objectMapper;
     }
 
     /**
      * 회원의 경기 문제를 조회한다.
-     * <p>
-     * 여기서 문제의 보기, 내용을 List 형태로 가져옴
-     * 따로 가져와서 Dto에 Mapping 보다는 List Object[] 로 가져와서 Mapping을 하여 한방 쿼리로 만듬
-     * <p>
-     * 1	자바의 접근 제어자 중에서 부모 클래스에 대해서는 public 멤버처럼 취급되며, 외부에서는 private 멤버처럼 취급됩니다.	1,2,3,4	protected,private,public,default
-     * 2	객체지향의 특징 중에서 객체 내부의 접근을 제어하며 객체 사이의 결합도를 낮출 수 있고, 응집도가 증가하여 유지보수에 좋은 특징은?	1,2,3,4	캡슐화,상속,추상화,다형성
-     * 3	finalize의 설명을 적절하게 설명한 보기를 찾으시오.	1,2,3,4	변수, 메서드 클래스가 변경 불가능 하도록 만든다.,참조 변수가 힙 내의 다른 객체를 가리키도록 변경할 수 없다.,가비지 컬렉터가 더 이상의 참조가 존재하지 않는 객체를 메모리에서 삭제하겠다고 결정하는 순간 호출된다.,try catch 블록 뒤에서 항상 실행될 코드 블록을 정의하기 위해 사용한다.
-     */
-    /**
-     *              "SELECT " +
-     *             "    q.question_id as question_id, " +
-     *             "    q.question_title as question_title, " +
-     *             "    q.question_description as question_description, " +
-     *             "    CONCAT('[', GROUP_CONCAT(c.choice_number ORDER BY c.choice_number SEPARATOR ','), ']') as choice_numbers, " +
-     *             "    JSON_ARRAYAGG(c.content)  as choice_contents " +
-     *             "FROM " +
-     *             "    question q " +
-     *             "INNER JOIN " +
-     *             "    workbook_question wq " +
-     *             "        ON q.question_id = wq.question_id " +
-     *             "INNER JOIN " +
-     *             "    workbook w " +
-     *             "        ON wq.workbook_id = w.workbook_id " +
-     *             "INNER JOIN " +
-     *             "    competition comp " +
-     *             "        ON w.workbook_id = comp.workbook_id " +
-     *             "INNER JOIN " +
-     *             "    choice c " +
-     *             "        ON q.question_id = c.question_id " +
-     *             "WHERE " +
-     *             "    comp.competition_id = :competitionId " +
-     *             "GROUP BY " +
-     *             "    q.question_id", nativeQuery = true)
-     */
-// ...
 
+     */
     @Override
     @Transactional(readOnly = true)
     public List<CompetitionQuestionDto> getCompetitionQuestion(Long competitionId, LoginUserDto loginUserDto) throws JsonProcessingException {
         log.info("competitionId : {}", competitionId);
-        if (!loginUserDto.getRoles().contains(RoleEnum.ADMIN.getRoleName())) {
-            Competition competition = competitionRepository.findById(competitionId)
-                    .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
 
-            checkTimeAfter(competition.getCompetitionStart());
+        if (!userIsAdmin(loginUserDto)) {
+            checkCompetitionStart(competitionId);
         }
 
         List<Object[]> questionsWithChoices = competitionRepository.findQuestionsWithChoices(competitionId);
@@ -127,39 +90,58 @@ public class CompetitionServiceImpl implements CompetitionService {
         List<CompetitionQuestionDto> competitionQuestions = new ArrayList<>();
 
         for (Object[] row : questionsWithChoices) {
-            BigInteger questionIdBigInteger = (BigInteger) row[0];
-            Long questionId = questionIdBigInteger.longValue();// 문제 아이디
-            String title = (String) row[1];// 문제 제목
-            String description = (String) row[2];// 문제 설명
-            log.info("문제 아이디 >> {}", questionId);
-            log.info("문제 제목 >> {}", title);
-            log.info("문제 설명 >> {}", description);
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            // JSON 배열을 List로 변환
-            List<Integer> choiceNumbers = objectMapper.readValue((String) row[3], new TypeReference<>() {});
-            List<String> choiceContents = objectMapper.readValue((String) row[4], new TypeReference<>() {});
-
-            List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
-
-            for (int i = 0; i < choiceNumbers.size(); i++) {
-                int number = choiceNumbers.get(i);
-                String content = choiceContents.get(i);
-                choices.add(new ChoiceQuestionResponseDto(number, content));
-            }
-
-            CompetitionQuestionDto competitionQuestionDto = CompetitionQuestionDto.builder()
-                    .questionId(questionId)
-                    .questionTitle(title)
-                    .description(description)
-                    .choices(choices)
-                    .build();
-
+            CompetitionQuestionDto competitionQuestionDto = mapRowToCompetitionQuestionDto(row);
             competitionQuestions.add(competitionQuestionDto);
         }
 
         return competitionQuestions;
     }
+
+    private boolean userIsAdmin(LoginUserDto loginUserDto) {
+        return loginUserDto.getRoles().contains(RoleEnum.ADMIN.getRoleName());
+    }
+
+    private void checkCompetitionStart(Long competitionId) throws NotFoundCompetitionId {
+        Competition competition = competitionRepository.findById(competitionId)
+                .orElseThrow(() -> new NotFoundCompetitionId(competitionId));
+
+        checkTimeAfter(competition.getCompetitionStart());
+    }
+
+    private CompetitionQuestionDto mapRowToCompetitionQuestionDto(Object[] row) throws JsonProcessingException {
+        BigInteger questionIdBigInteger = (BigInteger) row[0];
+        Long questionId = questionIdBigInteger.longValue();// 문제 아이디
+        String title = (String) row[1];// 문제 제목
+        String description = (String) row[2];// 문제 설명
+        log.info("문제 아이디 >> {}", questionId);
+        log.info("문제 제목 >> {}", title);
+        log.info("문제 설명 >> {}", description);
+
+        List<Integer> choiceNumbers = objectMapper.readValue((String) row[3], new TypeReference<>() {});
+        List<String> choiceContents = objectMapper.readValue((String) row[4], new TypeReference<>() {});
+
+        List<ChoiceQuestionResponseDto> choices = mapChoices(choiceNumbers, choiceContents);
+
+        return CompetitionQuestionDto.builder()
+                .questionId(questionId)
+                .questionTitle(title)
+                .description(description)
+                .choices(choices)
+                .build();
+    }
+
+    private List<ChoiceQuestionResponseDto> mapChoices(List<Integer> choiceNumbers, List<String> choiceContents) {
+        List<ChoiceQuestionResponseDto> choices = new ArrayList<>();
+
+        for (int i = 0; i < choiceNumbers.size(); i++) {
+            int number = choiceNumbers.get(i);
+            String content = choiceContents.get(i);
+            choices.add(new ChoiceQuestionResponseDto(number, content));
+        }
+
+        return choices;
+    }
+
 
 
 
@@ -173,7 +155,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Transactional
     public Long createCompetition(CreateCompetitionRequestDto createCompetitionRequestDto) {
 
-        if (createCompetitionRequestDto.getCompetitionStart().isAfter(createCompetitionRequestDto.getCompetitionEnd())) {
+        if (isAfter(createCompetitionRequestDto)) {
             log.error("CompetitionStartException");
             throw new CompetitionStartException();
         }
@@ -203,6 +185,10 @@ public class CompetitionServiceImpl implements CompetitionService {
         }
 
         return competition.getId();
+    }
+
+    private static boolean isAfter(CreateCompetitionRequestDto createCompetitionRequestDto) {
+        return createCompetitionRequestDto.getCompetitionStart().isAfter(createCompetitionRequestDto.getCompetitionEnd());
     }
 
     /**

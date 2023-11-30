@@ -47,6 +47,13 @@ public class Request {
         this.member = member;
     }
 
+    public static Request of(Member member, String title) {
+        return Request.builder()
+                .title(title)
+                .member(member)
+                .build();
+    }
+
     /********************************* 비즈니스 로직 *********************************/
     public void updateFlag(boolean flag) {
         this.flag = flag;

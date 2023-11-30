@@ -138,15 +138,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberLoginResponse login(MemberLoginRequest request) {
-        log.info("Request email : {} ", request.getEmail());
-        log.info("Request passwordEmpty : {} ", request.getPassword().isEmpty());
-        log.info("=====================================");
         // 관리자가 로그인을 하면 db와 접근하고 일반 회원이 접근하면 redis에 캐싱된 데이터를 접근한다.
         Member member = Optional.of(request.getEmail())
                 .filter(ADMIN_EMAIL::equals)
                 .map(email -> memberRepository.findByEmail(email)
                         .orElseThrow(() -> new NotFoundMemberEmail(email)))
                 .orElseGet(() -> memberLoadComponent.loadMemberByEmail(request.getEmail()));
+
+        log.info("Request email : {} ", request.getEmail());
+        log.info("Request passwordEmpty : {} ", request.getPassword().isEmpty());
 
         Optional.of(request.getPassword())
                 .filter(password -> passwordEncoder.matches(password, member.getPassword()))

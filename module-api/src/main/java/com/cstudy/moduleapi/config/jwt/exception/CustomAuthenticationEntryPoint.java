@@ -2,6 +2,7 @@ package com.cstudy.moduleapi.config.jwt.exception;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     ) throws IOException, ServletException {
 
         String exception = String.valueOf(request.getAttribute("exception"));
+        log.warn("exception : {}", exception);
 
         if(exception == null) {
             log.error("entry point >> exception is null");
@@ -73,8 +75,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         HashMap<String, Object> errorInfo = new HashMap<>();
-        errorInfo.put("code", "401");
-        errorInfo.put("message", exceptionCode.getMessage());
+
+        errorInfo.put("code", HttpStatus.UNAUTHORIZED.value());
+        errorInfo.put("message", JwtExceptionCode.NO_AUTHORITY.getMessage());
 
         Gson gson = new Gson();
 
