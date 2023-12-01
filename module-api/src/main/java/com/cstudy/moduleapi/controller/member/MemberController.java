@@ -84,15 +84,6 @@ public class MemberController {
     public MemberLoginResponse refreshTokenWithAccessToken(@Parameter(name = "RefreshTokenDto", description = "refresh Token")
                                                            @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         log.info(String.format("Refresh Token:>>{%s}", refreshTokenDto));
-        Claims claims = jwtTokenizer.parseRefreshToken(refreshTokenDto.getRefreshToken());
-
-        long currentTimeInSeconds = System.currentTimeMillis() / 1000;
-        long expirationTimeInSeconds = (Long) claims.get("exp");
-
-        if (currentTimeInSeconds >= expirationTimeInSeconds) {
-            throw new RuntimeException("AccessToken has expired");
-        }
-
         return refreshTokenService.AccessTokenWithRefreshToken(refreshTokenDto);
     }
 
