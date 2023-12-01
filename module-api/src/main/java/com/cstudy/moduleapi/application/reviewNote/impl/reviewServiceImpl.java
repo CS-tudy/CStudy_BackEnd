@@ -71,9 +71,10 @@ public class reviewServiceImpl implements ReviewService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        ReviewUser byName = userRepository.findByUserName(memberRepository.findById(loginUserDto.getMemberId())
+        ReviewUser byName;
+        byName = userRepository.findByUserName(memberRepository.findById(loginUserDto.getMemberId())
                         .orElseThrow(() -> new NotFoundMemberId(loginUserDto.getMemberId())).getName())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(()->new RuntimeException("몽고디비 회원이 없음"));
         log.info("mongodb에서 유저  : {}", byName);
 
         boolean questionExistsInFailList = byName.getFailQuestion().stream()
